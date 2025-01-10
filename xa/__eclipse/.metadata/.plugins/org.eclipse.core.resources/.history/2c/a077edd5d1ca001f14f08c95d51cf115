@@ -1,0 +1,21 @@
+
+
+package xcom.retro.xa ;
+
+
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
+
+import xcom.retro.xa.directives._Test_DirectiveParsing ;
+
+
+//@formatter:off
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+	_Test_DirectiveParsing.class,
+	__Test_xcom_utils4j_format_.class,
+  _Test_Excels_.class,
+})
+//@formatter:on
+
+public class __Test_xcom_retro_xa_ {}

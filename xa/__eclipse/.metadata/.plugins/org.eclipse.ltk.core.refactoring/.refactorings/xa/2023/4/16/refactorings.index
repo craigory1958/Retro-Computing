@@ -1,0 +1,39 @@
+1681606782532	Rename type 'Expression'
+1681607896466	Rename type 'HighByteOpNode'
+1681607907991	Rename type 'LowByteOpNode'
+1681608001930	Copy compilation unit
+1681608120089	Copy compilation unit
+1681608158227	Copy compilation unit
+1681608169297	Rename type 'LiftOpNode'
+1681608622342	Rename type 'LeftOpNode'
+1681608638132	Rename type 'RightOpNode'
+1681614591365	Rename type 'AddOpNode'
+1681614605268	Rename type 'BitwiseLeftOpNode'
+1681614621386	Rename type 'BitwiseLef'
+1681614975373	Rename type 'HighOpNode'
+1681614985879	Rename type 'LowOpNode'
+1681614993782	Rename type 'MinusOpNode'
+1681615005056	Rename type 'NotOpNode'
+1681615013926	Rename type 'PlusOpNode'
+1681615245824	Rename type 'BitwiseLeft'
+1681615265886	Rename type 'BitwiseRightOpNode'
+1681615276128	Rename type 'DivideOpNode'
+1681615292962	Rename type 'MultipleOpNode'
+1681615307823	Rename type 'SubtractOpNode'
+1681616151852	Infer generic type arguments
+1681646018007	Rename local variable 'classname'
+1681652143367	Rename local variable 'unary'
+1681652356935	Rename local variable 'operatorName'
+1681687600108	Delete element
+1681687626088	Rename type 'IntegerLiteralValueNode'
+1681687654211	Rename type 'IntegerValue'
+1681687668950	Rename type 'StringLiteralValueNode'
+1681687705925	Rename type 'IntegerValueNode'
+1681687713436	Rename type 'StringValueNode'
+1681687742525	Copy compilation unit
+1681687881052	Copy compilation unit
+1681687915949	Copy compilation unit
+1681687959991	Copy compilation unit
+1681692000372	Copy compilation unit
+1681692310881	Copy compilation unit
+1681692485302	Rename type 'Symbol'

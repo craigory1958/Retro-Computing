@@ -1,0 +1,96 @@
+
+
+package xcom.retro.xa.ParsingChecks ;
+
+
+import static org.junit.Assert.assertArrayEquals ;
+
+import java.io.IOException ;
+import java.util.ArrayList ;
+import java.util.Arrays ;
+import java.util.Collection ;
+import java.util.List ;
+
+import org.junit.Before ;
+import org.junit.Test ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Parameterized ;
+
+
+@RunWith(Parameterized.class)
+public class _Test_BasicParsing {
+
+	@Parameterized.Parameters()
+	public static Collection<Object[]> data() {
+
+		//@formatter:off
+
+        final Object[][] results = {
+
+                // { String processor/version, String rule, String src, String[] expectedContexts }
+
+                { "MOS6502, v1", "statement", "     NOP", 
+                	"Statement, Instruction, Opcode, AddressingMode, Implied" 
+                },
+                { "MOS6502, v1", "statement", "     LDA #0", 
+                	"Statement, Instruction, Opcode, AddressingMode, Immediate, Argument, Expr, Term, Literal, NumericLiteral, DecimalLiteral" 
+                },
+                { "MOS6502, v1", "statement", "abc  LDA #0", 
+                	"Statement, Label, Instruction, Opcode, AddressingMode, Immediate, Argument, Expr, Term, Literal, NumericLiteral, DecimalLiteral" 
+                },
+                { "MOS6502, v1", "statement", "abc  NOP", 
+                	"Statement, Label, Instruction, Opcode, AddressingMode, Implied" 
+                },
+        } ;
+
+        //@formatter:on
+
+		return (Arrays.asList(results)) ;
+	}
+
+
+	String processor ;
+	String pProcessor ;
+	String version ;
+	String pVersion ;
+
+	String rule ;
+	String src ;
+	List<String> expectedContexts ;
+
+	static ParsingScaffold parser ;
+
+
+	public _Test_BasicParsing(String spec, String rule, String src, String expectedContexts) {
+
+		this.processor = spec.split(",( )*")[0] ;
+		this.version = spec.split(", ")[1] ;
+		this.rule = rule ;
+		this.src = src ;
+
+		this.expectedContexts = new ArrayList<String>(Arrays.asList(expectedContexts.split(", "))) ;
+	}
+
+
+	@Before
+	public void setupBeforeEachTest() throws Exception {
+
+		if ( !processor.equals(pProcessor) || !version.equals(pVersion) ) {
+			parser = new ParsingScaffold() ;
+			parser.init(processor, version) ;
+		}
+
+		pProcessor = processor ;
+		pVersion = version ;
+	}
+
+
+	@Test
+	public void parseTest() throws IOException {
+
+		List<String> actual = parser.parse(rule, src).processor.walked ;
+		System.out.println(src + " - " + actual) ;
+
+		assertArrayEquals(expectedContexts.toArray(), actual.toArray()) ;
+	}
+}

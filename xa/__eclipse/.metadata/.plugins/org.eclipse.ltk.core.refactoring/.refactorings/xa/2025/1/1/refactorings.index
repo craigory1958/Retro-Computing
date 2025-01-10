@@ -1,0 +1,88 @@
+1735743720078	Rename package 'xcom.retro.xa.ForwardReferences'
+1735743826234	Rename local variable 'statement'
+1735743901509	Rename local variable 'source'
+1735743923578	Rename local variable 'statement'
+1735744208002	Copy compilation unit
+1735744239485	Rename type '_Test_XA_OrgDirectiveChecks'
+1735762222717	Rename local variable 'processorName'
+1735762428402	Rename local variable 'testDesc'
+1735762443999	Rename local variable 'parsingRule'
+1735762463684	Rename local variable 'walkedContexts'
+1735762471049	Rename field 'testDesc'
+1735762478299	Rename field 'parsingRule'
+1735762486162	Rename field 'walkedContexts'
+1735765728662	Delete element
+1735766498399	Delete element
+1735768180875	Delete elements
+1735777292982	Rename resource 'MOS6502'
+1735823972333	Rename type '_Test_XA_OrgDirectiveChecks'
+1735823986266	Rename type '_Test_XA_ForwardReferences'
+1735823999669	Rename type '_Test_ParsingChecks'
+1735824129809	Copy compilation unit
+1735841775026	Delete element
+1735841984183	Delete element
+1735842089232	Delete element
+1735859378871	Delete element
+1735863626244	Rename type 'DirectiveListener'
+1735863640621	Rename type 'ExpressionListener'
+1735863732728	Rename type 'MOS6502'
+1735864036780	Rename resource 'KIM-1 ROM.MOS6502.asm'
+1735864170516	Delete elements
+1735864182178	Delete elements
+1735877133396	Delete elements
+1735877176184	Move 'test1.a65' to '_tests'
+1735877201150	Rename resource 'test1.a65'
+1735877216662	Rename resource 'TEst01_Macro.a65'
+1735877223373	Move 'test2.a65' to '_tests'
+1735877274148	Rename resource 'test2.a65'
+1735877326299	Delete element
+1735877334987	Delete elements
+1735877344074	Rename resource 'KIM-1 ROM.asm'
+1735877373325	Copy compilation unit
+1735877498033	Copy compilation unit
+1735922079793	Rename compilation unit 'DirectiveV1Listener.java'
+1735922098701	Rename type 'Directive_v1_Listener'
+1735922137426	Rename compilation unit 'DirectiveV2Listener.java'
+1735922258362	Rename type 'ExpressionV1Listener'
+1735923585321	Delete element
+1735924245924	Rename local variable 'processor'
+1735924277617	Rename local variable 'version'
+1735924656138	Delete element
+1735924667428	Rename type 'DirectiveListener_v1'
+1735924768446	Rename type 'ExpressionListener_v1'
+1735924839691	Delete element
+1735924854541	Rename type 'MOS6502v2'
+1735938604902	Rename type '_Test_BasicParsing'
+1735940410668	Rename type '_Test_BasicStatementParsing'
+1735957881531	Rename package 'xcom.retro.xa.OrgDirectiveChecks'
+1735957901624	Copy compilation unit
+1735957938926	Rename type '_Test_BasicStatementParsing_MOS6502'
+1735958017424	Move compilation units
+1735958089233	Encapsulate field 'processor'
+1736017593832	Copy compilation unit
+1736017606337	Copy compilation unit
+1736018646259	Rename package 'xcom.retro.xa.DirectiveChecks'
+1736018769156	Rename type '_Test_XA_OrgDirective'
+1736018925489	Copy files
+1736018965415	Rename resource '3fbc3fc0-0343-11ee-be56-0242ac120002.MOS6502.asm'
+1736018990547	Rename resource '898e1438-033a-11ee-be56-0242ac120002.MOS6502.asm'
+1736019000677	Rename resource '9256bd36-039e-11ee-be56-0242ac120002.MOS6502.asm'
+1736019008999	Delete element
+1736028336388	Rename type '_Test_OrgDirective'
+1736028776003	Rename package 'xcom.retro.xa.directives'
+1736028791263	Rename package 'xcom.retro.xa.ForwardReferenceChecks'
+1736028802187	Rename package 'xcom.retro.xa.ParsingChecks'
+1736028813898	Rename resource 'directives'
+1736028837151	Rename resource '23713b56-07ab-11ee-be56-0242ac120002.MOS6502.asm'
+1736028843663	Rename resource '8738fa20-07c4-11ee-be56-0242ac120002.MOS6502.asm'
+1736028852292	Rename resource 'b622e568-07aa-11ee-be56-0242ac120002.MOS6502.asm'
+1736028859850	Rename resource 'c22fd7d2-eb1f-481a-9651-451bef709252.MOS6502.asm'
+1736028914893	Rename type '__Test_xcom_retro_xa_directives_'
+1736029111810	Rename resource 'ForwardReferences'
+1736029124328	Rename package 'xcom.retro.xa.ForwardReferences'
+1736029178703	Copy compilation unit
+1736029203076	Rename type '__Test_xcom_retro_xa_Directives_'
+1736029269356	Copy compilation unit
+1736029277742	Delete element
+1736029745349	Copy compilation unit
+1736029765790	Rename type '__Test_xcom_retro_xa_Directives_'

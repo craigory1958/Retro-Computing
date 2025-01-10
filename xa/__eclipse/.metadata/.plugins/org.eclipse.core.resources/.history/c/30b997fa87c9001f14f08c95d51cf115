@@ -1,0 +1,26 @@
+    1:                    
+    2:                            .include    "STAIY.macro.a65"
+    3:                    
+    4:  0000 B1 30        NXTEL    LDA    [$30],Y     ; FETCH ELEMENT
+    5:  0002 C8                    INY
+    6:  0003 D1 30                 CMP    [$30],Y     ; IS IT LARGER THAN THE NEXT ELEMENT?
+    7:  0005 90 0C                 BCC    CHKEND
+    8:  0007 F0 0A                 BEQ    CHKEND
+    9:                                                ; YES. EXCHANGE ELEMENTS IN MEMORY
+   10:  0009 48                    PHA                ; BY SAVING LOW BYTE ON STACK.
+   11:  000A B1 30                 LDA    [$30],Y     ; THEN GET HIGH BYTE AND
+   12:  000C 88                    DEY                ; STORE IT AT LOW ADDRESS
+   13:                            .STAIY  $30
+   14:  000D 68                    PLA                ; PULL LOW BYTE FROM STACK
+   15:  000E C8                    INY                ; AND STORE IT AT HIGH ADDRESS
+   16:                            .STAIY  $30
+   17:  000F A9 FF                 LDA    #$FF        ; TURN EXCHANGE FLAG ON (= -1)
+   18:  0011 85 32                 STA    $32
+   19:                    
+   20:  0013 CA           CHKEND   DEX                ; END OF LIST?
+   21:  0014 D0 EA                 BNE    NXTEL       ; NO. FETCH NEXT ELEMENT
+   22:  0016 24 32                 BIT    $32         ; YES. EXCHANGE FLAG STILL OFF?
+   23:  0018 30 F9                 BMI    CHKEND      ; NO. GO THROUGH LIST AGAIN
+   24:                    
+   25:  001A 60                    RTS                ; YES. LIST IS NOW ORDERED
+   26:                    

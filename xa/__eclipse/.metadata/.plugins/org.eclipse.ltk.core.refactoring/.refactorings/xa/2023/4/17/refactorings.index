@@ -1,0 +1,30 @@
+1682214527230	Rename type 'Xs'
+1682255297965	Rename type 'Expr'
+1682255315262	Rename type 'Node'
+1682255430229	Rename type 'ExprNode'
+1682255457865	Rename type 'OpNode'
+1682255508209	Rename type 'aExprNode'
+1682255520581	Rename type 'aOpNode'
+1682255535097	Rename type 'ValueNode'
+1682255589751	Rename type '_IntegerValueNode'
+1682255601262	Rename type '_StringValueNode'
+1682481260204	Delete elements
+1682531592115	Copy file
+1682593774831	Rename type 'MacroSymbol'
+1682738334029	Rename local variable 'operatorName'
+1682738356909	Rename local variable 'operatorClassname'
+1682738601502	Rename type '_UnaryOpNode'
+1682777628083	Rename type 'AssemblyContect'
+1682789294252	Rename type 'MemBlock'
+1682789502619	Rename field 'block'
+1682789509008	Rename field 'blocks'
+1682789515060	Rename field 'segmetns'
+1682789552004	Rename field 'block'
+1682789569024	Rename local variable 'block'
+1682789811873	Rename field 'ctx'
+1682794848099	Rename type '_BinaryOpNode'
+1682795139578	Copy compilation unit
+1682811903533	Delete elements
+1682811914961	Delete elements
+1682812180304	Rename type 'AUnaryOpNode'
+1682812210501	Rename type 'ABinaryOpNode'

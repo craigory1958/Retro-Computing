@@ -1,0 +1,12 @@
+		 
+
+STAIY   .macro  list, addr
+		${list}
+         STA    [${addr}],Y
+        .list
+        .endmacro
+        
+        .STAIY	.nolist, 0
+        
+        .STAIY	.list, 1
+        

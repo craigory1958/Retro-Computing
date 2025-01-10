@@ -1,0 +1,11 @@
+1680312533859	Rename local variable '_launchables'
+1680312541927	Rename local variable '_launchable'
+1680313046763	Rename local variable '_launchables'
+1680313054220	Rename local variable '_launchable'
+1680314100136	Move file
+1680314154681	Delete element
+1680348203434	Move 'MOS6502.g4' to 'MOS6502'
+1680348226892	Delete elements
+1680350594579	Encapsulate field 'block'
+1680350672045	Encapsulate field 'symbol'
+1680350899041	Encapsulate field 'symbols'

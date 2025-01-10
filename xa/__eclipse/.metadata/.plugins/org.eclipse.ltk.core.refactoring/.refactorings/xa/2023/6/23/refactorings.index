@@ -1,0 +1,38 @@
+1685842398403	Rename local variable 'xxx'
+1685842573464	Rename local variable 'xx'
+1685842867073	Rename package 'xcom.retro.xa.expresions'
+1685842897677	Rename package 'xcom.retro.xa.expresions.op'
+1685842912700	Rename package 'xcom.retro.xa.expresions.value'
+1685842929475	Rename package 'xcom.retro.xa.expresions.op.binary'
+1685842944465	Rename package 'xcom.retro.xa.expresions.op.unary'
+1685843019748	Rename type 'AssemblyStep'
+1685843695557	Rename field 'address'
+1685843701932	Rename local variable 'address'
+1685886202171	Rename field 'listener'
+1685886325025	Move compilation unit
+1685886453955	Move compilation unit
+1685887024394	Rename local variable 'processor'
+1685893902071	Rename local variable 'b'
+1685897911300	Rename method 'doit'
+1685914210015	Rename method 'write'
+1685914224395	Rename enum constant 'Write'
+1685926787085	Copy file
+1685926975348	Rename type '_Test_XA_Basic'
+1685929323627	Rename local variable 'dSpec'
+1685929779318	Copy file
+1685929807017	Rename resource '898e1438-033a-11ee-be56-0242ac120002.MOS6503.asm'
+1685929876887	Copy file
+1685929897871	Rename resource '898e1438-033a-11ee-be56-0242ac120003.kim'
+1685968999581	Copy file
+1685969030629	Rename resource '3fbc3fc0-0343-11ee-be56-0242ac120002.MOS6503.asm'
+1686181467273	Move 7 resources to 'BasicChecks'
+1686181477626	Move 2 resources to 'BasicChecks'
+1686181913120	Move compilation unit
+1686409981620	Copy compilation unit
+1686413905636	Copy compilation unit
+1686413922581	Rename type '_Test_XA_BasicChecks'
+1686413977805	Rename type '_Test_XA_ForwardReference'
+1686413985196	Rename package 'xcom.retro.xa.ForwardReference'
+1686426249410	Rename field 'addressingModeCallback'
+1686427161989	Copy compilation unit
+1686440300909	Copy compilation unit

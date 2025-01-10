@@ -1,0 +1,6 @@
+		
+abc		.macro	abc1, abc2, abc3
+		LDA		${abc1} + ${abc2} + ${abc3}
+		.endmacro
+		
+		.abc	1, 2, 3

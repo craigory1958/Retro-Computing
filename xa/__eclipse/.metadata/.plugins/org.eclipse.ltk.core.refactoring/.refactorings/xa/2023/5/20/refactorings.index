@@ -1,0 +1,72 @@
+1684074658026	Delete elements
+1684082262570	Copy compilation unit
+1684082275651	Rename type 'Processor'
+1684083481745	Rename method 'scanAndLoadCPUs'
+1684083877518	Rename method 'scanAndLoadProcessors'
+1684084903230	Copy compilation unit
+1684085172782	Rename local variable 'processors'
+1684085192532	Rename local variable '_processors'
+1684085238063	Rename local variable '_processor'
+1684087095348	Rename local variable 'lexerClass'
+1684115356973	Rename local variable 'clazz'
+1684115363355	Rename local variable 'class1'
+1684115393481	Rename local variable 'classname'
+1684115404536	Rename local variable 'obj'
+1684115625498	Rename method 'scanAndLoadByAnnotation'
+1684115980917	Rename local variable 'directives'
+1684116397606	Copy compilation unit
+1684116728013	Copy compilation unit
+1684194903919	Copy compilation unit
+1684195226231	Rename local variable 'metstphod'
+1684195871265	Rename field 'pctx'
+1684205336725	Copy compilation unit
+1684251148442	Rename package 'xcom.retro.xa.directive'
+1684251162134	Rename package 'xcom.retro.xa.expr'
+1684251195698	Rename package 'xcom.retro.xa.expr.op'
+1684251210799	Rename package 'xcom.retro.xa.expr.op.binary'
+1684251236983	Rename package 'xcom.retro.xa.expr.op.unary'
+1684251249171	Rename package 'xcom.retro.xa.expr.value'
+1684265646332	Copy compilation unit
+1684269711728	Rename type 'MicroSource'
+1684271472054	Rename type 'ExprListener'
+1684271491037	Rename type 'ExprUtils'
+1684271530324	Rename type 'ExpresionListener'
+1684271541146	Rename type 'ExpresionUtils'
+1684282091177	Move compilation unit
+1684286228536	Rename local variable 'x'
+1684286765321	Rename field 'address'
+1684287101391	Copy compilation unit
+1684287132747	Copy compilation unit
+1684290262868	Copy compilation unit
+1684290610290	Copy compilation unit
+1684291439184	Copy compilation unit
+1684291470080	Copy compilation unit
+1684291495006	Copy compilation unit
+1684379376041	Rename field 'sources'
+1684451477233	Rename field 'source'
+1684452271335	Rename field 'sources'
+1684466449283	Copy compilation unit
+1684516677913	Move 'Expressions.g4' to 'xa'
+1684516686101	Delete element
+1684516910335	Delete element
+1684595344393	Copy file
+1684595468271	Rename resource 'test2.MOS6503.asm'
+1684598156806	Copy compilation unit
+1684598398587	Copy compilation unit
+1684624113379	Rename type 'Align'
+1684624126010	Rename type 'Byte'
+1684624141414	Rename type 'End'
+1684624167312	Rename package 'xcom.retro.xa.directives'
+1684624205323	Rename package 'xcom.retro.xa.directive'
+1684624219580	Rename type 'Endif'
+1684624242160	Rename type 'Equ'
+1684624252276	Rename type 'If'
+1684624261053	Rename type 'Ifndef'
+1684624270278	Rename type 'Include'
+1684624306006	Rename type 'List'
+1684624315400	Rename type 'Macro'
+1684624323870	Rename type 'Nolist'
+1684624333305	Rename type 'Org'
+1684624342349	Rename type 'Segment'
+1684624353743	Rename type 'UserMacro'
+1684624362852	Rename type 'Word'

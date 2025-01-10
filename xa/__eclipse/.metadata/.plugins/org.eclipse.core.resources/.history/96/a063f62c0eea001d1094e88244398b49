@@ -1,0 +1,326 @@
+
+
+package xcom.retro.xa.processors ;
+
+
+import xcom.retro.xa.Symbol ;
+import xcom.retro.xa.XA.AssemblyContext ;
+import xcom.retro.xa.api.annotations.Processor ;
+import xcom.retro.xa.api.interfaces.iProcessor ;
+import xcom.retro.xa.expr.ExprUtils ;
+import xcom.retro.xa.processor.MOS6502.MOS6502BaseListener ;
+import xcom.retro.xa.processor.MOS6502.MOS6502Parser ;
+import xcom.utils4j.Enums ;
+
+import static xcom.retro.xa.processors.MOS6502.AddressingModes.* ;
+
+
+@Processor(type = "MOS6502")
+public class MOS6502 extends MOS6502BaseListener implements iProcessor {
+
+	enum AddressingModes {
+		Absolute("a"), //
+		Immediate("#"), //
+		Implied(""), //
+		IndexedX("a,X"), //
+		IndexedY("a,Y"), //
+		Indirect("[a]"), //
+		Relative("rel"), //
+		ZP("zp"), //
+		ZPIndexedX("zp,X"), //
+		ZPIndexedY("zp,Y"), //
+		ZPIndirectX("[zp,X]"), //
+		ZPIndirectY("[zp],Y"), //
+		;
+
+		AddressingModes(final String notation) {}
+	}
+
+	enum Opcodes {
+		ADC_ZP(null, (byte) 0x65, (byte) 0x00), //
+		ADC_ZPIndexedX(null, (byte) 0x75, (byte) 0x00), //
+		ADC_ZPIndirectX(null, (byte) 0x61, (byte) 0x00), //
+		ADC_ZPIndirectY(null, (byte) 0x71, (byte) 0x00), //
+		ADC_Absolute(ADC_ZP, (byte) 0x6D, (byte) 0x00, (byte) 0x00), //
+		ADC_Immediate(null, (byte) 0x69, (byte) 0x00), //
+		ADC_IndexedX(ADC_ZPIndexedX, (byte) 0x7D, (byte) 0x00, (byte) 0x00), //
+		ADC_IndexedY(null, (byte) 0x79, (byte) 0x00, (byte) 0x00), //
+		AND_ZP(null, (byte) 0x25, (byte) 0x00), //
+		AND_ZPIndexedX(null, (byte) 0x35, (byte) 0x00), //
+		AND_ZPIndirectX(null, (byte) 0x3D, (byte) 0x00), //
+		AND_ZPIndirectY(null, (byte) 0x39, (byte) 0x00), //
+		AND_Absolute(AND_ZP, (byte) 0x2D, (byte) 0x00, (byte) 0x00), //
+		AND_Immediate(null, (byte) 0x29, (byte) 0x00), //
+		AND_IndexedX(AND_ZPIndexedX, (byte) 0x21, (byte) 0x00, (byte) 0x00), //
+		AND_IndexedY(null, (byte) 0x31, (byte) 0x00, (byte) 0x00), //
+		ASL_ZP(null, (byte) 0x06, (byte) 0x00), //
+		ASL_ZPIndexedX(null, (byte) 0x16, (byte) 0x00), //
+		ASL_Absolute(ASL_ZP, (byte) 0x0E, (byte) 0x00, (byte) 0x00), //
+		ASL_Implied(null, (byte) 0x0A), //
+		ASL_IndexedX(ASL_ZPIndexedX, (byte) 0x1E, (byte) 0x00, (byte) 0x00), //
+		BCC_Relative(null, (byte) 0x90, (byte) 0x00), //
+		BCS_Relative(null, (byte) 0xB0, (byte) 0x00), //
+		BEQ_Relative(null, (byte) 0xF0, (byte) 0x00), //
+		BIT_ZP(null, (byte) 0x24, (byte) 0x00), //
+		BIT_Absolute(BIT_ZP, (byte) 0x2C, (byte) 0x00, (byte) 0x00), //
+		BIT_Immediate(null, (byte) 0x89, (byte) 0x00), //
+		BMI_Relative(null, (byte) 0x30, (byte) 0x00), //
+		BNE_Relative(null, (byte) 0xD0, (byte) 0x00), //
+		BPL_Relative(null, (byte) 0x10, (byte) 0x00), //
+		BRK_Implied(null, (byte) 0x00), //
+		BVC_Relative(null, (byte) 0x50, (byte) 0x00), //
+		BVS_Relative(null, (byte) 0x70, (byte) 0x00), //
+		CLC_Implied(null, (byte) 0x18), //
+		CLD_Implied(null, (byte) 0xD8), //
+		CLI_Implied(null, (byte) 0x58), //
+		CLV_Implied(null, (byte) 0xB8), //
+		CMP_ZP(null, (byte) 0xC5, (byte) 0x00), //
+		CMP_ZPIndexedX(null, (byte) 0xD5, (byte) 0x00), //
+		CMP_ZPIndirectX(null, (byte) 0xDD, (byte) 0x00), //
+		CMP_ZPIndirectY(null, (byte) 0xD9, (byte) 0x00), //
+		CMP_Absolute(CMP_ZP, (byte) 0xCD, (byte) 0x00, (byte) 0x00), //
+		CMP_Immediate(null, (byte) 0xC9, (byte) 0x00), //
+		CMP_IndexedX(CMP_ZPIndexedX, (byte) 0xC1, (byte) 0x00, (byte) 0x00), //
+		CMP_IndexedY(null, (byte) 0xD1, (byte) 0x00, (byte) 0x00), //
+		CPX_ZP(null, (byte) 0xE4, (byte) 0x00), //
+		CPX_Absolute(CPX_ZP, (byte) 0xEC, (byte) 0x00, (byte) 0x00), //
+		CPX_Immediate(null, (byte) 0xE0, (byte) 0x00), //
+		CPY_ZP(null, (byte) 0xC4, (byte) 0x00), //
+		CPY_Absolute(CPY_ZP, (byte) 0xCC, (byte) 0x00, (byte) 0x00), //
+		CPY_Immediate(null, (byte) 0xC0, (byte) 0x00), //
+		DEC_ZP(null, (byte) 0xC6, (byte) 0x00), //
+		DEC_ZPIndexedX(null, (byte) 0xD6, (byte) 0x00), //
+		DEC_Absolute(DEC_ZP, (byte) 0xCE, (byte) 0x00, (byte) 0x00), //
+		DEC_IndexedX(DEC_ZPIndexedX, (byte) 0xDE, (byte) 0x00, (byte) 0x00), //
+		DEX_Implied(null, (byte) 0xCA), //
+		DEY_Implied(null, (byte) 0x88), //
+		EOR_ZP(null, (byte) 0x45, (byte) 0x00), //
+		EOR_ZPIndexedX(null, (byte) 0x55, (byte) 0x00), //
+		EOR_ZPIndirectX(null, (byte) 0x5D, (byte) 0x00), //
+		EOR_ZPIndirectY(null, (byte) 0x59, (byte) 0x00), //
+		EOR_Absolute(EOR_ZP, (byte) 0x4D, (byte) 0x00, (byte) 0x00), //
+		EOR_Immediate(null, (byte) 0x49, (byte) 0x00), //
+		EOR_IndexedX(EOR_ZPIndexedX, (byte) 0x41, (byte) 0x00, (byte) 0x00), //
+		EOR_IndexedY(null, (byte) 0x51, (byte) 0x00, (byte) 0x00), //
+		INC_ZP(null, (byte) 0xE6, (byte) 0x00), //
+		INC_ZPIndexedX(null, (byte) 0xF6, (byte) 0x00), //
+		INC_Absolute(INC_ZP, (byte) 0xEE, (byte) 0x00, (byte) 0x00), //
+		INC_IndexedX(INC_ZPIndexedX, (byte) 0xFE, (byte) 0x00, (byte) 0x00), //
+		INX_Implied(null, (byte) 0xE8), //
+		INY_Implied(null, (byte) 0xC8), //
+		JMP_Absolute(null, (byte) 0x4C, (byte) 0x00, (byte) 0x00), //
+		JMP_Indirect(null, (byte) 0x6C, (byte) 0x00, (byte) 0x00), //
+		JSR_Absolute(null, (byte) 0x20, (byte) 0x00, (byte) 0x00), //
+		LDA_ZP(null, (byte) 0xA5, (byte) 0x00), //
+		LDA_ZPIndexedX(null, (byte) 0xB5, (byte) 0x00), //
+		LDA_ZPIndirectX(null, (byte) 0xBD, (byte) 0x00), //
+		LDA_ZPIndirectY(null, (byte) 0xB9, (byte) 0x00), //
+		LDA_Absolute(LDA_ZP, (byte) 0xAD, (byte) 0x00, (byte) 0x00), //
+		LDA_Immediate(null, (byte) 0xA9, (byte) 0x00), //
+		LDA_IndexedX(LDA_ZPIndexedX, (byte) 0xA1, (byte) 0x00, (byte) 0x00), //
+		LDA_IndexedY(null, (byte) 0xB1, (byte) 0x00, (byte) 0x00), //
+		LDX_ZP(null, (byte) 0xA6, (byte) 0x00), //
+		LDX_ZPIndexedY(null, (byte) 0xB6, (byte) 0x00), //
+		LDX_Absolute(LDX_ZP, (byte) 0xAE, (byte) 0x00, (byte) 0x00), //
+		LDX_Immediate(null, (byte) 0xA2, (byte) 0x00), //
+		LDX_IndexedY(LDX_ZPIndexedY, (byte) 0xBE, (byte) 0x00, (byte) 0x00), //
+		LDY_ZP(null, (byte) 0xA4, (byte) 0x00), //
+		LDY_ZPIndexedX(null, (byte) 0xB4, (byte) 0x00), //
+		LDY_Absolute(LDY_ZP, (byte) 0xAC, (byte) 0x00, (byte) 0x00), //
+		LDY_Immediate(null, (byte) 0xA0, (byte) 0x00), //
+		LDY_IndexedX(LDY_ZPIndexedX, (byte) 0xBC, (byte) 0x00, (byte) 0x00), //
+		LSR_ZP(null, (byte) 0x46, (byte) 0x00), //
+		LSR_ZPIndexedX(null, (byte) 0x56, (byte) 0x00), //
+		LSR_Absolute(LSR_ZP, (byte) 0x4E, (byte) 0x00, (byte) 0x00), //
+		LSR_Implied(null, (byte) 0x4A), //
+		LSR_IndexedX(LSR_ZPIndexedX, (byte) 0x5E, (byte) 0x00, (byte) 0x00), //
+		NOP_Implied(null, (byte) 0xEA), //
+		ORA_ZP(null, (byte) 0x05, (byte) 0x00), //
+		ORA_ZPIndexedX(null, (byte) 0x15, (byte) 0x00), //
+		ORA_ZPIndirectX(null, (byte) 0x1D, (byte) 0x00), //
+		ORA_ZPIndirectY(null, (byte) 0x19, (byte) 0x00), //
+		ORA_Absolute(ORA_ZP, (byte) 0x0D, (byte) 0x00, (byte) 0x00), //
+		ORA_Immediate(null, (byte) 0x09, (byte) 0x00), //
+		ORA_IndexedX(ORA_ZPIndexedX, (byte) 0x01, (byte) 0x00, (byte) 0x00), //
+		ORA_IndexedY(null, (byte) 0x11, (byte) 0x00, (byte) 0x00), //
+		PHA_Implied(null, (byte) 0x48), //
+		PHP_Implied(null, (byte) 0x08), //
+		PLA_Implied(null, (byte) 0x68), //
+		PLP_Implied(null, (byte) 0x28), //
+		ROL_ZP(null, (byte) 0x26, (byte) 0x00), //
+		ROL_ZPIndexedX(null, (byte) 0x36, (byte) 0x00), //
+		ROL_Absolute(ROL_ZP, (byte) 0x2E, (byte) 0x00, (byte) 0x00), //
+		ROL_Implied(null, (byte) 0x2A), //
+		ROL_IndexedX(ROL_ZPIndexedX, (byte) 0x3E, (byte) 0x00, (byte) 0x00), //
+		RTI_Implied(null, (byte) 0x40), //
+		RTS_Implied(null, (byte) 0x60), //
+		SBC_ZP(null, (byte) 0xE5, (byte) 0x00), //
+		SBC_ZPIndexedX(null, (byte) 0xF5, (byte) 0x00), //
+		SBC_ZPIndirectX(null, (byte) 0xFD, (byte) 0x00), //
+		SBC_ZPIndirectY(null, (byte) 0xF9, (byte) 0x00), //
+		SBC_Absolute(SBC_ZP, (byte) 0xED, (byte) 0x00, (byte) 0x00), //
+		SBC_Immediate(null, (byte) 0xE9, (byte) 0x00), //
+		SBC_IndexedX(SBC_ZPIndexedX, (byte) 0xE1, (byte) 0x00, (byte) 0x00), //
+		SBC_IndexedY(null, (byte) 0xF1, (byte) 0x00, (byte) 0x00), //
+		SEC_Implied(null, (byte) 0x38), //
+		SED_Implied(null, (byte) 0xF8), //
+		SEI_Implied(null, (byte) 0x78), //
+		STA_ZP(null, (byte) 0x85, (byte) 0x00), //
+		STA_ZPIndexedX(null, (byte) 0x95, (byte) 0x00), //
+		STA_ZPIndirectX(null, (byte) 0x9D, (byte) 0x00), //
+		STA_ZPIndirectY(null, (byte) 0x99, (byte) 0x00), //
+		STA_Absolute(STA_ZP, (byte) 0x8D, (byte) 0x00, (byte) 0x00), //
+		STA_IndexedX(STA_ZPIndexedX, (byte) 0x81, (byte) 0x00, (byte) 0x00), //
+		STA_IndexedY(null, (byte) 0x91, (byte) 0x00, (byte) 0x00), //
+		STX_ZP(null, (byte) 0x86, (byte) 0x00), //
+		STX_ZPIndexedY(null, (byte) 0x96, (byte) 0x00), //
+		STX_Absolute(STX_ZP, (byte) 0x8E, (byte) 0x00, (byte) 0x00), //
+		STY_ZP(null, (byte) 0x84, (byte) 0x00), //
+		STY_ZPIndexedX(null, (byte) 0x94, (byte) 0x00), //
+		STY_Absolute(STY_ZP, (byte) 0x8C, (byte) 0x00, (byte) 0x00), //
+		TAX_Implied(null, (byte) 0xAA), //
+		TAY_Implied(null, (byte) 0xA8), //
+		TSX_Implied(null, (byte) 0xBA), //
+		TXA_Implied(null, (byte) 0x8A), //
+		TXS_Implied(null, (byte) 0x9A), //
+		TYA_Implied(null, (byte) 0x98), //
+		;
+
+//		String mnemonic ;
+		AddressingModes mode ;
+		Opcodes zpOption ;
+		byte[] bytes ;
+
+
+		Opcodes(Opcodes zpOption, byte... bytes) {
+
+//			mnemonic = name().substring(1, 4) ;
+			this.zpOption = zpOption ;
+			this.bytes = bytes ;
+			mode = Enums.valueOfIgnoreCase(AddressingModes.class, name().substring(4)) ;
+		}
+	}
+
+
+	AssemblyContext actx ;
+	String opcode ;
+	String addressingMode ;
+
+
+	public MOS6502() {}
+
+
+	public MOS6502(final AssemblyContext ctx) {
+		actx = ctx ;
+	}
+
+	@Override
+	public void exitAddressingMode(final MOS6502Parser.AddressingModeContext ctx) {
+		addressingMode = ctx.getChild(0).getClass().getSimpleName().substring(0, ctx.getChild(0).getClass().getSimpleName().length() - 7) ;
+//		addressingMode = (addressingMode.substring(0, addressingMode.length() - 1).equalsIgnoreCase("indirect") ? "ZP" + addressingMode : addressingMode) ;
+	}
+
+
+	@Override
+	public void exitAddressingModeBranch(final MOS6502Parser.AddressingModeBranchContext ctx) {
+		addressingMode = ctx.getChild(0).getClass().getSimpleName().substring(0, ctx.getChild(0).getClass().getSimpleName().length() - 7) ;
+	}
+
+
+	@Override
+	public void exitArgument(final MOS6502Parser.ArgumentContext ctx) {
+
+		switch ( actx.getStep() ) {
+			case Parse:
+				actx.getStatement().getArguments().add(ExprUtils.buildArgumentExpressionTree(actx)) ;
+				break ;
+		}
+	}
+
+
+	@Override
+	public void exitInstruction(final MOS6502Parser.InstructionContext ctx) {
+
+		switch ( actx.getStep() ) {
+			case Parse:
+				Opcodes opc = Enums.valueOfIgnoreCase(Opcodes.class, opcode + "_" + addressingMode) ;
+				if ( opc.zpOption != null ) 
+					opc = opc.zpOption ;
+				
+				addressingMode = opc.name().substring(3);
+
+				actx.getStatement().setAddressingModeCallback(opc.mode.name()) ;
+				actx.getStatement().setBytes(opc.bytes) ;
+				actx.getSegment().allocateBytes(actx.getStatement().getBytes()) ;
+				break ;
+		}
+	}
+
+
+	@Override
+	public void exitLabel(final MOS6502Parser.LabelContext ctx) {
+
+		switch ( actx.getStep() ) {
+			case Parse:
+				actx.setSymbol(new Symbol(ctx.getText(), actx.getSegment())) ;
+				actx.getSymbols().put(actx.getSymbol().getName(), actx.getSymbol()) ;
+				break ;
+		}
+	}
+
+
+	@Override
+	public void exitOpcode(final MOS6502Parser.OpcodeContext ctx) {
+		opcode = ctx.getText() ;
+	}
+
+
+	@Override
+	public void exitOpcodeBranch(final MOS6502Parser.OpcodeBranchContext ctx) {
+		opcode = ctx.getText() ;
+	}
+
+
+	//
+	//
+	//
+
+	public void Absolute() {
+		final byte[] bytes = actx.getStatement().getBytes() ;
+		bytes[1] = (byte) (((Integer) actx.getStatement().getArguments().get(0).getExpr().eval(actx.getSymbols()).getValue()) & 0xFF) ;
+		bytes[2] = (byte) (((Integer) actx.getStatement().getArguments().get(0).getExpr().eval(actx.getSymbols()).getValue()).byteValue() >> 8 & 0xFF) ;
+		actx.getStatement().setBytes(bytes) ;
+	}
+
+	public void Implied() {}
+
+	public void Immediate() {
+		final byte[] bytes = actx.getStatement().getBytes() ;
+		bytes[1] = ((Integer) actx.getStatement().getArguments().get(0).getExpr().eval(actx.getSymbols()).getValue()).byteValue() ;
+		actx.getStatement().setBytes(bytes) ;
+	}
+
+	public void ZP() {
+		final byte[] bytes = actx.getStatement().getBytes() ;
+		bytes[1] = (byte) (((Integer) actx.getStatement().getArguments().get(0).getExpr().eval(actx.getSymbols()).getValue()) & 0xFF) ;
+		actx.getStatement().setBytes(bytes) ;
+	}
+
+	public void ZPIndirectX() {
+		final byte[] bytes = actx.getStatement().getBytes() ;
+		bytes[1] = (byte) (((Integer) actx.getStatement().getArguments().get(0).getExpr().eval(actx.getSymbols()).getValue()) & 0xFF) ;
+		actx.getStatement().setBytes(bytes) ;
+	}
+
+	public void ZPIndirectY() {
+		final byte[] bytes = actx.getStatement().getBytes() ;
+		bytes[1] = (byte) (((Integer) actx.getStatement().getArguments().get(0).getExpr().eval(actx.getSymbols()).getValue()) & 0xFF) ;
+		actx.getStatement().setBytes(bytes) ;
+	}
+
+	public void Relative() {
+		final byte[] bytes = actx.getStatement().getBytes() ;
+		bytes[1] = ((Integer) actx.getStatement().getArguments().get(0).getExpr().eval(actx.getSymbols()).getValue()).byteValue() ;
+		actx.getStatement().setBytes(bytes) ;
+	}
+}

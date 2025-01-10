@@ -1,0 +1,5 @@
+
+STAIY   .macro  addr
+         STA    [${addr}],Y
+        .endmacro
+         

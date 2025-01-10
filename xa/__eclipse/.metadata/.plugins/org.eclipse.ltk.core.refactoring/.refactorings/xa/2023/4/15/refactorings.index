@@ -1,0 +1,74 @@
+1681002405950	Delete element
+1681129544696	Delete element
+1681143364238	Copy file
+1681143394789	Rename resource 'MOS6502.g4'
+1681143539266	Move 'MOS6502' to 'processors'
+1681143556792	Move 'Expr.g4' to 'expr'
+1681143647013	Delete elements
+1681143664656	Delete element
+1681144167989	Move 'Expr.g4' to 'MOS6502'
+1681144326644	Rename resource 'processors'
+1681144383471	Delete element
+1681144621714	Move 'Expr.g4' to 'expr'
+1681144686617	Delete element
+1681144693889	Delete element
+1681144731222	Rename resource '$processors'
+1681147900600	Copy file
+1681147990997	Delete element
+1681148020308	Copy file
+1681148025534	Delete element
+1681220827424	Delete element
+1681220836543	Delete element
+1681246578968	Delete elements
+1681246591008	Delete elements
+1681246598880	Delete elements
+1681246687916	Delete elements
+1681246786962	Delete elements
+1681246812747	Delete elements
+1681249406397	Move compilation unit
+1681250107672	Rename method 'buildExpressionTree'
+1681250267809	Move compilation unit
+1681307505952	Delete element
+1681307718847	Rename package 'xexpr'
+1681307735998	Rename package 'xexpr.binary'
+1681307748939	Rename package 'xexpr.unary'
+1681307761345	Rename package 'xexpr.value'
+1681335681921	Rename type 'UnaryOpNode'
+1681335696073	Rename type 'BinaryOpNode'
+1681336178032	Move compilation unit
+1681337741802	Move file
+1681337758673	Move file
+1681337812638	Move file
+1681337819015	Delete element
+1681349629795	Rename type 'LiteralValueNode'
+1681349702117	Rename type 'HexLiteralValueNode'
+1681349730178	Copy compilation unit
+1681349744481	Rename type 'StringLiteralValueNode2'
+1681423226022	Rename field 'mode'
+1681423283304	Rename field 'listener'
+1681499075589	Delete elements
+1681499084700	Delete elements
+1681499099180	Delete elements
+1681499105534	Delete element
+1681499113445	Delete elements
+1681499144144	Delete element
+1681499150945	Delete elements
+1681499194020	Delete element
+1681499200064	Delete elements
+1681499286547	Rename resource 'MOS6502.g4'
+1681499543472	Delete elements
+1681499902151	Delete element
+1681558839622	Rename local variable 'classname'
+1681561372365	Delete elements
+1681561610127	Delete elements
+1681561709205	Delete elements
+1681574644311	Copy folder
+1681574655221	Delete element
+1681579402077	Infer generic type arguments
+1681589873488	Delete elements
+1681590074337	Delete elements
+1681590085149	Delete elements
+1681590093917	Delete elements
+1681590105304	Delete elements
+1681590473313	Delete element
+1681590478248	Delete element

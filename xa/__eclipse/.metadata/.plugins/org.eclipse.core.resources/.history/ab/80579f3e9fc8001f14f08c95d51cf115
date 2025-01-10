@@ -1,0 +1,25 @@
+ 
+
+grammar Directives ;
+
+options { 
+	caseInsensitive = true;	
+}
+
+
+directive:  label? '.' ( Directives | macro ) argumentList? inject? ;
+label:  Identifier ;
+macro:  Identifier ;
+inject:  Inject ;
+
+
+argumentList:   argument ( ',' argumentList )? ; 
+argument:  dottedIdentifier | expr ;
+dottedIdentifier:  '.' Identifier ;
+
+
+Directives:  'equ' | 'include' | 'macro' ;
+
+Identifier:  [A-Z_] [A-Z0-9_]* ;
+
+Inject:  '->' ~ [\r\n]* ;

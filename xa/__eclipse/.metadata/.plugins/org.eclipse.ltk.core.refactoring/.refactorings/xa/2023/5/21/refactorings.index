@@ -1,0 +1,19 @@
+1684667640761	Rename field 'isLast'
+1684707398296	Rename type 'aOpNode'
+1684707408786	Rename type 'aExprNode'
+1684707437497	Rename type 'aBinaryOpNode'
+1684707454258	Rename type 'aUnaryOpNode'
+1684707464909	Rename type 'BinaryOpNode'
+1684707486262	Rename type 'OpNode'
+1684707498654	Rename type 'ExprNode'
+1684707541703	Rename type 'ValueNode'
+1684708179264	Move compilation units
+1684709906288	Rename package 'xcom.retro.xa.directives.directive'
+1684808151841	Delete element
+1684808329760	Delete element
+1684808351274	Rename type 'EndifDirective'
+1684808367521	Rename type 'EndiDirective'
+1684808399735	Copy compilation unit
+1684808420892	Copy compilation unit
+1684808443184	Copy compilation unit
+1684808512061	Copy compilation unit

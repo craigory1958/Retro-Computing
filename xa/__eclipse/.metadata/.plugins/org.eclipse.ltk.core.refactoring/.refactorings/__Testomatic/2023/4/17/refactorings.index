@@ -1,0 +1,14 @@
+1682794826478	Delete element
+1682795077863	Rename type 'AExprNode'
+1682795152825	Move compilation unit
+1682795191489	Rename type 'AOpNode'
+1682795217311	Rename type 'AValueNode'
+1682795351067	Rename type 'AIntegerValueNode'
+1682795377277	Rename type 'AStringValueNode'
+1682796374272	Rename type 'aValueNode'
+1682797849736	Move compilation unit
+1682797922311	Rename package 'xcom.retro.xa.expr.binary'
+1682797951230	Rename package 'xcom.retro.xa.expr.unary'
+1682797963944	Move compilation unit
+1682799096066	Rename local variable 'x'
+1682801866896	Delete elements

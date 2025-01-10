@@ -1,0 +1,430 @@
+// Generated from DirectivesV1_.g4 by ANTLR 4.13.2
+package xcom.retro.xa.antlr;
+import org.antlr.v4.runtime.tree.ParseTreeListener;
+
+/**
+ * This interface defines a complete listener for a parse tree produced by
+ * {@link DirectivesV1_Parser}.
+ */
+public interface DirectivesV1_Listener extends ParseTreeListener {
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#directive}.
+	 * @param ctx the parse tree
+	 */
+	void enterDirective(DirectivesV1_Parser.DirectiveContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#directive}.
+	 * @param ctx the parse tree
+	 */
+	void exitDirective(DirectivesV1_Parser.DirectiveContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#macro}.
+	 * @param ctx the parse tree
+	 */
+	void enterMacro(DirectivesV1_Parser.MacroContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#macro}.
+	 * @param ctx the parse tree
+	 */
+	void exitMacro(DirectivesV1_Parser.MacroContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#inject}.
+	 * @param ctx the parse tree
+	 */
+	void enterInject(DirectivesV1_Parser.InjectContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#inject}.
+	 * @param ctx the parse tree
+	 */
+	void exitInject(DirectivesV1_Parser.InjectContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#argumentList}.
+	 * @param ctx the parse tree
+	 */
+	void enterArgumentList(DirectivesV1_Parser.ArgumentListContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#argumentList}.
+	 * @param ctx the parse tree
+	 */
+	void exitArgumentList(DirectivesV1_Parser.ArgumentListContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#argument}.
+	 * @param ctx the parse tree
+	 */
+	void enterArgument(DirectivesV1_Parser.ArgumentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#argument}.
+	 * @param ctx the parse tree
+	 */
+	void exitArgument(DirectivesV1_Parser.ArgumentContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#dottedIdentifier}.
+	 * @param ctx the parse tree
+	 */
+	void enterDottedIdentifier(DirectivesV1_Parser.DottedIdentifierContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#dottedIdentifier}.
+	 * @param ctx the parse tree
+	 */
+	void exitDottedIdentifier(DirectivesV1_Parser.DottedIdentifierContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#label}.
+	 * @param ctx the parse tree
+	 */
+	void enterLabel(DirectivesV1_Parser.LabelContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#label}.
+	 * @param ctx the parse tree
+	 */
+	void exitLabel(DirectivesV1_Parser.LabelContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpr(DirectivesV1_Parser.ExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpr(DirectivesV1_Parser.ExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#term}.
+	 * @param ctx the parse tree
+	 */
+	void enterTerm(DirectivesV1_Parser.TermContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#term}.
+	 * @param ctx the parse tree
+	 */
+	void exitTerm(DirectivesV1_Parser.TermContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#lc}.
+	 * @param ctx the parse tree
+	 */
+	void enterLc(DirectivesV1_Parser.LcContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#lc}.
+	 * @param ctx the parse tree
+	 */
+	void exitLc(DirectivesV1_Parser.LcContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#binary}.
+	 * @param ctx the parse tree
+	 */
+	void enterBinary(DirectivesV1_Parser.BinaryContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#binary}.
+	 * @param ctx the parse tree
+	 */
+	void exitBinary(DirectivesV1_Parser.BinaryContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#comparison}.
+	 * @param ctx the parse tree
+	 */
+	void enterComparison(DirectivesV1_Parser.ComparisonContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#comparison}.
+	 * @param ctx the parse tree
+	 */
+	void exitComparison(DirectivesV1_Parser.ComparisonContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#unary}.
+	 * @param ctx the parse tree
+	 */
+	void enterUnary(DirectivesV1_Parser.UnaryContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#unary}.
+	 * @param ctx the parse tree
+	 */
+	void exitUnary(DirectivesV1_Parser.UnaryContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#integerAdd}.
+	 * @param ctx the parse tree
+	 */
+	void enterIntegerAdd(DirectivesV1_Parser.IntegerAddContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#integerAdd}.
+	 * @param ctx the parse tree
+	 */
+	void exitIntegerAdd(DirectivesV1_Parser.IntegerAddContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#integerSubtract}.
+	 * @param ctx the parse tree
+	 */
+	void enterIntegerSubtract(DirectivesV1_Parser.IntegerSubtractContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#integerSubtract}.
+	 * @param ctx the parse tree
+	 */
+	void exitIntegerSubtract(DirectivesV1_Parser.IntegerSubtractContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#integerMultiply}.
+	 * @param ctx the parse tree
+	 */
+	void enterIntegerMultiply(DirectivesV1_Parser.IntegerMultiplyContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#integerMultiply}.
+	 * @param ctx the parse tree
+	 */
+	void exitIntegerMultiply(DirectivesV1_Parser.IntegerMultiplyContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#integerDivide}.
+	 * @param ctx the parse tree
+	 */
+	void enterIntegerDivide(DirectivesV1_Parser.IntegerDivideContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#integerDivide}.
+	 * @param ctx the parse tree
+	 */
+	void exitIntegerDivide(DirectivesV1_Parser.IntegerDivideContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#bitwiseShiftLeft}.
+	 * @param ctx the parse tree
+	 */
+	void enterBitwiseShiftLeft(DirectivesV1_Parser.BitwiseShiftLeftContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#bitwiseShiftLeft}.
+	 * @param ctx the parse tree
+	 */
+	void exitBitwiseShiftLeft(DirectivesV1_Parser.BitwiseShiftLeftContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#bitwiseShiftRight}.
+	 * @param ctx the parse tree
+	 */
+	void enterBitwiseShiftRight(DirectivesV1_Parser.BitwiseShiftRightContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#bitwiseShiftRight}.
+	 * @param ctx the parse tree
+	 */
+	void exitBitwiseShiftRight(DirectivesV1_Parser.BitwiseShiftRightContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#bitwiseAnd}.
+	 * @param ctx the parse tree
+	 */
+	void enterBitwiseAnd(DirectivesV1_Parser.BitwiseAndContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#bitwiseAnd}.
+	 * @param ctx the parse tree
+	 */
+	void exitBitwiseAnd(DirectivesV1_Parser.BitwiseAndContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#bitwiseOr}.
+	 * @param ctx the parse tree
+	 */
+	void enterBitwiseOr(DirectivesV1_Parser.BitwiseOrContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#bitwiseOr}.
+	 * @param ctx the parse tree
+	 */
+	void exitBitwiseOr(DirectivesV1_Parser.BitwiseOrContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#logicalAnd}.
+	 * @param ctx the parse tree
+	 */
+	void enterLogicalAnd(DirectivesV1_Parser.LogicalAndContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#logicalAnd}.
+	 * @param ctx the parse tree
+	 */
+	void exitLogicalAnd(DirectivesV1_Parser.LogicalAndContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#logicalOr}.
+	 * @param ctx the parse tree
+	 */
+	void enterLogicalOr(DirectivesV1_Parser.LogicalOrContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#logicalOr}.
+	 * @param ctx the parse tree
+	 */
+	void exitLogicalOr(DirectivesV1_Parser.LogicalOrContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#equal}.
+	 * @param ctx the parse tree
+	 */
+	void enterEqual(DirectivesV1_Parser.EqualContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#equal}.
+	 * @param ctx the parse tree
+	 */
+	void exitEqual(DirectivesV1_Parser.EqualContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#notEqual}.
+	 * @param ctx the parse tree
+	 */
+	void enterNotEqual(DirectivesV1_Parser.NotEqualContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#notEqual}.
+	 * @param ctx the parse tree
+	 */
+	void exitNotEqual(DirectivesV1_Parser.NotEqualContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#lessThan}.
+	 * @param ctx the parse tree
+	 */
+	void enterLessThan(DirectivesV1_Parser.LessThanContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#lessThan}.
+	 * @param ctx the parse tree
+	 */
+	void exitLessThan(DirectivesV1_Parser.LessThanContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#greaterThan}.
+	 * @param ctx the parse tree
+	 */
+	void enterGreaterThan(DirectivesV1_Parser.GreaterThanContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#greaterThan}.
+	 * @param ctx the parse tree
+	 */
+	void exitGreaterThan(DirectivesV1_Parser.GreaterThanContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#plus}.
+	 * @param ctx the parse tree
+	 */
+	void enterPlus(DirectivesV1_Parser.PlusContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#plus}.
+	 * @param ctx the parse tree
+	 */
+	void exitPlus(DirectivesV1_Parser.PlusContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#minus}.
+	 * @param ctx the parse tree
+	 */
+	void enterMinus(DirectivesV1_Parser.MinusContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#minus}.
+	 * @param ctx the parse tree
+	 */
+	void exitMinus(DirectivesV1_Parser.MinusContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#highByte}.
+	 * @param ctx the parse tree
+	 */
+	void enterHighByte(DirectivesV1_Parser.HighByteContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#highByte}.
+	 * @param ctx the parse tree
+	 */
+	void exitHighByte(DirectivesV1_Parser.HighByteContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#lowByte}.
+	 * @param ctx the parse tree
+	 */
+	void enterLowByte(DirectivesV1_Parser.LowByteContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#lowByte}.
+	 * @param ctx the parse tree
+	 */
+	void exitLowByte(DirectivesV1_Parser.LowByteContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#logicalNot}.
+	 * @param ctx the parse tree
+	 */
+	void enterLogicalNot(DirectivesV1_Parser.LogicalNotContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#logicalNot}.
+	 * @param ctx the parse tree
+	 */
+	void exitLogicalNot(DirectivesV1_Parser.LogicalNotContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#literal}.
+	 * @param ctx the parse tree
+	 */
+	void enterLiteral(DirectivesV1_Parser.LiteralContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#literal}.
+	 * @param ctx the parse tree
+	 */
+	void exitLiteral(DirectivesV1_Parser.LiteralContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#numericLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void enterNumericLiteral(DirectivesV1_Parser.NumericLiteralContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#numericLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void exitNumericLiteral(DirectivesV1_Parser.NumericLiteralContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#alphanumericLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void enterAlphanumericLiteral(DirectivesV1_Parser.AlphanumericLiteralContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#alphanumericLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void exitAlphanumericLiteral(DirectivesV1_Parser.AlphanumericLiteralContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#binaryLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void enterBinaryLiteral(DirectivesV1_Parser.BinaryLiteralContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#binaryLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void exitBinaryLiteral(DirectivesV1_Parser.BinaryLiteralContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#octalLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void enterOctalLiteral(DirectivesV1_Parser.OctalLiteralContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#octalLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void exitOctalLiteral(DirectivesV1_Parser.OctalLiteralContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#decimalLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void enterDecimalLiteral(DirectivesV1_Parser.DecimalLiteralContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#decimalLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void exitDecimalLiteral(DirectivesV1_Parser.DecimalLiteralContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#hexLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void enterHexLiteral(DirectivesV1_Parser.HexLiteralContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#hexLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void exitHexLiteral(DirectivesV1_Parser.HexLiteralContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#characterLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void enterCharacterLiteral(DirectivesV1_Parser.CharacterLiteralContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#characterLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void exitCharacterLiteral(DirectivesV1_Parser.CharacterLiteralContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#stringLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void enterStringLiteral(DirectivesV1_Parser.StringLiteralContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#stringLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void exitStringLiteral(DirectivesV1_Parser.StringLiteralContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesV1_Parser#identifier}.
+	 * @param ctx the parse tree
+	 */
+	void enterIdentifier(DirectivesV1_Parser.IdentifierContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesV1_Parser#identifier}.
+	 * @param ctx the parse tree
+	 */
+	void exitIdentifier(DirectivesV1_Parser.IdentifierContext ctx);
+}
