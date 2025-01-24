@@ -4,21 +4,26 @@ package xcom.retro.xa.processors ;
 
 
 import java.util.Arrays ;
+import java.util.List ;
 
 import xcom.retro.xa.Argument ;
+import xcom.retro.xa.Operand ;
+import xcom.retro.xa.Option ;
+import xcom.retro.xa.Parameter ;
 import xcom.retro.xa.Symbol ;
 import xcom.retro.xa.XA.AssemblyContext ;
 import xcom.retro.xa.antlr.processors.MOS6502.MOS6502_BaseListener ;
 import xcom.retro.xa.antlr.processors.MOS6502.MOS6502_Lexer ;
 import xcom.retro.xa.antlr.processors.MOS6502.MOS6502_Parser ;
+import xcom.retro.xa.antlr.processors.MOS6502.MOS6502_Parser.SymbolContext ;
 import xcom.retro.xa.api.annotations.aProcessor ;
 import xcom.retro.xa.api.interfaces.iProcessor ;
 import xcom.retro.xa.directives.DirectiveUtils ;
 import xcom.retro.xa.expressions.ExpressionUtils ;
+import xcom.retro.xa.expressions._ExprNode ;
 import xcom.retro.xa.expressions.value._ValueNode ;
 import xcom.utils4j.Enums ;
 import xcom.utils4j.logging.aspects.api.annotations.Log ;
-import xcom.utils4j.logging.aspects.api.annotations.NoLog ;
 
 
 @aProcessor(lexar = MOS6502_Lexer.class, parser = MOS6502_Parser.class, processor = MOS6502.class)
@@ -202,14 +207,67 @@ public class MOS6502 extends MOS6502_BaseListener implements iProcessor {
 	@Override
 	public void exitArgument(final MOS6502_Parser.ArgumentContext pctx) {
 
-		actx.statement().arguments().add(new Argument(ExpressionUtils.buildArgumentExpressionTree(actx, pctx))) ;
+		_ExprNode argument = ExpressionUtils.buildArgumentExpressionTree(actx, pctx) ;
+		List<Operand> operands = actx.statement().operands() ;
+
+		Operand operand = (operands.isEmpty() ? null : operands.get(operands.size() - 1)) ; ;
+
+		if ( operands.isEmpty() || (!(operand instanceof Option) && !(operand instanceof Parameter)) )
+			actx.statement().operands().add(new Argument(argument)) ;
+
+		else
+			operand.assignment(argument) ;
+
+//		actx.statement().operands().forEach(o -> { //
+//			System.out.print("opt>>> " + o.name() + ": " + o.getClass().getSimpleName()) ; //
+//			if ( o.assignment() != null )
+//				System.out.print(" - " + o.assignment().getClass().getSimpleName() + ": " + o.assignment()) ; //
+//			System.out.println() ; //
+//		}) ;
 	}
 
 
 	@Log
 	@Override
-	public void exitDirective(final MOS6502_Parser.DirectiveContext pctx) {
+	public void enterOption(final MOS6502_Parser.OptionContext pctx) {
 
+		actx.statement().operands().add(new Option(pctx.getChild(0).getChild(0).getText())) ;
+
+//		actx.statement().operands().forEach(o -> { //
+//			System.out.print("opt>>> " + o.name() + ": " + o.getClass().getSimpleName()) ; //
+//			if ( o.assignment() != null )
+//				System.out.print(" - " + o.assignment().getClass().getSimpleName() + ": " + o.assignment()) ; //
+//			System.out.println() ; //
+//		}) ;
+	}
+
+
+	@Log
+	@Override
+	public void enterParameter(final MOS6502_Parser.ParameterContext pctx) {
+
+		if ( pctx.getChild(0) instanceof SymbolContext )
+			actx.statement().operands().add(new Parameter(pctx.getChild(0).getChild(0).getText())) ;
+		else
+			actx.statement().operands().add(new Parameter(null)) ;
+
+//		actx.statement().operands().forEach(o -> { //
+//			System.out.print("param>>> " + o.name() + ": " + o.getClass().getSimpleName()) ; //
+//			if ( o.assignment() != null )
+//				System.out.print(" - " + o.assignment().getClass().getSimpleName() + ": " + o.assignment()) ; //
+//			System.out.println() ; //
+//		}) ;
+	}
+
+
+//	@Log
+//	@Override
+//	public void exitParameter(final MOS6502_Parser.ParameterContext pctx) {}
+
+
+	@Log
+	@Override
+	public void exitDirective(final MOS6502_Parser.DirectiveContext pctx) {
 		DirectiveUtils.parseDirective(actx) ;
 	}
 
@@ -222,12 +280,9 @@ public class MOS6502 extends MOS6502_BaseListener implements iProcessor {
 		final String mode = pctx.getChild(1).getChild(0).getClass().getSimpleName() ;
 		Opcodes opc = Enums.valueOfIgnoreCase(Opcodes.class, opcode + "_" + mode.substring(0, mode.length() - 7)) ;
 
-		System.out.println(opcode + ": " + mode + ": " + opc) ;
-
-
 		if ( opc.zpOption != null )
 			try {
-				final _ValueNode value = actx.statement().arguments().get(0).expr().eval(actx.symbols()) ;
+				final _ValueNode value = actx.statement().operands().get(0).assignment().eval(actx.symbols()) ;
 
 				if ( (value != null) && (value.getValueAsInteger() <= 255) )
 					opc = opc.zpOption ;
@@ -236,19 +291,20 @@ public class MOS6502 extends MOS6502_BaseListener implements iProcessor {
 
 		final String callback = "set" + opc.bytes.length + "Byte" + (mode.equals("RelativeContext") ? "Relative" : "") + "Instruction" ;
 
-		actx.statement().assembleCallbackMethod(callback) ;
-		actx.statement().assembleCallbackObject(this) ;
+		actx.statement().assemblyCallbackMethod(callback) ;
+		actx.statement().assemblyCallbackObject(this) ;
 		actx.statement().bytes(Arrays.copyOf(opc.bytes, opc.bytes.length)) ;
 		actx.segment().allocateBytes(actx.statement().bytes()) ;
 	}
 
 
-	@NoLog
+	@Log
 	@Override
 	public void exitLabel(final MOS6502_Parser.LabelContext pctx) {
 
 		actx.symbol(new Symbol(pctx.getText(), actx.segment().lc())) ;
 		actx.symbols().put(actx.symbol().name(), actx.symbol()) ;
+		actx.statement().label(actx.symbol()) ;
 	}
 
 
@@ -256,32 +312,36 @@ public class MOS6502 extends MOS6502_BaseListener implements iProcessor {
 	//
 	//
 
+	@Log
 	void set1ByteInstruction() {
 
 		final byte[] bytes = actx.statement().bytes() ;
 		actx.statement().bytes(bytes) ;
 	}
 
+	@Log
 	void set2ByteInstruction() {
 
 		final byte[] bytes = actx.statement().bytes() ;
-		bytes[1] = ExpressionUtils.lsb(actx.statement().arguments().get(0).expr().eval(actx.symbols()).getValue()) ;
+		bytes[1] = ExpressionUtils.lsb(actx.statement().operands().get(0).assignment().eval(actx.symbols()).getValue()) ;
 		actx.statement().bytes(bytes) ;
 	}
 
+	@Log
 	void set2ByteRelativeInstruction() {
 
 		final byte[] bytes = actx.statement().bytes() ;
-		final int x = (Integer) actx.statement().arguments().get(0).expr().eval(actx.symbols()).getValueAsInteger() ;
+		final int x = (Integer) actx.statement().operands().get(0).assignment().eval(actx.symbols()).getValueAsInteger() ;
 		final int y = actx.statement().lc() ;
 		bytes[1] = (byte) ((x - y - 2) & 0xFF) ;
 		actx.statement().bytes(bytes) ;
 	}
 
+	@Log
 	void set3ByteInstruction() {
 
 		final byte[] bytes = actx.statement().bytes() ;
-		byte[] value = actx.statement().arguments().get(0).expr().eval(actx.symbols()).getValue() ;
+		byte[] value = actx.statement().operands().get(0).assignment().eval(actx.symbols()).getValue() ;
 		bytes[1] = ExpressionUtils.lsb(value) ;
 		bytes[2] = ExpressionUtils.msb(value) ;
 		actx.statement().bytes(bytes) ;

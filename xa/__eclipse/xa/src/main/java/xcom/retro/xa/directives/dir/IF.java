@@ -29,7 +29,7 @@ public class IF implements iDirective {
 //		System.out.println(pctx.getChild(3).getText()) ;
 
 		if ( (pctx.getChildCount() == 4) && pctx.getChild(3).getText().startsWith("->") ) {
-			final _ValueNode value = actx.statement().arguments().get(0).expr().eval(actx.symbols()) ;
+			final _ValueNode value = actx.statement().operands().get(0).assignment().eval(actx.symbols()) ;
 			if ( value.getValueAsInteger() != 0 ) {
 				actx.sources().add(new InjectSource(actx.sources().size(), 0, pctx.getChild(3).getText().substring(2))) ;
 				actx.source().push(actx.sources().get(actx.sources().size() - 1)) ;

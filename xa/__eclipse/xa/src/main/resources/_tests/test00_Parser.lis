@@ -8,5 +8,5 @@
     8:  0006 A5 06        xyz4	LDA		xyz4 ; comment
     9:                    
    10:                    xyz5	.equ	0x12
-   11:  0008 A5 08        		LDA		xyz5
+   11:  0008 A5 12        		LDA		xyz5
    12:                    

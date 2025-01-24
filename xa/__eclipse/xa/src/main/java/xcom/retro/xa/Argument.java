@@ -6,22 +6,17 @@ package xcom.retro.xa ;
 import xcom.retro.xa.expressions._ExprNode ;
 
 
-public class Argument {
+public class Argument extends Operand {
 
 	//@formatter:off
 
-	_ExprNode expr ;
-	public _ExprNode expr() { return expr ; }
-	
-	Object value ;
-	public Object value() { return value; }
-
-	Integer width ;
+	String name ;
+	@Override
+	public String name() { return null ; }
 
 	//@formatter:on
 
-
-	public Argument(final _ExprNode expr) {
-		this.expr = expr ;
+	public Argument(_ExprNode assignment) {
+		super(assignment) ;
 	}
 }

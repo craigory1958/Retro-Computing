@@ -28,18 +28,28 @@
 
 	<!-- Class Loggers -->
 
-	<logger name="xcom.retro.xa.processors" additivity="false">
-		<level value="debug" />
+	<logger name="xcom.retro.xa.processors.MOS6502" additivity="false">
+		<level value="info" />
+		<appender-ref ref="stdout-appender" />
+	</logger>
+
+	<logger name="xcom.retro.xa.expressions" additivity="false">
+		<level value="info" />
 		<appender-ref ref="stdout-appender" />
 	</logger>
 
 	<logger name="xcom.retro.xa.directives" additivity="false">
-		<level value="trace" />
+		<level value="info" />
 		<appender-ref ref="stdout-appender" />
 	</logger>
 
 	<logger name="xcom.retro.xa.directives.dir" additivity="false">
-		<level value="trace" />
+		<level value="info" />
+		<appender-ref ref="stdout-appender" />
+	</logger>
+
+	<logger name="xcom.retro.xa.Statement" additivity="false">
+		<level value="info" />
 		<appender-ref ref="stdout-appender" />
 	</logger>
 

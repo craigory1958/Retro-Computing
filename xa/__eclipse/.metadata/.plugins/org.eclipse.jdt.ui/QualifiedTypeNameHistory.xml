@@ -1,22 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
-    <fullyQualifiedTypeName name="xcom.retro.xa.expresions.value.ValueNode"/>
-    <fullyQualifiedTypeName name="xcom.utils4j.format.Templator"/>
-    <fullyQualifiedTypeName name="xcom.retro.xa.InjectSource"/>
-    <fullyQualifiedTypeName name="java.util.UUID"/>
-    <fullyQualifiedTypeName name="xcom.retro.xa.XA.AssemblyContext"/>
-    <fullyQualifiedTypeName name="xcom.retro.xa.expresions.value.DecimalLiteral"/>
-    <fullyQualifiedTypeName name="org.apache.commons.lang3.StringUtils"/>
-    <fullyQualifiedTypeName name="java.lang.reflect.Method"/>
-    <fullyQualifiedTypeName name="xcom.retro.xa.api.interfaces.iExtruder"/>
-    <fullyQualifiedTypeName name="xcom.retro.xa.api.annotations.aExtruder"/>
-    <fullyQualifiedTypeName name="xcom.retro.xa.extruders.KIM1"/>
-    <fullyQualifiedTypeName name="java.io.FileWriter"/>
-    <fullyQualifiedTypeName name="java.io.PrintWriter"/>
-    <fullyQualifiedTypeName name="org.apache.tomcat.jni.File"/>
-    <fullyQualifiedTypeName name="java.nio.charset.StandardCharsets"/>
-    <fullyQualifiedTypeName name="org.apache.commons.io.FilenameUtils"/>
-    <fullyQualifiedTypeName name="org.apache.commons.io.FileUtils"/>
     <fullyQualifiedTypeName name="java.io.File"/>
     <fullyQualifiedTypeName name="org.hibernate.internal.build.AllowSysOut"/>
     <fullyQualifiedTypeName name="org.hsqldb.types.Charset"/>
@@ -58,6 +41,23 @@
     <fullyQualifiedTypeName name="xcom.retro.xa.Directives.__Test_xcom_retro_xa_Directives_"/>
     <fullyQualifiedTypeName name="xcom.retro.xa.Parsing.__Test_xcom_retro_xa_Parsing_"/>
     <fullyQualifiedTypeName name="xcom.retro.xa.References.__Test_xcom_retro_xa_References_"/>
-    <fullyQualifiedTypeName name="xcom.utils4j.logging.aspects.api.annotations.Log"/>
     <fullyQualifiedTypeName name="org.slf4j.event.Level"/>
+    <fullyQualifiedTypeName name="ch.qos.logback.classic.Logger"/>
+    <fullyQualifiedTypeName name="org.junit.Test"/>
+    <fullyQualifiedTypeName name="java.util.Random"/>
+    <fullyQualifiedTypeName name="java.util.Map.Entry"/>
+    <fullyQualifiedTypeName name="xcom.utils4j.data.structured.map.Maps"/>
+    <fullyQualifiedTypeName name="xcom.retro.xa.SmokeTests.__Test_xcom_retro_xa_SmokeTests_"/>
+    <fullyQualifiedTypeName name="xcom.utils4j.logging.aspects.api.annotations.Log"/>
+    <fullyQualifiedTypeName name="xcom.retro.xa.Operand"/>
+    <fullyQualifiedTypeName name="javax.swing.text.html.Option"/>
+    <fullyQualifiedTypeName name="xcom.retro.xa.Option"/>
+    <fullyQualifiedTypeName name="xcom.retro.xa.directives.dir.MACRO"/>
+    <fullyQualifiedTypeName name="java.util.Map"/>
+    <fullyQualifiedTypeName name="java.util.HashMap"/>
+    <fullyQualifiedTypeName name="xcom.utils4j.format.Templator"/>
+    <fullyQualifiedTypeName name="xcom.retro.xa.MacroSource"/>
+    <fullyQualifiedTypeName name="xcom.retro.xa.antlr.processors.MOS6502.MOS6502_Parser.SymbolContext"/>
+    <fullyQualifiedTypeName name="xcom.retro.xa.Symbol"/>
+    <fullyQualifiedTypeName name="xcom.retro.xa.Parameter"/>
 </qualifiedTypeNameHistroy>

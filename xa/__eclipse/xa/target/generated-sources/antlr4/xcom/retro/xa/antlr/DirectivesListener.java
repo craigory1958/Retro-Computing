@@ -18,55 +18,45 @@ public interface DirectivesListener extends ParseTreeListener {
 	 */
 	void exitDirective(DirectivesParser.DirectiveContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DirectivesParser#definedDirective}.
+	 * Enter a parse tree produced by {@link DirectivesParser#assembler}.
 	 * @param ctx the parse tree
 	 */
-	void enterDefinedDirective(DirectivesParser.DefinedDirectiveContext ctx);
+	void enterAssembler(DirectivesParser.AssemblerContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link DirectivesParser#definedDirective}.
+	 * Exit a parse tree produced by {@link DirectivesParser#assembler}.
 	 * @param ctx the parse tree
 	 */
-	void exitDefinedDirective(DirectivesParser.DefinedDirectiveContext ctx);
+	void exitAssembler(DirectivesParser.AssemblerContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DirectivesParser#macroDirective}.
+	 * Enter a parse tree produced by {@link DirectivesParser#macro}.
 	 * @param ctx the parse tree
 	 */
-	void enterMacroDirective(DirectivesParser.MacroDirectiveContext ctx);
+	void enterMacro(DirectivesParser.MacroContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link DirectivesParser#macroDirective}.
+	 * Exit a parse tree produced by {@link DirectivesParser#macro}.
 	 * @param ctx the parse tree
 	 */
-	void exitMacroDirective(DirectivesParser.MacroDirectiveContext ctx);
+	void exitMacro(DirectivesParser.MacroContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DirectivesParser#macroInvocation}.
+	 * Enter a parse tree produced by {@link DirectivesParser#invocation}.
 	 * @param ctx the parse tree
 	 */
-	void enterMacroInvocation(DirectivesParser.MacroInvocationContext ctx);
+	void enterInvocation(DirectivesParser.InvocationContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link DirectivesParser#macroInvocation}.
+	 * Exit a parse tree produced by {@link DirectivesParser#invocation}.
 	 * @param ctx the parse tree
 	 */
-	void exitMacroInvocation(DirectivesParser.MacroInvocationContext ctx);
+	void exitInvocation(DirectivesParser.InvocationContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DirectivesParser#label}.
+	 * Enter a parse tree produced by {@link DirectivesParser#directives}.
 	 * @param ctx the parse tree
 	 */
-	void enterLabel(DirectivesParser.LabelContext ctx);
+	void enterDirectives(DirectivesParser.DirectivesContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link DirectivesParser#label}.
+	 * Exit a parse tree produced by {@link DirectivesParser#directives}.
 	 * @param ctx the parse tree
 	 */
-	void exitLabel(DirectivesParser.LabelContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link DirectivesParser#symbol}.
-	 * @param ctx the parse tree
-	 */
-	void enterSymbol(DirectivesParser.SymbolContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link DirectivesParser#symbol}.
-	 * @param ctx the parse tree
-	 */
-	void exitSymbol(DirectivesParser.SymbolContext ctx);
+	void exitDirectives(DirectivesParser.DirectivesContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link DirectivesParser#argumentList}.
 	 * @param ctx the parse tree
@@ -88,6 +78,26 @@ public interface DirectivesListener extends ParseTreeListener {
 	 */
 	void exitArgument(DirectivesParser.ArgumentContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link DirectivesParser#optionList}.
+	 * @param ctx the parse tree
+	 */
+	void enterOptionList(DirectivesParser.OptionListContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesParser#optionList}.
+	 * @param ctx the parse tree
+	 */
+	void exitOptionList(DirectivesParser.OptionListContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesParser#option}.
+	 * @param ctx the parse tree
+	 */
+	void enterOption(DirectivesParser.OptionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesParser#option}.
+	 * @param ctx the parse tree
+	 */
+	void exitOption(DirectivesParser.OptionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link DirectivesParser#parameterList}.
 	 * @param ctx the parse tree
 	 */
@@ -97,16 +107,6 @@ public interface DirectivesListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitParameterList(DirectivesParser.ParameterListContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link DirectivesParser#annotatedParameter}.
-	 * @param ctx the parse tree
-	 */
-	void enterAnnotatedParameter(DirectivesParser.AnnotatedParameterContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link DirectivesParser#annotatedParameter}.
-	 * @param ctx the parse tree
-	 */
-	void exitAnnotatedParameter(DirectivesParser.AnnotatedParameterContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link DirectivesParser#parameter}.
 	 * @param ctx the parse tree
@@ -118,15 +118,25 @@ public interface DirectivesListener extends ParseTreeListener {
 	 */
 	void exitParameter(DirectivesParser.ParameterContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DirectivesParser#paramaterDefault}.
+	 * Enter a parse tree produced by {@link DirectivesParser#assignment}.
 	 * @param ctx the parse tree
 	 */
-	void enterParamaterDefault(DirectivesParser.ParamaterDefaultContext ctx);
+	void enterAssignment(DirectivesParser.AssignmentContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link DirectivesParser#paramaterDefault}.
+	 * Exit a parse tree produced by {@link DirectivesParser#assignment}.
 	 * @param ctx the parse tree
 	 */
-	void exitParamaterDefault(DirectivesParser.ParamaterDefaultContext ctx);
+	void exitAssignment(DirectivesParser.AssignmentContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesParser#symbol}.
+	 * @param ctx the parse tree
+	 */
+	void enterSymbol(DirectivesParser.SymbolContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesParser#symbol}.
+	 * @param ctx the parse tree
+	 */
+	void exitSymbol(DirectivesParser.SymbolContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link DirectivesParser#expr}.
 	 * @param ctx the parse tree
@@ -148,15 +158,25 @@ public interface DirectivesListener extends ParseTreeListener {
 	 */
 	void exitTerm(DirectivesParser.TermContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DirectivesParser#lc}.
+	 * Enter a parse tree produced by {@link DirectivesParser#org}.
 	 * @param ctx the parse tree
 	 */
-	void enterLc(DirectivesParser.LcContext ctx);
+	void enterOrg(DirectivesParser.OrgContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link DirectivesParser#lc}.
+	 * Exit a parse tree produced by {@link DirectivesParser#org}.
 	 * @param ctx the parse tree
 	 */
-	void exitLc(DirectivesParser.LcContext ctx);
+	void exitOrg(DirectivesParser.OrgContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesParser#identifier}.
+	 * @param ctx the parse tree
+	 */
+	void enterIdentifier(DirectivesParser.IdentifierContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesParser#identifier}.
+	 * @param ctx the parse tree
+	 */
+	void exitIdentifier(DirectivesParser.IdentifierContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link DirectivesParser#binary}.
 	 * @param ctx the parse tree
@@ -467,14 +487,4 @@ public interface DirectivesListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitStringLiteral(DirectivesParser.StringLiteralContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link DirectivesParser#identifier}.
-	 * @param ctx the parse tree
-	 */
-	void enterIdentifier(DirectivesParser.IdentifierContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link DirectivesParser#identifier}.
-	 * @param ctx the parse tree
-	 */
-	void exitIdentifier(DirectivesParser.IdentifierContext ctx);
 }

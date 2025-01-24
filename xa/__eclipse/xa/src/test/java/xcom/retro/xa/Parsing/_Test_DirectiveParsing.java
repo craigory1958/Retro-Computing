@@ -33,10 +33,11 @@ public class _Test_DirectiveParsing {
 
                 // { String src, String[] expectedContexts }
 
-                { "    .byte zyz",  	"Statement, Directive, DefinedDirective, ArgumentList, Argument, Expr, Term, Identifier" },
-                { "zyz .byte zyz",  	"Statement, Label, Directive, DefinedDirective, ArgumentList, Argument, Expr, Term, Identifier" },
-                { "zyz .macro zyz",  	"Statement, Directive, MacroDirective, Symbol, ParameterList, Parameter, Symbol" },
-                { "zyz .zyz zyz",  		"Statement, Label, Directive, MacroInvocation, Symbol, ArgumentList, Argument, Expr, Term, Identifier" },
+                { "    .byte abc",  	"Statement, Directive, Assembler, Directives, ArgumentList, Argument, Expr, Term, Identifier" },
+                { "abc .byte abc",  	"Statement, Label, Directive, Assembler, Directives, ArgumentList, Argument, Expr, Term, Identifier" },
+                { "abc .macro abc",  	"Statement, Label, Directive, Macro, OptionList, Option, Symbol" },
+                { "abc .abc abc",  		"Statement, Label, Directive, Invocation, Symbol, ParameterList, Parameter, Argument, Expr, Term, Identifier" },
+                { "abc .abc abc=def", 	"Statement, Label, Directive, Invocation, Symbol, ParameterList, Parameter, Symbol, Assignment, Argument, Expr, Term, Identifier" },
         } ;
 
         //@formatter:on
@@ -70,7 +71,7 @@ public class _Test_DirectiveParsing {
 
 
 	@Test
-	public void parseTest() throws IOException {
+	public void assembleTest() throws IOException {
 
 		List<String> actual = parser.parse("statement", src).processor().walked() ;
 		

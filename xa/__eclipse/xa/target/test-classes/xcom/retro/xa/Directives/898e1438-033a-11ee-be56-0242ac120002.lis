@@ -1,0 +1,32 @@
+    1:                    
+    2:                    SORT8
+    3:  0000 A0 00                 LDY #$00
+    4:  0002 84 32                 STY $32
+    5:  0004 B1 30                 LDA [$30],Y
+    6:  0006 AA                    TAX
+    7:  0007 C8                    INY
+    8:  0008 CA                    DEX
+    9:                    
+   10:                    NXTEL
+   11:  0009 B1 30                 LDA [$30],Y
+   12:  000B C8                    INY
+   13:  000C D1 30                 CMP [$30],Y
+   14:  000E 90 10                 BCC CHKEND
+   15:  0010 F0 0E                 BEQ CHKEND
+   16:  0012 48                    PHA
+   17:  0013 B1 30                 LDA [$30],Y
+   18:  0015 88                    DEY
+   19:  0016 91 30                 STA [$30],Y
+   20:  0018 68                    PLA
+   21:  0019 C8                    INY
+   22:  001A 91 30                 STA [$30],Y
+   23:  001C A9 FF                 LDA #$FF
+   24:  001E 85 32                 STA $32
+   25:                    
+   26:                    CHKEND
+   27:  0020 CA                    DEX
+   28:  0021 D0 E6                 BNE NXTEL
+   29:  0023 24 32                 BIT $32
+   30:  0025 30 D9                 BMI SORT8
+   31:  0027 60                    RTS
+   32:                    

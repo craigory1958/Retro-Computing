@@ -7,5 +7,5 @@ xyz3	LDA		xyz1
 ; comment
 xyz4	LDA		xyz4 ; comment
 
-xyz5	.equ	0x12
+xyz5   .equ	0x12
 		LDA		xyz5

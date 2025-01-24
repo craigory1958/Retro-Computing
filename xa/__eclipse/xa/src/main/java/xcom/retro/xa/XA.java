@@ -57,7 +57,7 @@ import xcom.retro.xa.api.interfaces.iDirective ;
 import xcom.retro.xa.api.interfaces.iExtruder ;
 import xcom.retro.xa.api.interfaces.iProcessor ;
 import xcom.retro.xa.api.interfaces.iSource ;
-import xcom.retro.xa.directives.Macro ;
+import xcom.retro.xa.directives.dir.MACRO ;
 import xcom.utils4j.logging.aspects.api.annotations.Log ;
 import xcom.utils4j.resources.Props ;
 
@@ -88,8 +88,8 @@ public class XA {
 			return this ;
 		}
 
-		Map<String, Macro> macros = new HashMap<>() ;
-		public Map<String, Macro> macros() { return macros ; }
+		Map<String, MACRO> macros = new HashMap<>() ;
+		public Map<String, MACRO> macros() { return macros ; }
 		
 		AssemblyPhases phase ;
 		public AssemblyPhases phase() { return phase ; }
@@ -245,8 +245,7 @@ public class XA {
 				parser.setTokenStream(new CommonTokenStream(lexer)) ;
 
 				actx.statement.prc = Reflection.method("statement").withReturnType(ParserRuleContext.class).in(parser).invoke() ;
-				if ( !line.isEmpty() )
-					System.out.println(">>>" + line) ;
+				Console.debug(">>>{}", line) ;
 				walker.walk(processor, actx.statement.prc) ;
 
 				actx.statement.block = actx.segment.blocks.get(actx.segment.blocks.size() - 1) ;
@@ -267,8 +266,8 @@ public class XA {
 		for ( final Statement statement : actx.statements ) {
 			actx.statement = statement ;
 
-			if ( actx.statement.assembleCallbackMethod != null )
-				Reflection.method(actx.statement.assembleCallbackMethod).in(actx.statement.assembleCallbackObject).invoke() ;
+			if ( actx.statement.assemblyCallbackMethod != null )
+				Reflection.method(actx.statement.assemblyCallbackMethod).in(actx.statement.assemblyCallbackObject).invoke() ;
 
 //			if ( !actx.statement.line.isEmpty() && (actx.statement.bytes != null) ) {
 //				System.out.print(actx.statement.hashCode()) ;

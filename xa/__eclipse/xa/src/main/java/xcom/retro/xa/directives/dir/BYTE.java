@@ -35,17 +35,17 @@ public class BYTE implements iDirective {
 		}
 
 		int size = 0 ;
-		for ( int a = 0; a < actx.statement().arguments().size(); a++ )
-			size = size + (actx.statement().arguments().get(a).expr() instanceof StringLiteral
-					? ((StringLiteral) actx.statement().arguments().get(a).expr()).getValue().length
+		for ( int a = 0; a < actx.statement().operands().size(); a++ )
+			size = size + (actx.statement().operands().get(a).assignment() instanceof StringLiteral
+					? ((StringLiteral) actx.statement().operands().get(a).assignment()).getValue().length
 					: 1) ;
 
 		final byte[] bytes = new byte[size] ;
 		actx.statement().bytes(bytes) ;
 		actx.segment().allocateBytes(actx.statement().bytes()) ;
 
-		actx.statement().assembleCallbackMethod("assemble") ;
-		actx.statement().assembleCallbackObject(this) ;
+		actx.statement().assemblyCallbackMethod("assemble") ;
+		actx.statement().assemblyCallbackObject(this) ;
 	}
 
 
@@ -55,10 +55,10 @@ public class BYTE implements iDirective {
 		final byte[] bytes = actx.statement().bytes() ;
 
 		int b = 0 ;
-		for ( int a = 0; a < actx.statement().arguments().size(); a++ ) {
-			byte[] value = actx.statement().arguments().get(a).expr().eval(actx.symbols()).getValue() ;
+		for ( int a = 0; a < actx.statement().operands().size(); a++ ) {
+			byte[] value = actx.statement().operands().get(a).assignment().eval(actx.symbols()).getValue() ;
 
-			if ( actx.statement().arguments().get(a).expr() instanceof StringLiteral )
+			if ( actx.statement().operands().get(a).assignment() instanceof StringLiteral )
 				for ( byte _byte : value )
 					bytes[b++] = _byte ;
 			else

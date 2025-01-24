@@ -1,9 +1,0 @@
-
-
-xa.directive.scan.classpath=xcom.retro.xa.directives
-
-xa.processor.scan.classpath=xcom.retro.xa.processors
-xa.processor.default=MOS6502v2
-
-xa.extruder.scan.classpath=xcom.retro.xa.extruders
-xa.extruder.default=KIM1

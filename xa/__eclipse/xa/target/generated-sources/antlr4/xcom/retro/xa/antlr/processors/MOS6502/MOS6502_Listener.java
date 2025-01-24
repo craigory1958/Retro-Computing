@@ -48,15 +48,15 @@ public interface MOS6502_Listener extends ParseTreeListener {
 	 */
 	void exitInstruction(MOS6502_Parser.InstructionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MOS6502_Parser#opcodeBranch}.
+	 * Enter a parse tree produced by {@link MOS6502_Parser#branchOpcode}.
 	 * @param ctx the parse tree
 	 */
-	void enterOpcodeBranch(MOS6502_Parser.OpcodeBranchContext ctx);
+	void enterBranchOpcode(MOS6502_Parser.BranchOpcodeContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MOS6502_Parser#opcodeBranch}.
+	 * Exit a parse tree produced by {@link MOS6502_Parser#branchOpcode}.
 	 * @param ctx the parse tree
 	 */
-	void exitOpcodeBranch(MOS6502_Parser.OpcodeBranchContext ctx);
+	void exitBranchOpcode(MOS6502_Parser.BranchOpcodeContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MOS6502_Parser#opcode}.
 	 * @param ctx the parse tree
@@ -68,15 +68,15 @@ public interface MOS6502_Listener extends ParseTreeListener {
 	 */
 	void exitOpcode(MOS6502_Parser.OpcodeContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MOS6502_Parser#addressingModeBranch}.
+	 * Enter a parse tree produced by {@link MOS6502_Parser#branchAddressingMode}.
 	 * @param ctx the parse tree
 	 */
-	void enterAddressingModeBranch(MOS6502_Parser.AddressingModeBranchContext ctx);
+	void enterBranchAddressingMode(MOS6502_Parser.BranchAddressingModeContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MOS6502_Parser#addressingModeBranch}.
+	 * Exit a parse tree produced by {@link MOS6502_Parser#branchAddressingMode}.
 	 * @param ctx the parse tree
 	 */
-	void exitAddressingModeBranch(MOS6502_Parser.AddressingModeBranchContext ctx);
+	void exitBranchAddressingMode(MOS6502_Parser.BranchAddressingModeContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MOS6502_Parser#addressingMode}.
 	 * @param ctx the parse tree
@@ -228,15 +228,15 @@ public interface MOS6502_Listener extends ParseTreeListener {
 	 */
 	void exitInvocation(MOS6502_Parser.InvocationContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MOS6502_Parser#symbol}.
+	 * Enter a parse tree produced by {@link MOS6502_Parser#directives}.
 	 * @param ctx the parse tree
 	 */
-	void enterSymbol(MOS6502_Parser.SymbolContext ctx);
+	void enterDirectives(MOS6502_Parser.DirectivesContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MOS6502_Parser#symbol}.
+	 * Exit a parse tree produced by {@link MOS6502_Parser#directives}.
 	 * @param ctx the parse tree
 	 */
-	void exitSymbol(MOS6502_Parser.SymbolContext ctx);
+	void exitDirectives(MOS6502_Parser.DirectivesContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MOS6502_Parser#argumentList}.
 	 * @param ctx the parse tree
@@ -258,6 +258,26 @@ public interface MOS6502_Listener extends ParseTreeListener {
 	 */
 	void exitArgument(MOS6502_Parser.ArgumentContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link MOS6502_Parser#optionList}.
+	 * @param ctx the parse tree
+	 */
+	void enterOptionList(MOS6502_Parser.OptionListContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MOS6502_Parser#optionList}.
+	 * @param ctx the parse tree
+	 */
+	void exitOptionList(MOS6502_Parser.OptionListContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MOS6502_Parser#option}.
+	 * @param ctx the parse tree
+	 */
+	void enterOption(MOS6502_Parser.OptionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MOS6502_Parser#option}.
+	 * @param ctx the parse tree
+	 */
+	void exitOption(MOS6502_Parser.OptionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link MOS6502_Parser#parameterList}.
 	 * @param ctx the parse tree
 	 */
@@ -267,16 +287,6 @@ public interface MOS6502_Listener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitParameterList(MOS6502_Parser.ParameterListContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link MOS6502_Parser#annotatedParameter}.
-	 * @param ctx the parse tree
-	 */
-	void enterAnnotatedParameter(MOS6502_Parser.AnnotatedParameterContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MOS6502_Parser#annotatedParameter}.
-	 * @param ctx the parse tree
-	 */
-	void exitAnnotatedParameter(MOS6502_Parser.AnnotatedParameterContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MOS6502_Parser#parameter}.
 	 * @param ctx the parse tree
@@ -288,15 +298,25 @@ public interface MOS6502_Listener extends ParseTreeListener {
 	 */
 	void exitParameter(MOS6502_Parser.ParameterContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MOS6502_Parser#paramaterDefault}.
+	 * Enter a parse tree produced by {@link MOS6502_Parser#assignment}.
 	 * @param ctx the parse tree
 	 */
-	void enterParamaterDefault(MOS6502_Parser.ParamaterDefaultContext ctx);
+	void enterAssignment(MOS6502_Parser.AssignmentContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MOS6502_Parser#paramaterDefault}.
+	 * Exit a parse tree produced by {@link MOS6502_Parser#assignment}.
 	 * @param ctx the parse tree
 	 */
-	void exitParamaterDefault(MOS6502_Parser.ParamaterDefaultContext ctx);
+	void exitAssignment(MOS6502_Parser.AssignmentContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MOS6502_Parser#symbol}.
+	 * @param ctx the parse tree
+	 */
+	void enterSymbol(MOS6502_Parser.SymbolContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MOS6502_Parser#symbol}.
+	 * @param ctx the parse tree
+	 */
+	void exitSymbol(MOS6502_Parser.SymbolContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MOS6502_Parser#expr}.
 	 * @param ctx the parse tree
@@ -327,6 +347,16 @@ public interface MOS6502_Listener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitOrg(MOS6502_Parser.OrgContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MOS6502_Parser#identifier}.
+	 * @param ctx the parse tree
+	 */
+	void enterIdentifier(MOS6502_Parser.IdentifierContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MOS6502_Parser#identifier}.
+	 * @param ctx the parse tree
+	 */
+	void exitIdentifier(MOS6502_Parser.IdentifierContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MOS6502_Parser#binary}.
 	 * @param ctx the parse tree
@@ -637,16 +667,6 @@ public interface MOS6502_Listener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitStringLiteral(MOS6502_Parser.StringLiteralContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link MOS6502_Parser#identifier}.
-	 * @param ctx the parse tree
-	 */
-	void enterIdentifier(MOS6502_Parser.IdentifierContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MOS6502_Parser#identifier}.
-	 * @param ctx the parse tree
-	 */
-	void exitIdentifier(MOS6502_Parser.IdentifierContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MOS6502_Parser#eol}.
 	 * @param ctx the parse tree

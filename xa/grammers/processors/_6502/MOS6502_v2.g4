@@ -16,12 +16,12 @@ label:  Identifier ;
 // Instructions
 //
 
-instruction:  ( opcodeBranch addressingModeBranch ) | ( opcode addressingMode ) ;
+instruction:  ( branchOpcode branchAddressingMode ) | ( opcode addressingMode ) ;
 
-opcodeBranch:  OpcodeBranches ;
+branchOpcode:  BranchOpcodes ;
 opcode:  Opcodes ;
 
-addressingModeBranch:  relative ;
+branchAddressingMode:  relative ;
 addressingMode:  absolute | accumulator | immediate | implied | indexedX | indexedY | indirect | zpIndirectX | zpIndirectY | relative ;
 
 absolute:  argument ;
@@ -36,7 +36,7 @@ zpIndirectY:  '[' argument ']' ',' 'Y'  ;
 relative:  argument ;
 
 
-OpcodeBranches:  
+BranchOpcodes:  
 	'BCC' | 'BCS' | 'BEQ' | 'BMI' | 'BNE' | 'BPL' | 'BRA' | 'BVC' | 'BVS'
 	;
 
@@ -63,26 +63,33 @@ Opcodes:
 //
 
 directive:  assembler | macro | invocation ;
-assembler:  '.' AssemblerDirectives argumentList? ;
-macro: symbol '.macro' parameterList? ;
-invocation: '.' symbol argumentList? ;
+assembler:  '.' directives argumentList? ;
+macro: '.macro' optionList? ;
+invocation: '.' symbol parameterList? ;
 
-symbol:  Identifier ;
+directives: Directives ;
 
 
 argumentList:   argument ( ',' argumentList )? ; 
 argument:  expr ;
+optionList:   option ( ',' optionList )? ; 
+option: symbol assignment? ;
+parameterList:   parameter ( ',' parameterList )? ; 
+parameter: ( symbol assignment ) | argument ;
 
-parameterList:   ( annotatedParameter | parameter ) ( ',' parameterList )? ; 
-annotatedParameter: ParameterAnnotations symbol paramaterDefault? ;
-parameter: symbol paramaterDefault? ;
-
-paramaterDefault:  '=' expr ;
+assignment:  '=' argument ;
+symbol:  Identifier ;
 
 
-ParameterAnnotations: ':' | '.' ;
-
-AssemblerDirectives:  'byte' | 'equ' | 'include' | 'org' ;
+Directives:  
+	'byte' | 
+	'end' | 'endmacro' | 'equ' | 
+	'include' | 
+	'list' |
+	'nolist' |
+	'org' | 
+	'page' |
+	'word' ;
 
 
 //
@@ -93,6 +100,8 @@ expr:  term ( ( binary | comparison ) term)* ;
 
 term:  org | identifier | literal | '(' expr ')' | unary term ;
 org: '*' ;
+
+identifier:  Identifier ;
 
 
 binary: integerAdd | integerSubtract | integerMultiply | integerDivide | bitwiseShiftLeft | bitwiseShiftRight | bitwiseAnd | bitwiseOr | logicalAnd |  logicalOr ;
@@ -139,17 +148,16 @@ hexLiteral:   HexLiteral ;
 characterLiteral:  CharacterLiteral ;
 stringLiteral:  StringLiteral ;
 
-
-identifier:  Identifier ;
-
  
 BinaryLiteral: '0b' [0-1]+ ;
 OctalLiteral:  '0o' [0-7]+ ;
-DecimalLiteral:  [0-9]+ ;
+DecimalLiteral: '0d'? [0-9]+ ;
 HexLiteral:  ('$' | '0x') [0-9A-F]+ ;
 
 CharacterLiteral:  '\'' ~["] ;
 StringLiteral:  '"' ~["]* '"' ;
+
+Identifier:  [A-Z_] [A-Z0-9_]* ;
 
 
 //
@@ -158,8 +166,6 @@ StringLiteral:  '"' ~["]* '"' ;
 
 eol:  EOL ;
 
-
-Identifier:  [A-Z_] [A-Z0-9_]* ;
 
 Comment:  ';' ~[\r\n]* -> skip ;
 

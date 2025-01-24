@@ -11,6 +11,8 @@ import java.util.Stack ;
 import org.antlr.v4.runtime.ParserRuleContext ;
 import org.fest.reflect.core.Reflection ;
 import org.fest.reflect.exception.ReflectionError ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 import xcom.retro.xa.XA.AssemblyContext ;
 import xcom.retro.xa.antlr.ExpressionsBaseListener ;
@@ -20,7 +22,6 @@ import xcom.retro.xa.expressions.op.unary._UnaryOpNode ;
 import xcom.retro.xa.expressions.value.DecimalLiteral ;
 import xcom.retro.xa.expressions.value.ExprMarker ;
 import xcom.retro.xa.expressions.value.Identifier ;
-import xcom.retro.xa.expressions.value.StringLiteral ;
 import xcom.retro.xa.expressions.value._ValueNode ;
 import xcom.utils4j.Enums ;
 import xcom.utils4j.logging.aspects.api.annotations.Log ;
@@ -66,6 +67,9 @@ public class ExpressionListener extends ExpressionsBaseListener {
 	}
 
 
+	private static final Logger Logger = LoggerFactory.getLogger(ExpressionListener.class) ;
+
+
 	AssemblyContext actx ;
 	Stack<_ExprNode> shunt = new Stack<>() ;
 	Stack<_ExprNode> stack = new Stack<>() ;
@@ -87,13 +91,12 @@ public class ExpressionListener extends ExpressionsBaseListener {
 	}
 
 
-	@Log
 	public void invokeMethodFromContext(final String prefix, final ParserRuleContext pctx) {
 
 		try {
 			String method = pctx.getClass().getSimpleName() ;
 			method = prefix + method.substring(0, method.length() - 7) ;
-//			System.out.println("invoke: " + method) ;
+			Logger.debug("invoke: {}", method) ;
 			Reflection.method(method).withParameterTypes(ParserRuleContext.class).in(this).invoke(pctx) ;
 		}
 		catch ( final ReflectionError ex ) {}
@@ -103,10 +106,6 @@ public class ExpressionListener extends ExpressionsBaseListener {
 	@Log
 	public void exitArgument(final ParserRuleContext pctx) {
 		expr = stack.pop() ;
-
-//		if (expr instanceof StringLiteral)
-//		System.out.println(expr.getClass()) ;
-
 	}
 
 
@@ -129,11 +128,10 @@ public class ExpressionListener extends ExpressionsBaseListener {
 	}
 
 
-	@Log
-	public void exitDottedIdentifier(final ParserRuleContext pctx) {
-//		System.out.println(pctx.getText()) ;
-		stack.push(new StringLiteral('"' + pctx.getText() + '"')) ;
-	}
+//	@Log
+//	public void exitDottedIdentifier(final ParserRuleContext pctx) {
+//		stack.push(new StringLiteral('"' + pctx.getText() + '"')) ;
+//	}
 
 
 	@Log
@@ -143,8 +141,14 @@ public class ExpressionListener extends ExpressionsBaseListener {
 
 
 	@Log
-	public void exitLc(final ParserRuleContext pctx) {
+	public void exitOrg(final ParserRuleContext pctx) {
 		stack.push(new DecimalLiteral(ExpressionUtils.asBytes(actx.segment().lc()))) ;
+	}
+
+
+	@Log
+	public void exitParameter(final ParserRuleContext pctx) {
+		expr = (_ExprNode) pctx.getChild(0) ;
 	}
 
 
@@ -152,15 +156,18 @@ public class ExpressionListener extends ExpressionsBaseListener {
 	// Operators ...
 	//
 
+	@Log
 	public void exitBinary(final ParserRuleContext pctx) {
 		exitOperator(pctx, _BinaryOpNode.class) ;
 	}
 
+	@Log
 	public void exitUnary(final ParserRuleContext pctx) {
 		exitOperator(pctx, _UnaryOpNode.class) ;
 	}
 
 
+	@Log
 	public void exitOperator(final ParserRuleContext pctx, final Class<? extends _OpNode> clazz) {
 
 		String name = pctx.getChild(0).getClass().getSimpleName() ;
@@ -186,19 +193,20 @@ public class ExpressionListener extends ExpressionsBaseListener {
 	// Literals ...
 	//
 
+	@Log
 	public void exitAlphanumericLiteral(final ParserRuleContext pctx) {
 
 		String name = pctx.getChild(0).getClass().getSimpleName() ;
 		name = name.substring(0, name.length() - 7) ;
 
 		final String classname = _ValueNode.class.getPackageName() + "." + name ;
-//		System.out.println(classname) ;
 		final _ValueNode literal = Reflection.constructor().withParameterTypes(String.class).in(Reflection.type(classname).loadAs(_ValueNode.class))
 				.newInstance(pctx.getChild(0).getChild(0).getText()) ;
 
 		stack.push(literal) ;
 	}
 
+	@Log
 	public void exitNumericLiteral(final ParserRuleContext pctx) {
 
 		String name = pctx.getChild(0).getClass().getSimpleName() ;

@@ -7,10 +7,12 @@ options {
 }
 
 
-expr:  term ( (binary | comparison) term)* ;
+expr:  term ( ( binary | comparison ) term)* ;
 
-term:  lc | identifier | literal | '(' expr ')' | unary term ;
-lc: '*' ;
+term:  org | identifier | literal | '(' expr ')' | unary term ;
+org: '*' ;
+
+identifier:  Identifier ;
 
 
 binary: integerAdd | integerSubtract | integerMultiply | integerDivide | bitwiseShiftLeft | bitwiseShiftRight | bitwiseAnd | bitwiseOr | logicalAnd |  logicalOr ;
@@ -57,17 +59,13 @@ hexLiteral:   HexLiteral ;
 characterLiteral:  CharacterLiteral ;
 stringLiteral:  StringLiteral ;
 
-
-identifier:  Identifier ;
-
  
 BinaryLiteral: '0b' [0-1]+ ;
 OctalLiteral:  '0o' [0-7]+ ;
-DecimalLiteral:  [0-9]+ ;
+DecimalLiteral: '0d'? [0-9]+ ;
 HexLiteral:  ('$' | '0x') [0-9A-F]+ ;
 
-CharacterLiteral:  '\'' ~ ["] ;
-StringLiteral:  '"' ~ ["]* '"' ;
-
+CharacterLiteral:  '\'' ~["] ;
+StringLiteral:  '"' ~["]* '"' ;
 
 Identifier:  [A-Z_] [A-Z0-9_]* ;

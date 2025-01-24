@@ -65,13 +65,13 @@ public class MOS6502_BaseListener implements MOS6502_Listener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOpcodeBranch(MOS6502_Parser.OpcodeBranchContext ctx) { }
+	@Override public void enterBranchOpcode(MOS6502_Parser.BranchOpcodeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOpcodeBranch(MOS6502_Parser.OpcodeBranchContext ctx) { }
+	@Override public void exitBranchOpcode(MOS6502_Parser.BranchOpcodeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -89,13 +89,13 @@ public class MOS6502_BaseListener implements MOS6502_Listener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAddressingModeBranch(MOS6502_Parser.AddressingModeBranchContext ctx) { }
+	@Override public void enterBranchAddressingMode(MOS6502_Parser.BranchAddressingModeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAddressingModeBranch(MOS6502_Parser.AddressingModeBranchContext ctx) { }
+	@Override public void exitBranchAddressingMode(MOS6502_Parser.BranchAddressingModeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -281,13 +281,13 @@ public class MOS6502_BaseListener implements MOS6502_Listener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSymbol(MOS6502_Parser.SymbolContext ctx) { }
+	@Override public void enterDirectives(MOS6502_Parser.DirectivesContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitSymbol(MOS6502_Parser.SymbolContext ctx) { }
+	@Override public void exitDirectives(MOS6502_Parser.DirectivesContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -317,6 +317,30 @@ public class MOS6502_BaseListener implements MOS6502_Listener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterOptionList(MOS6502_Parser.OptionListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitOptionList(MOS6502_Parser.OptionListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterOption(MOS6502_Parser.OptionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitOption(MOS6502_Parser.OptionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterParameterList(MOS6502_Parser.ParameterListContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -324,18 +348,6 @@ public class MOS6502_BaseListener implements MOS6502_Listener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitParameterList(MOS6502_Parser.ParameterListContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterAnnotatedParameter(MOS6502_Parser.AnnotatedParameterContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitAnnotatedParameter(MOS6502_Parser.AnnotatedParameterContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -353,13 +365,25 @@ public class MOS6502_BaseListener implements MOS6502_Listener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParamaterDefault(MOS6502_Parser.ParamaterDefaultContext ctx) { }
+	@Override public void enterAssignment(MOS6502_Parser.AssignmentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParamaterDefault(MOS6502_Parser.ParamaterDefaultContext ctx) { }
+	@Override public void exitAssignment(MOS6502_Parser.AssignmentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSymbol(MOS6502_Parser.SymbolContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSymbol(MOS6502_Parser.SymbolContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -396,6 +420,18 @@ public class MOS6502_BaseListener implements MOS6502_Listener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitOrg(MOS6502_Parser.OrgContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIdentifier(MOS6502_Parser.IdentifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIdentifier(MOS6502_Parser.IdentifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -768,18 +804,6 @@ public class MOS6502_BaseListener implements MOS6502_Listener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitStringLiteral(MOS6502_Parser.StringLiteralContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterIdentifier(MOS6502_Parser.IdentifierContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitIdentifier(MOS6502_Parser.IdentifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

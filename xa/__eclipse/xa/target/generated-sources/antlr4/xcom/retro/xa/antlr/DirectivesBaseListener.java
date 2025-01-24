@@ -29,61 +29,49 @@ public class DirectivesBaseListener implements DirectivesListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDefinedDirective(DirectivesParser.DefinedDirectiveContext ctx) { }
+	@Override public void enterAssembler(DirectivesParser.AssemblerContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitDefinedDirective(DirectivesParser.DefinedDirectiveContext ctx) { }
+	@Override public void exitAssembler(DirectivesParser.AssemblerContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMacroDirective(DirectivesParser.MacroDirectiveContext ctx) { }
+	@Override public void enterMacro(DirectivesParser.MacroContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMacroDirective(DirectivesParser.MacroDirectiveContext ctx) { }
+	@Override public void exitMacro(DirectivesParser.MacroContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMacroInvocation(DirectivesParser.MacroInvocationContext ctx) { }
+	@Override public void enterInvocation(DirectivesParser.InvocationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMacroInvocation(DirectivesParser.MacroInvocationContext ctx) { }
+	@Override public void exitInvocation(DirectivesParser.InvocationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterLabel(DirectivesParser.LabelContext ctx) { }
+	@Override public void enterDirectives(DirectivesParser.DirectivesContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitLabel(DirectivesParser.LabelContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterSymbol(DirectivesParser.SymbolContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitSymbol(DirectivesParser.SymbolContext ctx) { }
+	@Override public void exitDirectives(DirectivesParser.DirectivesContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -113,6 +101,30 @@ public class DirectivesBaseListener implements DirectivesListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterOptionList(DirectivesParser.OptionListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitOptionList(DirectivesParser.OptionListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterOption(DirectivesParser.OptionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitOption(DirectivesParser.OptionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterParameterList(DirectivesParser.ParameterListContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -120,18 +132,6 @@ public class DirectivesBaseListener implements DirectivesListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitParameterList(DirectivesParser.ParameterListContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterAnnotatedParameter(DirectivesParser.AnnotatedParameterContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitAnnotatedParameter(DirectivesParser.AnnotatedParameterContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -149,13 +149,25 @@ public class DirectivesBaseListener implements DirectivesListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParamaterDefault(DirectivesParser.ParamaterDefaultContext ctx) { }
+	@Override public void enterAssignment(DirectivesParser.AssignmentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParamaterDefault(DirectivesParser.ParamaterDefaultContext ctx) { }
+	@Override public void exitAssignment(DirectivesParser.AssignmentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSymbol(DirectivesParser.SymbolContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSymbol(DirectivesParser.SymbolContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -185,13 +197,25 @@ public class DirectivesBaseListener implements DirectivesListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterLc(DirectivesParser.LcContext ctx) { }
+	@Override public void enterOrg(DirectivesParser.OrgContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitLc(DirectivesParser.LcContext ctx) { }
+	@Override public void exitOrg(DirectivesParser.OrgContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIdentifier(DirectivesParser.IdentifierContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIdentifier(DirectivesParser.IdentifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -564,18 +588,6 @@ public class DirectivesBaseListener implements DirectivesListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitStringLiteral(DirectivesParser.StringLiteralContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterIdentifier(DirectivesParser.IdentifierContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitIdentifier(DirectivesParser.IdentifierContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

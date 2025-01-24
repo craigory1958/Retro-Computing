@@ -32,7 +32,7 @@ public class INCLUDE implements iDirective {
 
 		try {
 			final String fSpec =
-					FilenameUtils.getFullPath(actx.cmdArgs().get("source")) + actx.statement().arguments().get(0).expr().eval(actx.symbols()).getValueAsString() ;
+					FilenameUtils.getFullPath(actx.cmdArgs().get("source")) + actx.statement().operands().get(0).assignment().eval(actx.symbols()).getValueAsString() ;
 
 			actx.sources().add(new FileSource(actx.sources().size(), fSpec)) ;
 			actx.source().push(actx.sources().get(actx.sources().size() - 1)) ;

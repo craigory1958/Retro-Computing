@@ -28,15 +28,25 @@ public interface ExpressionsListener extends ParseTreeListener {
 	 */
 	void exitTerm(ExpressionsParser.TermContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ExpressionsParser#lc}.
+	 * Enter a parse tree produced by {@link ExpressionsParser#org}.
 	 * @param ctx the parse tree
 	 */
-	void enterLc(ExpressionsParser.LcContext ctx);
+	void enterOrg(ExpressionsParser.OrgContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ExpressionsParser#lc}.
+	 * Exit a parse tree produced by {@link ExpressionsParser#org}.
 	 * @param ctx the parse tree
 	 */
-	void exitLc(ExpressionsParser.LcContext ctx);
+	void exitOrg(ExpressionsParser.OrgContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ExpressionsParser#identifier}.
+	 * @param ctx the parse tree
+	 */
+	void enterIdentifier(ExpressionsParser.IdentifierContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExpressionsParser#identifier}.
+	 * @param ctx the parse tree
+	 */
+	void exitIdentifier(ExpressionsParser.IdentifierContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ExpressionsParser#binary}.
 	 * @param ctx the parse tree
@@ -347,14 +357,4 @@ public interface ExpressionsListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitStringLiteral(ExpressionsParser.StringLiteralContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link ExpressionsParser#identifier}.
-	 * @param ctx the parse tree
-	 */
-	void enterIdentifier(ExpressionsParser.IdentifierContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExpressionsParser#identifier}.
-	 * @param ctx the parse tree
-	 */
-	void exitIdentifier(ExpressionsParser.IdentifierContext ctx);
 }

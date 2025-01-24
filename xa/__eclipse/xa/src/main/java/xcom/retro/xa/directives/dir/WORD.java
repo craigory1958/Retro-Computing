@@ -33,12 +33,12 @@ public class WORD implements iDirective {
 			actx.symbols().put(pctx.getParent().getChild(0).getChild(0).getText(), actx.symbol()) ;
 		}
 
-		final byte[] bytes = new byte[actx.statement().arguments().size() * 2] ;
+		final byte[] bytes = new byte[actx.statement().operands().size() * 2] ;
 		actx.statement().bytes(bytes) ;
 		actx.segment().allocateBytes(actx.statement().bytes()) ;
 
-		actx.statement().assembleCallbackMethod("assemble") ;
-		actx.statement().assembleCallbackObject(this) ;
+		actx.statement().assemblyCallbackMethod("assemble") ;
+		actx.statement().assemblyCallbackObject(this) ;
 	}
 
 
@@ -48,8 +48,8 @@ public class WORD implements iDirective {
 		final byte[] bytes = actx.statement().bytes() ;
 
 		for ( int b = 0; b < bytes.length; b = b + 2 ) {
-			bytes[b] = ExpressionUtils.lsb(actx.statement().arguments().get(0).expr().eval(actx.symbols()).getValue()) ;
-			bytes[b + 1] = ExpressionUtils.msb(actx.statement().arguments().get(0).expr().eval(actx.symbols()).getValue()) ;
+			bytes[b] = ExpressionUtils.lsb(actx.statement().operands().get(0).assignment().eval(actx.symbols()).getValue()) ;
+			bytes[b + 1] = ExpressionUtils.msb(actx.statement().operands().get(0).assignment().eval(actx.symbols()).getValue()) ;
 		}
 		
 		actx.statement().bytes(bytes) ;

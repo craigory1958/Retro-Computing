@@ -9,35 +9,36 @@ options {
 import Directives ;
 
 
-assembly:  ( statement eol )* EOF ;
+aassembly:  ( statement eol )* EOF ;
 statement:  ( label | instruction | ( label instruction ) | directive | ( label directive ) )?  ;
+label:  Identifier ;
 
 
 //
 // Instructions
 //
 
-instruction:  ( opcodeBranch addressingModeBranch ) | ( opcode addressingMode ) ;
+instruction:  ( branchOpcode branchAddressingMode ) | ( opcode addressingMode ) ;
 
-opcodeBranch:  OpcodeBranches ;
+branchOpcode:  BranchOpcodes ;
 opcode:  Opcodes ;
 
-addressingModeBranch:  relative ;
-addressingMode:  indexedX | indexedY | indirect | zpIndirectX | zpIndirectY | immediate | absolute | accumulator | implied ;
+branchAddressingMode:  relative ;
+addressingMode:  absolute | accumulator | immediate | implied | indexedX | indexedY | indirect | zpIndirectX | zpIndirectY | relative ;
 
 absolute:  argument ;
 accumulator:  'A' ;
 immediate:  '#' argument ; 
 implied:  ;
-indexedX:  argument ',X' ;
-indexedY:  argument ',Y' ; 
+indexedX:  argument ',' 'X' ;
+indexedY:  argument ',' 'Y' ; 
 indirect:  '[' argument ']' ;
-zpIndirectX:  '[' argument ',X]' ;
-zpIndirectY:  '[' argument '],Y' ;
+zpIndirectX:  '[' argument ',' 'X' ']' ;
+zpIndirectY:  '[' argument ']' ',' 'Y'  ;
 relative:  argument ;
 
 
-OpcodeBranches:  
+BranchOpcodes:  
 	'BCC' | 'BCS' | 'BEQ' | 'BMI' | 'BNE' | 'BPL' | 'BRA' | 'BVC' | 'BVS'
 	;
 

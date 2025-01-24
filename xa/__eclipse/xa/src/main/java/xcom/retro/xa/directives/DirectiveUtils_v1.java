@@ -15,6 +15,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker ;
 import org.apache.commons.lang3.StringUtils ;
 
 import xcom.retro.xa.Argument ;
+import xcom.retro.xa.Operand ;
 import xcom.retro.xa.Statement ;
 import xcom.retro.xa.XA.AssemblyContext ;
 import xcom.retro.xa.expressions.value.Identifier ;
@@ -34,10 +35,10 @@ public class DirectiveUtils_v1 {
 	public static Macro buildMacro(final AssemblyContext actx, final ParserRuleContext pctx) {
 
 		final String name = pctx.getChild(0).getText() ;
-		final List<String> parms = actx.statement().arguments().stream().map(new Function<Argument, String>() {
+		final List<String> parms = actx.statement().operands().stream().map(new Function<Operand, String>() {
 			@Override
-			public String apply(Argument a) {
-				return ((Identifier) a.expr()).getValueAsString() ;
+			public String apply(Operand a) {
+				return ((Identifier) a.assignment()).getValueAsString() ;
 			}
 		}).collect(Collectors.toCollection(ArrayList::new)) ;
 

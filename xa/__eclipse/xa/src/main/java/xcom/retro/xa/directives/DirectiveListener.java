@@ -53,20 +53,51 @@ public class DirectiveListener extends DirectivesBaseListener {
 	public void exitDirective(final ParserRuleContext pctx) {
 
 		try {
-			final String phase = actx.phase().name().toLowerCase() ;
-			for ( int x = 0; (x < pctx.getChildCount()); x++ ) {
-				System.out.println("_" + pctx.getChild(x).getClass().getSimpleName()) ;
+			 String phase = actx.phase().name().toLowerCase() ;
 
+//			for ( int x = 0; (x < pctx.getChildCount()); x++ ) {
+//				System.out.println("_" + pctx.getChild(x).getClass().getSimpleName()) ;
+//			}
+
+//			System.out.println("directives: " + actx.directives().keySet()) ;
+//			System.out.println("macros: " + actx.macros().keySet()) ;
+			
+//			System.out.println("r: " + pctx.getClass().getSimpleName()) ;
+//			System.out.println("r: " + pctx.getChildCount()) ;
+//			System.out.println("r.1: " + pctx.getChild(0).getClass().getSimpleName()) ;
+//			System.out.println("r.1: " + pctx.getChild(0).getChildCount()) ;
+//			System.out.println("r.1.1: " + pctx.getChild(0).getChild(0).getClass().getSimpleName()) ;
+//			System.out.println("r.1.1: " + pctx.getChild(0).getChild(0).getChildCount()) ;
+//			System.out.println("r.1.2: " + pctx.getChild(0).getChild(1).getClass().getSimpleName()) ;
+//			System.out.println("r.1.2: " + pctx.getChild(0).getChild(1).getChildCount()) ;
+//			System.out.println("r.1.2.1: " + pctx.getChild(0).getChild(1).getChild(0).getClass().getSimpleName()) ;
+//			System.out.println("r.1.2.1: " + pctx.getChild(0).getChild(1).getChild(0).getChildCount()) ;
+//			System.out.println("r.1.2.1: " + pctx.getChild(0).getChild(1).getChild(0).getText()) ;
+//			System.out.println("r.1.3: " + pctx.getChild(0).getChild(2).getClass().getSimpleName()) ;
+//			System.out.println("r.1.3: " + pctx.getChild(0).getChild(2).getChildCount()) ;
+
+			String name = null ;
+			iDirective directive = null;
+			switch ( pctx.getChild(0).getClass().getSimpleName() ) {
+				
+				case "AssemblerContext":
+					name = pctx.getChild(0).getChild(1).getChild(0).getText().toUpperCase() ;
+					directive = actx.directives().get(name) ;
+					break ;
+					
+				case "InvocationContext":
+					name = pctx.getChild(0).getChild(1).getText() ;
+					directive = actx.macros().get(name) ;
+					phase = "expand" ;
+					break ;
+					
+				case "MacroContext":
+					name = "MACRO" ;
+					directive = actx.directives().get(name) ;
+					break ;
 			}
 
-			System.out.println("directive: " + actx.directives().keySet()) ;
-//			final String name = (pctx.getChild(0).getText().equals(".") ? pctx.getChild(1).getText() : pctx.getChild(2).getText()).toLowerCase() ;
-
-			final String name =
-					pctx.getChild(0).getClass().getSimpleName().substring(0, pctx.getChild(0).getClass().getSimpleName().length() - 7).toUpperCase() ;
-
-			System.out.println("exit directive: " + name + " @" + phase) ;
-			iDirective directive = actx.directives().get(name) ;
+//			System.out.println("exit directive: " + name + " @" + phase) ;
 //			System.out.println("directive: " + directive) ;
 //			System.out.println("macros: " + actx.macros().keySet()) ;
 //			System.out.println("macros: "+ actx.getMacros().size()) ;
@@ -74,14 +105,14 @@ public class DirectiveListener extends DirectivesBaseListener {
 //			if ( directive == null )
 //				directive = actx.macros().get(name) ;
 
-			System.out.println("directive: " + directive) ;
+//			System.out.println("directive: " + directive) ;
 
 
 			Reflection.method(phase).withParameterTypes(ParserRuleContext.class).in(directive).invoke(pctx) ;
 
 //			System.out.println(actx.getStatement()) ;
 //			System.out.println(actx.getDirectives().keySet()) ;
-			System.out.println("macros_: "  + actx.macros().keySet()) ;
+//			System.out.println("macros_: " + actx.macros().keySet()) ;
 //			System.out.println("macros_: "+ actx.getMacros().size()) ;
 		}
 		catch ( final ReflectionError ex ) {

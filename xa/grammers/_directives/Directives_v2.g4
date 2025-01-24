@@ -9,25 +9,31 @@ options {
 import Expressions ;
 
 
-directive:  definedDirective | macroDirective | macroInvocation ;
-definedDirective:  '.' DefinedDirectives argumentList? ;
-macroDirective: symbol '.macro' parameterList? ;
-macroInvocation: '.' symbol argumentList? ;
+directive:  assembler | macro | invocation ;
+assembler:  '.' directives argumentList? ;
+macro: '.macro' optionList? ;
+invocation: '.' symbol parameterList? ;
 
-label:  Identifier ;
-symbol:  Identifier ;
+directives: Directives ;
 
 
 argumentList:   argument ( ',' argumentList )? ; 
 argument:  expr ;
+optionList:   option ( ',' optionList )? ; 
+option: symbol assignment? ;
+parameterList:   parameter ( ',' parameterList )? ; 
+parameter: ( symbol assignment ) | argument ;
 
-parameterList:   ( annotatedParameter | parameter ) ( ',' parameterList )? ; 
-annotatedParameter: ParameterAnnotations symbol paramaterDefault? ;
-parameter: symbol paramaterDefault? ;
-
-paramaterDefault:  '=' expr ;
+assignment:  '=' argument ;
+symbol:  Identifier ;
 
 
-ParameterAnnotations: ':' | '.' ;
-
-DefinedDirectives:  'equ' | 'include' | 'org' ;
+Directives:  
+	'byte' | 
+	'end' | 'endmacro' | 'equ' | 
+	'include' | 
+	'list' |
+	'nolist' |
+	'org' | 
+	'page' |
+	'word' ;

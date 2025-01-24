@@ -4,27 +4,31 @@ package xcom.retro.xa ;
 
 
 import java.util.ArrayList ;
+import java.util.HashMap ;
 import java.util.List ;
+import java.util.Map ;
 
 import org.antlr.v4.runtime.ParserRuleContext ;
+
+import xcom.utils4j.logging.aspects.api.annotations.Log ;
 
 
 public class Statement {
 
 	//@formatter:off
 
-	List<Argument> arguments ;
-	public List<Argument> arguments() { return arguments ; }
+	List<Operand> operands ;
+	public List<Operand> operands() { return operands ; }
 
-	String assembleCallbackMethod ;
-	public Statement assembleCallbackMethod(String assembleCallbackMethod) {
-		this.assembleCallbackMethod = assembleCallbackMethod ;
+	String assemblyCallbackMethod ;
+	public Statement assemblyCallbackMethod(String assemblyCallbackMethod) {
+		this.assemblyCallbackMethod = assemblyCallbackMethod ;
 		return this ;
 	}
 
-	Object assembleCallbackObject ;
-	public Statement assembleCallbackObject(Object assembleCallbackObject) {
-		this.assembleCallbackObject = assembleCallbackObject ;
+	Object assemblyCallbackObject ;
+	public Statement assemblyCallbackObject(Object assemblyCallbackObject) {
+		this.assemblyCallbackObject = assemblyCallbackObject ;
 		return this ;
 	}
 
@@ -34,6 +38,13 @@ public class Statement {
 	public byte[] bytes() { return bytes ; }
 	public Statement bytes(byte[] bytes) {
 		this.bytes = bytes ;
+		return this ;
+	}
+
+	Symbol label ;
+	public Symbol label() { return label ; }
+	public Statement label(Symbol label) {
+		this.label = label ;
 		return this ;
 	}
 
@@ -53,6 +64,9 @@ public class Statement {
 	int lc ;
 	public int lc() { return lc ; }
 
+	Map<String, Parameter> parameters ;
+	public Map<String, Parameter> parameters() { return parameters ; }
+
 	ParserRuleContext prc ;
 	public ParserRuleContext prc() { return prc ; }
 
@@ -62,6 +76,7 @@ public class Statement {
 	//@formatter:on
 
 
+	@Log
 	public Statement(final int sn, final int ln, final String line, final int lc, final boolean list) {
 
 		this.lc = lc ;
@@ -70,6 +85,7 @@ public class Statement {
 		this.ln = ln ;
 		this.sn = sn ;
 
-		arguments = new ArrayList<>() ;
+		operands = new ArrayList<>() ;
+		parameters = new HashMap<>() ;
 	}
 }

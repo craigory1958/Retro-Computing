@@ -202,7 +202,7 @@ public class MOS6502_v1 extends MOS6502_BaseListener implements iProcessor {
 	@Override
 	public void exitArgument(final MOS6502_Parser.ArgumentContext pctx) {
 
-		actx.statement().arguments().add(new Argument(ExpressionUtils.buildArgumentExpressionTree(actx, pctx))) ;
+		actx.statement().operands().add(new Argument(ExpressionUtils.buildArgumentExpressionTree(actx, pctx))) ;
 	}
 
 
@@ -227,7 +227,7 @@ public class MOS6502_v1 extends MOS6502_BaseListener implements iProcessor {
 
 		if ( opc.zpOption != null )
 			try {
-				final _ValueNode value = actx.statement().arguments().get(0).expr().eval(actx.symbols()) ;
+				final _ValueNode value = actx.statement().operands().get(0).assignment().eval(actx.symbols()) ;
 
 				if ( (value != null) && (value.getValueAsInteger() <= 255) )
 					opc = opc.zpOption ;
@@ -236,8 +236,8 @@ public class MOS6502_v1 extends MOS6502_BaseListener implements iProcessor {
 
 		final String callback = "set" + opc.bytes.length + "Byte" + (mode.equals("RelativeContext") ? "Relative" : "") + "Instruction" ;
 
-		actx.statement().assembleCallbackMethod(callback) ;
-		actx.statement().assembleCallbackObject(this) ;
+		actx.statement().assemblyCallbackMethod(callback) ;
+		actx.statement().assemblyCallbackObject(this) ;
 		actx.statement().bytes(Arrays.copyOf(opc.bytes, opc.bytes.length)) ;
 		actx.segment().allocateBytes(actx.statement().bytes()) ;
 	}
@@ -265,14 +265,14 @@ public class MOS6502_v1 extends MOS6502_BaseListener implements iProcessor {
 	void set2ByteInstruction() {
 
 		final byte[] bytes = actx.statement().bytes() ;
-		bytes[1] = ExpressionUtils.lsb(actx.statement().arguments().get(0).expr().eval(actx.symbols()).getValue()) ;
+		bytes[1] = ExpressionUtils.lsb(actx.statement().operands().get(0).assignment().eval(actx.symbols()).getValue()) ;
 		actx.statement().bytes(bytes) ;
 	}
 
 	void set2ByteRelativeInstruction() {
 
 		final byte[] bytes = actx.statement().bytes() ;
-		final int x = (Integer) actx.statement().arguments().get(0).expr().eval(actx.symbols()).getValueAsInteger() ;
+		final int x = (Integer) actx.statement().operands().get(0).assignment().eval(actx.symbols()).getValueAsInteger() ;
 		final int y = actx.statement().lc() ;
 		bytes[1] = (byte) ((x - y - 2) & 0xFF) ;
 		actx.statement().bytes(bytes) ;
@@ -281,7 +281,7 @@ public class MOS6502_v1 extends MOS6502_BaseListener implements iProcessor {
 	void set3ByteInstruction() {
 
 		final byte[] bytes = actx.statement().bytes() ;
-		byte[] value = actx.statement().arguments().get(0).expr().eval(actx.symbols()).getValue() ;
+		byte[] value = actx.statement().operands().get(0).assignment().eval(actx.symbols()).getValue() ;
 		bytes[1] = ExpressionUtils.lsb(value) ;
 		bytes[2] = ExpressionUtils.msb(value) ;
 		actx.statement().bytes(bytes) ;

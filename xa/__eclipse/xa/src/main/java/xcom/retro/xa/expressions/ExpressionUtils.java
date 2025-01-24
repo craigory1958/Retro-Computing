@@ -9,17 +9,16 @@ import org.antlr.v4.runtime.ParserRuleContext ;
 import org.antlr.v4.runtime.tree.ParseTreeWalker ;
 
 import xcom.retro.xa.XA.AssemblyContext ;
+import xcom.utils4j.logging.aspects.api.annotations.Log ;
 
 
 public class ExpressionUtils {
 
+	@Log
 	public static _ExprNode buildArgumentExpressionTree(final AssemblyContext actx, final ParserRuleContext pctx) {
 
 		final ExpressionListener listener = new ExpressionListener(actx) ;
 		final ParseTreeWalker walker = new ParseTreeWalker() ;
-
-//		System.out.println(">>>"+pctx.getText()) ;
-
 		walker.walk(listener, pctx) ;
 
 		return listener.expr ;
