@@ -21,7 +21,7 @@
 // 1 - Auto-step thru uP reset
 // 2 - Fully auto-step
 
-#define SingleStepMode 1
+#define SingleStepMode 2
 
 
 // 0 - Fake uP SYNC signal
@@ -217,7 +217,6 @@ void uP_tick() {
     while (!Serial.available()) {};
     Serial.read();
   }
-
 
   pio_resetPin(uP_CLK0);                    // Drive CLK low
   pio_setPortIO(uP_DATA, pio_PortAsInput);  // Set DATA bus for input to Arduino from uP

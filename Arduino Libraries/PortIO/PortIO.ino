@@ -33,60 +33,21 @@ void loop() {
 
   beginLoop();
 
-
-  if (testNum == 0) {
-
-    if (beginTest("Pin I/O")) {
-      pio_setPinAsOutput(LED);
-    }
-
-    if (execTest()) {
-      pio_setPin(LED);
-      delay(100);
-
-      pio_resetPin(LED);
-      delay(900);
-    }
-
-    if (endTest()) {
-      pio_resetPin(LED);
-    }
+  switch (testNum) {
+    case 0: test00(); break;
+    case 1: test01(); break;
   }
-
-
-  if (testNum == 1) {
-
-    if (beginTest("Port I/O")) {
-      pio_setPortIO(POUT, pio_PortAsOutput);
-      pio_setPortIO(PIN, pio_PortAsInput);
-    }
-
-    if (execTest()) {
-      data = pio_readPort(PIN);
-
-      pio_writePort(POUT, data);
-      delay(500);
-
-      pio_writePort(POUT, ~data);
-      delay(500);
-    }
-
-    if (endTest()) {
-      pio_writePort(POUT, 0x00);
-    }
-  }
-
 
   endLoop();
 }
 
 
-void beginLoop(){
+void beginLoop() {
   testResult = readln();
 }
 
 
-void endLoop(){
+void endLoop() {
 
   if (!terminated && tests[TestsMax - 1][TestEnded]) {
     terminated = true;
@@ -132,4 +93,46 @@ String readln() {
     return Serial.readString();
 
   return "";
+}
+
+
+void test00() {
+
+    if (beginTest("Pin I/O")) {
+      pio_setPinAsOutput(LED);
+    }
+
+    if (execTest()) {
+      pio_setPin(LED);
+      delay(100);
+
+      pio_resetPin(LED);
+      delay(900);
+    }
+
+    if (endTest()) {
+      pio_resetPin(LED);
+    }
+}
+
+void test01() {
+
+    if (beginTest("Port I/O")) {
+      pio_setPortIO(POUT, pio_PortAsOutput);
+      pio_setPortIO(PIN, pio_PortAsInput);
+    }
+
+    if (execTest()) {
+      data = pio_readPort(PIN);
+
+      pio_writePort(POUT, data);
+      delay(500);
+
+      pio_writePort(POUT, ~data);
+      delay(500);
+    }
+
+    if (endTest()) {
+      pio_writePort(POUT, 0x00);
+    }
 }
