@@ -33,9 +33,9 @@ public class _Test_XA_OrgDirective {
 
                 // { String desc, String srcFSpec }
 
-                { "No org drirectives", "898e1438-033a-11ee-be56-0242ac120002.asm", },
-                { ".org $200", "3fbc3fc0-0343-11ee-be56-0242ac120002.asm", },
-                { "Non-Consecutive Memory Blocks", "9256bd36-039e-11ee-be56-0242ac120002.asm", },
+                { "No Org Directive", "OrgDirective_NoOrgDirective.a65", },
+                { "Simple Org", "OrgDirective_SimpleOrg.a65", },
+                { "Non-Consecutive Blocks", "OrgDirective_NonConsecutiveBlocks.a65", },
         } ;
 
         //@formatter:on
@@ -58,18 +58,18 @@ public class _Test_XA_OrgDirective {
 
 
 	@Test
-	public void assembleTest() throws Exception {
+	public void assemblerTest() throws Exception {
 
 		final String _dSpec = FilenameUtils.getFullPath(this.getClass().getResource(srcFSpec).toURI().getPath()) ;
 		final String _fSpec = FilenameUtils.getBaseName(FilenameUtils.getBaseName(srcFSpec)) ;
 
-		final String[] args = { "-b", "-l", _dSpec + srcFSpec } ;
+		final String[] args = { "-b", _dSpec + srcFSpec } ;
 
 		Logger.info("{}", String.format("%s - XA %s", desc, Arrays.asList(args))) ;
 
 		XA.main(args) ;
 
-		final String expected = FileUtils.readFileToString(new File(_dSpec + _fSpec + ".kim"), StandardCharsets.UTF_8) ;
+		final String expected = FileUtils.readFileToString(new File(_dSpec + _fSpec + ".expected.bin"), StandardCharsets.UTF_8) ;
 		final String actual = FileUtils.readFileToString(new File(_dSpec + _fSpec + ".bin"), StandardCharsets.UTF_8) ;
 
 		assertEquals(expected, actual) ;

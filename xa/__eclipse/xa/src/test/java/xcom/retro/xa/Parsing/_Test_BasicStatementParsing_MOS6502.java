@@ -69,7 +69,7 @@ public class _Test_BasicStatementParsing_MOS6502 {
 
 
 	@BeforeClass
-	public static void setupBeforeEachTest() throws Exception {
+	public static void setupBeforeClass() throws Exception {
 
 		parser = new ParsingScaffold() ;
 		parser.init("MOS6502") ;
@@ -81,7 +81,7 @@ public class _Test_BasicStatementParsing_MOS6502 {
 
 		final List<String> actual = parser.parse("statement", src).processor().walked() ;
 
-		Logger.info("{}", String.format("%-25s  %s", src, actual)) ;
+		Logger.info("{}", String.format("%-12s  %s", src, actual)) ;
 
 		assertArrayEquals(expectedContexts.toArray(), actual.toArray()) ;
 	}

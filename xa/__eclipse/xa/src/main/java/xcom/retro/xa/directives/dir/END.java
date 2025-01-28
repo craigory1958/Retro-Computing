@@ -24,7 +24,5 @@ public class END implements iDirective {
 
 	@Log
 	@Override
-	public void parse(final ParserRuleContext pctx) {
-		actx.statement().bytes(new byte[0]) ;
-	}
+	public void parse(final ParserRuleContext pctx) {}
 }

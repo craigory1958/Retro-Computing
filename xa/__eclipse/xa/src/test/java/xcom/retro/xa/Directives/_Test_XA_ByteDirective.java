@@ -33,8 +33,8 @@ public class _Test_XA_ByteDirective {
 
                 // { String desc, String srcFSpec }
 
-                { "1 operand", "1_Operand.a65", },
-                { "2 operands", "2_Operands.a65", },
+                { "Single Operand", "ByteDirective_SingleOperand.a65", },
+                { "Multiple Operands", "ByteDirective_MultipleOperands.a65", },
         } ;
 
         //@formatter:on
@@ -57,19 +57,19 @@ public class _Test_XA_ByteDirective {
 
 
 	@Test
-	public void assembleTest() throws Exception {
+	public void assemblerTest() throws Exception {
 
 		final String _dSpec = FilenameUtils.getFullPath(this.getClass().getResource(srcFSpec).toURI().getPath()) ;
 		final String _fSpec = FilenameUtils.getBaseName(FilenameUtils.getBaseName(srcFSpec)) ;
 
-		final String[] args = { "-l", _dSpec + srcFSpec } ;
+		final String[] args = { "-b", _dSpec + srcFSpec } ;
 
 		Logger.info("{}", String.format("%s - XA %s", desc, Arrays.asList(args))) ;
 
 		XA.main(args) ;
 
-		final String expected = FileUtils.readFileToString(new File(_dSpec + _fSpec + ".expected.lis"), StandardCharsets.UTF_8) ;
-		final String actual = FileUtils.readFileToString(new File(_dSpec + _fSpec + ".lis"), StandardCharsets.UTF_8) ;
+		final String expected = FileUtils.readFileToString(new File(_dSpec + _fSpec + ".expected.bin"), StandardCharsets.UTF_8) ;
+		final String actual = FileUtils.readFileToString(new File(_dSpec + _fSpec + ".bin"), StandardCharsets.UTF_8) ;
 
 		assertEquals(expected, actual) ;
 	}

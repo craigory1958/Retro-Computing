@@ -48,10 +48,10 @@ public class _Test_DirectiveParsing {
 
 	private static final Logger Logger = LoggerFactory.getLogger(_Test_DirectiveParsing.class) ;
 
+	static ParsingScaffold parser ;
+
 	String src ;
 	List<String> expectedContexts ;
-
-	static ParsingScaffold parser ;
 
 
 	public _Test_DirectiveParsing(final String src, final String expectedContexts) {
@@ -63,7 +63,7 @@ public class _Test_DirectiveParsing {
 
 
 	@BeforeClass
-	public static void setupBeforeEachTest() throws Exception {
+	public static void setupBeforeClass() throws Exception {
 
 		parser = new ParsingScaffold() ;
 		parser.init("MOS6502") ;
@@ -71,11 +71,11 @@ public class _Test_DirectiveParsing {
 
 
 	@Test
-	public void assembleTest() throws IOException {
+	public void parseTest() throws IOException {
 
 		final List<String> actual = parser.parse("statement", src).processor().walked() ;
 
-		Logger.info("{}", String.format("%-25s  %s", src, actual)) ;
+		Logger.info("{}", String.format("%-12s  %s", src, actual)) ;
 
 		assertArrayEquals(expectedContexts.toArray(), actual.toArray()) ;
 	}

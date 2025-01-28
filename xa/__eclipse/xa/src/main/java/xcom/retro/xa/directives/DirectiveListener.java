@@ -77,38 +77,38 @@ public class DirectiveListener extends DirectivesBaseListener {
 //			System.out.println("r.1.3: " + pctx.getChild(0).getChild(2).getChildCount()) ;
 
 			String name = null ;
-			iDirective directive = null;
+			iDirective worker = null;
 			switch ( pctx.getChild(0).getClass().getSimpleName() ) {
 				
 				case "AssemblerContext":
 					name = pctx.getChild(0).getChild(1).getText().toUpperCase() ;
-					directive = actx.directives().get(name) ;
+					worker = actx.directives().get(name) ;
 					break ;
 					
 				case "InvocationContext":
 					name = pctx.getChild(0).getChild(1).getText() ;
-					directive = actx.macros().get(name) ;
+					worker = actx.macros().get(name) ;
 					phase = "expand" ;
 					break ;
 					
 				case "MacroContext":
 					name = "MACRO" ;
-					directive = actx.directives().get(name) ;
+					worker = actx.directives().get(name) ;
 					break ;
 			}
 
 //			System.out.println("exit directive: " + name + " @" + phase) ;
-//			System.out.println("directive: " + directive) ;
+//			System.out.println("worker: " + worker) ;
 //			System.out.println("macros: " + actx.macros().keySet()) ;
 //			System.out.println("macros: "+ actx.getMacros().size()) ;
 
 //			if ( directive == null )
 //				directive = actx.macros().get(name) ;
 
-//			System.out.println("directive: " + directive) ;
+//			System.out.println("worker: " + worker) ;
 
 
-			Reflection.method(phase).withParameterTypes(ParserRuleContext.class).in(directive).invoke(pctx) ;
+			Reflection.method(phase).withParameterTypes(ParserRuleContext.class).in(worker).invoke(pctx) ;
 
 //			System.out.println(actx.getStatement()) ;
 //			System.out.println(actx.getDirectives().keySet()) ;

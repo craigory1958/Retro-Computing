@@ -35,8 +35,8 @@ ideogram:  '.' symbol ;
 
 Directives:  
 	'byte' | 
-	'end' | 'endmacro' | 'equ' | 
-	'include' | 
+	'end' | 'endif' | 'endmacro' | 'equ' | 
+	'if' |'ifdef' | 'ifndef' | 'include' | 
 	'list' |
 	'nolist' |
 	'org' | 

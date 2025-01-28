@@ -79,7 +79,6 @@ INDEX VERSION 1.131+H:\_cwg-base__Home\Computer Archtecture\Retro Computing\xa\_
 623895576.index
 3180587799.index
 1390576207.index
-1203023094.index
 1052522080.index
 2635922304.index
 1030843561.index

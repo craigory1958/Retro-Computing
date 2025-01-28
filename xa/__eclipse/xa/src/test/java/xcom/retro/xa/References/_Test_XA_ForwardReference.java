@@ -19,7 +19,7 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import xcom.retro.xa.XA ;
-import xcom.retro.xa.Directives._Test_XA_OrgDirective ;
+import xcom.retro.xa.Directives._Test_XA_ByteDirective ;
 
 
 @RunWith(Parameterized.class)
@@ -34,10 +34,10 @@ public class _Test_XA_ForwardReference {
 
                 // { String desc, String fSpec }
 
-                { "JMP AHEAD", "b622e568-07aa-11ee-be56-0242ac120002.asm", },
-                { "BEQ AHEAD", "8738fa20-07c4-11ee-be56-0242ac120002.asm", },
-                { ".word AHEAD", "23713b56-07ab-11ee-be56-0242ac120002.asm", },
-                { ".byte AHEAD", "c22fd7d2-eb1f-481a-9651-451bef709252.asm", },
+                { "JMP AHEAD", "ForwardReference_JMP.a65", },
+                { "BEQ AHEAD", "ForwardReference_BEQ.a65", },
+                { ".word AHEAD", "ForwardReference_WORD.a65", },
+                { ".byte AHEAD", "ForwardReference_BYTE.a65", },
         } ;
 
         //@formatter:on
@@ -46,32 +46,32 @@ public class _Test_XA_ForwardReference {
 	}
 
 
-	private static final Logger Logger = LoggerFactory.getLogger(_Test_XA_OrgDirective.class) ;
+	private static final Logger Logger = LoggerFactory.getLogger(_Test_XA_ForwardReference.class) ;
 
 	String desc ;
-	String fSpec ;
+	String srcFSpec ;
 
 
-	public _Test_XA_ForwardReference(final String desc, final String fSpec) {
+	public _Test_XA_ForwardReference(final String desc, final String srcFSpec) {
 
 		this.desc = desc ;
-		this.fSpec = fSpec ;
+		this.srcFSpec = srcFSpec ;
 	}
 
 
 	@Test
-	public void basicCheck() throws Exception {
+	public void assemblerTest() throws Exception {
 
-		final String _dSpec = FilenameUtils.getFullPath(this.getClass().getResource(fSpec).toURI().getPath()) ;
-		final String _fSpec = FilenameUtils.getBaseName(FilenameUtils.getBaseName(fSpec)) ;
+		final String _dSpec = FilenameUtils.getFullPath(this.getClass().getResource(srcFSpec).toURI().getPath()) ;
+		final String _fSpec = FilenameUtils.getBaseName(FilenameUtils.getBaseName(srcFSpec)) ;
 
-		final String[] args = { "-b", _dSpec + fSpec } ;
+		final String[] args = { "-b", _dSpec + srcFSpec } ;
 
 		Logger.info("{}", String.format("%s - XA %s", desc, Arrays.asList(args))) ;
 
 		XA.main(args) ;
 
-		final String expected = FileUtils.readFileToString(new File(_dSpec + _fSpec + ".kim"), StandardCharsets.UTF_8) ;
+		final String expected = FileUtils.readFileToString(new File(_dSpec + _fSpec + ".expected.bin"), StandardCharsets.UTF_8) ;
 		final String actual = FileUtils.readFileToString(new File(_dSpec + _fSpec + ".bin"), StandardCharsets.UTF_8) ;
 
 		assertEquals(expected, actual) ;

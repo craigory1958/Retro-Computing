@@ -7,23 +7,33 @@ import static org.junit.Assert.assertEquals ;
 
 import java.io.File ;
 import java.nio.charset.StandardCharsets ;
+import java.util.Arrays ;
 
 import org.apache.commons.io.FileUtils ;
 import org.apache.commons.io.FilenameUtils ;
 import org.junit.Test ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 import xcom.retro.xa.XA ;
 
 
 public class _Test_KIM1_ROM {
 
+	private static final Logger Logger = LoggerFactory.getLogger(_Test_KIM1_ROM.class) ;
+
+	
 	@Test
-	public void kim1_rom_Test() throws Exception {
+	public void assemblerTest() throws Exception {
+		
+		final String srcFSpec = "KIM-1 ROM.a65" ;
 
-		final String _dSpec = FilenameUtils.getFullPath(this.getClass().getResource("KIM-1 ROM.a65").toURI().getPath()) ;
-		final String _fSpec = FilenameUtils.getBaseName(FilenameUtils.getBaseName("KIM-1 ROM.a65")) ;
+		final String _dSpec = FilenameUtils.getFullPath(this.getClass().getResource(srcFSpec).toURI().getPath()) ;
+		final String _fSpec = FilenameUtils.getBaseName(FilenameUtils.getBaseName(srcFSpec)) ;
 
-		final String[] args = { "-b", _dSpec + "KIM-1 ROM.a65" } ;
+		final String[] args = { "-b", _dSpec + srcFSpec } ;
+
+		Logger.info("{}", String.format("%s - XA %s", "KIM-1 ROM", Arrays.asList(args))) ;
 
 		XA.main(args) ;
 

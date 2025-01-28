@@ -7,5 +7,8 @@ W65C02                 .equ    "W65C02"
 
 
 __cpu_declare_type .macro  type
-                   .ifndef _cpu_declared -> .include "../CPUs/" + ${type} + ".lib.asm"
+                   .ifndef _cpu_declared
+_cpu_declared          .equ     ${type}
+                       .include "../CPUs/" + ${type} + ".lib.asm"
+                   .endif
                    .endmacro
