@@ -17,7 +17,10 @@ public class ParsingListener implements ParseTreeListener {
 
 
 	List<String> walked ;
-	public List<String> walked() { return walked; }
+
+	public List<String> walked() {
+		return walked ;
+	}
 
 
 	@Log
@@ -26,22 +29,22 @@ public class ParsingListener implements ParseTreeListener {
 
 	@Log
 	@Override
-	public void enterEveryRule(ParserRuleContext pctx) {
+	public void enterEveryRule(final ParserRuleContext pctx) {
 		walked.add(pctx.getClass().getSimpleName().substring(0, pctx.getClass().getSimpleName().length() - 7)) ;
 	}
 
 
 	@Log
 	@Override
-	public void visitTerminal(TerminalNode node) {}
+	public void visitTerminal(final TerminalNode node) {}
 
 
 	@Log
 	@Override
-	public void visitErrorNode(ErrorNode node) {}
+	public void visitErrorNode(final ErrorNode node) {}
 
 
 	@Log
 	@Override
-	public void exitEveryRule(ParserRuleContext ctx) {}
+	public void exitEveryRule(final ParserRuleContext ctx) {}
 }

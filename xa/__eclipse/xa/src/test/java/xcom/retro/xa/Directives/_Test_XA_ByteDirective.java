@@ -59,17 +59,17 @@ public class _Test_XA_ByteDirective {
 	@Test
 	public void assembleTest() throws Exception {
 
-		String _dSpec = FilenameUtils.getFullPath(this.getClass().getResource(srcFSpec).toURI().getPath()) ;
-		String _fSpec = FilenameUtils.getBaseName(FilenameUtils.getBaseName(srcFSpec)) ;
+		final String _dSpec = FilenameUtils.getFullPath(this.getClass().getResource(srcFSpec).toURI().getPath()) ;
+		final String _fSpec = FilenameUtils.getBaseName(FilenameUtils.getBaseName(srcFSpec)) ;
 
-		String[] args = { "-l", _dSpec + srcFSpec } ;
+		final String[] args = { "-l", _dSpec + srcFSpec } ;
 
 		Logger.info("{}", String.format("%s - XA %s", desc, Arrays.asList(args))) ;
 
 		XA.main(args) ;
 
-		String expected = FileUtils.readFileToString(new File(_dSpec + _fSpec + ".expected.lis"), StandardCharsets.UTF_8) ;
-		String actual = FileUtils.readFileToString(new File(_dSpec + _fSpec + ".lis"), StandardCharsets.UTF_8) ;
+		final String expected = FileUtils.readFileToString(new File(_dSpec + _fSpec + ".expected.lis"), StandardCharsets.UTF_8) ;
+		final String actual = FileUtils.readFileToString(new File(_dSpec + _fSpec + ".lis"), StandardCharsets.UTF_8) ;
 
 		assertEquals(expected, actual) ;
 	}

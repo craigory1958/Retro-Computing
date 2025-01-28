@@ -5,6 +5,7 @@ package xcom.retro.xa.directives.dir ;
 
 import org.antlr.v4.runtime.ParserRuleContext ;
 
+import xcom.retro.xa.Operand ;
 import xcom.retro.xa.Symbol ;
 import xcom.retro.xa.XA.AssemblyContext ;
 import xcom.retro.xa.api.annotations.aDirective ;
@@ -35,10 +36,8 @@ public class BYTE implements iDirective {
 		}
 
 		int size = 0 ;
-		for ( int a = 0; a < actx.statement().operands().size(); a++ )
-			size = size + (actx.statement().operands().get(a).assignment() instanceof StringLiteral
-					? ((StringLiteral) actx.statement().operands().get(a).assignment()).getValue().length
-					: 1) ;
+		for ( final Operand element : actx.statement().operands() )
+			size = size + (element.assignment() instanceof StringLiteral ? ((StringLiteral) element.assignment()).value().length : 1) ;
 
 		final byte[] bytes = new byte[size] ;
 		actx.statement().bytes(bytes) ;
@@ -55,11 +54,11 @@ public class BYTE implements iDirective {
 		final byte[] bytes = actx.statement().bytes() ;
 
 		int b = 0 ;
-		for ( int a = 0; a < actx.statement().operands().size(); a++ ) {
-			byte[] value = actx.statement().operands().get(a).assignment().eval(actx.symbols()).getValue() ;
+		for ( final Operand element : actx.statement().operands() ) {
+			final byte[] value = element.assignment().eval(actx.symbols()).value() ;
 
-			if ( actx.statement().operands().get(a).assignment() instanceof StringLiteral )
-				for ( byte _byte : value )
+			if ( element.assignment() instanceof StringLiteral )
+				for ( final byte _byte : value )
 					bytes[b++] = _byte ;
 			else
 				bytes[b++] = ExpressionUtils.lsb(value) ;

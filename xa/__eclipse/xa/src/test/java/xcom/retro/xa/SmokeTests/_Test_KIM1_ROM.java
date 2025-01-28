@@ -17,19 +17,19 @@ import xcom.retro.xa.XA ;
 
 public class _Test_KIM1_ROM {
 
-    @Test
-    public void kim1_rom_Test () throws Exception {
+	@Test
+	public void kim1_rom_Test() throws Exception {
 
-		String _dSpec = FilenameUtils.getFullPath(this.getClass().getResource("KIM-1 ROM.a65").toURI().getPath()) ;
-		String _fSpec = FilenameUtils.getBaseName(FilenameUtils.getBaseName("KIM-1 ROM.a65")) ;
+		final String _dSpec = FilenameUtils.getFullPath(this.getClass().getResource("KIM-1 ROM.a65").toURI().getPath()) ;
+		final String _fSpec = FilenameUtils.getBaseName(FilenameUtils.getBaseName("KIM-1 ROM.a65")) ;
 
-		String[] args = { "-b", _dSpec + "KIM-1 ROM.a65" } ;
+		final String[] args = { "-b", _dSpec + "KIM-1 ROM.a65" } ;
 
 		XA.main(args) ;
 
-		String expected = FileUtils.readFileToString(new File(_dSpec + _fSpec + ".expected.bin"), StandardCharsets.UTF_8) ;
-		String actual = FileUtils.readFileToString(new File(_dSpec + _fSpec + ".bin"), StandardCharsets.UTF_8) ;
+		final String expected = FileUtils.readFileToString(new File(_dSpec + _fSpec + ".expected.bin"), StandardCharsets.UTF_8) ;
+		final String actual = FileUtils.readFileToString(new File(_dSpec + _fSpec + ".bin"), StandardCharsets.UTF_8) ;
 
 		assertEquals(expected, actual) ;
-    }
+	}
 }

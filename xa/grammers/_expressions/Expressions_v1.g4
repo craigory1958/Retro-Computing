@@ -65,6 +65,7 @@ OctalLiteral:  '0o' [0-7]+ ;
 DecimalLiteral: '0d'? [0-9]+ ;
 HexLiteral:  ('$' | '0x') [0-9A-F]+ ;
 
+
 CharacterLiteral:  '\'' ~["] ;
 StringLiteral:  '"' ~["]* '"' ;
 

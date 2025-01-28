@@ -15,24 +15,24 @@ public class Operand {
 
 	_ExprNode assignment ;
 	public _ExprNode assignment() { return assignment ; }
-	public Operand assignment(_ExprNode assignment) { 
-		this.assignment=assignment ; 
-		return this ; 
+	public Operand assignment(final _ExprNode assignment) {
+		this.assignment=assignment ;
+		return this ;
 	}
 
 	//@formatter:on
 
 
-	public Operand(String name, _ExprNode assignment) {
+	public Operand(final String name, final _ExprNode assignment) {
 		this.name = name ;
 		this.assignment = assignment ;
 	}
 
-	public Operand(String name) {
+	public Operand(final String name) {
 		this.name = name ;
 	}
 
-	public Operand(_ExprNode assignment) {
+	public Operand(final _ExprNode assignment) {
 		this.assignment = assignment ;
 	}
 }

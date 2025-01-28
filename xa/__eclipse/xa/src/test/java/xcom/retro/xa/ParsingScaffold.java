@@ -28,15 +28,18 @@ public class ParsingScaffold {
 
 	Lexer lexer ;
 	Parser parser ;
-	
+
 	ParsingListener processor ;
-	public ParsingListener processor() { return processor; }
-	
+
+	public ParsingListener processor() {
+		return processor ;
+	}
+
 	ParseTreeWalker walker ;
 
 
 	@Log
-	public ParsingScaffold init(String processor) throws Exception {
+	public ParsingScaffold init(final String processor) throws Exception {
 
 		Logger.info("uP grammer: {}", processor) ;
 
@@ -56,14 +59,14 @@ public class ParsingScaffold {
 
 
 	@Log
-	public ParsingScaffold parse(String rule, String src) throws IOException {
+	public ParsingScaffold parse(final String rule, final String src) throws IOException {
 
 		processor.walked = new ArrayList<>() ;
 
 		lexer.setInputStream(CharStreams.fromString(src)) ;
 		parser.setTokenStream(new CommonTokenStream(lexer)) ;
 
-		ParserRuleContext prc = Reflection.method(rule).withReturnType(ParserRuleContext.class).in(parser).invoke() ;
+		final ParserRuleContext prc = Reflection.method(rule).withReturnType(ParserRuleContext.class).in(parser).invoke() ;
 		walker.walk(processor, prc) ;
 
 		return this ;
@@ -71,9 +74,9 @@ public class ParsingScaffold {
 
 
 	@Log
-	public static void main(String[] args) throws IOException, Exception {
+	public static void main(final String[] args) throws IOException, Exception {
 
-		ParsingScaffold $ = new ParsingScaffold() ;
+		final ParsingScaffold $ = new ParsingScaffold() ;
 		$.init("MOS6502") ;
 
 		String src ;

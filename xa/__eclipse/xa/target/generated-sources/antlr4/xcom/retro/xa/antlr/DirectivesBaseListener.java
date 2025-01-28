@@ -65,18 +65,6 @@ public class DirectivesBaseListener implements DirectivesListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDirectives(DirectivesParser.DirectivesContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitDirectives(DirectivesParser.DirectivesContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterArgumentList(DirectivesParser.ArgumentListContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -168,6 +156,18 @@ public class DirectivesBaseListener implements DirectivesListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitSymbol(DirectivesParser.SymbolContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIdeogram(DirectivesParser.IdeogramContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIdeogram(DirectivesParser.IdeogramContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

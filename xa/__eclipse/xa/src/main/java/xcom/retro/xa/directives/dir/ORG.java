@@ -29,7 +29,7 @@ public class ORG implements iDirective {
 
 //		System.out.println(actx.symbols()) ;
 		final _ValueNode value = actx.statement().operands().get(0).assignment().eval(actx.symbols()) ;
-		actx.segment().setOrg(value.getValueAsInteger()) ;
+		actx.segment().setOrg((int) value.getValue()) ;
 
 		actx.statement().bytes(new byte[0]) ;
 	}

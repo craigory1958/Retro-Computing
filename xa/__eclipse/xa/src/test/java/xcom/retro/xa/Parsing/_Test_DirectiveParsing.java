@@ -33,8 +33,8 @@ public class _Test_DirectiveParsing {
 
                 // { String src, String[] expectedContexts }
 
-                { "    .byte abc",  	"Statement, Directive, Assembler, Directives, ArgumentList, Argument, Expr, Term, Identifier" },
-                { "abc .byte abc",  	"Statement, Label, Directive, Assembler, Directives, ArgumentList, Argument, Expr, Term, Identifier" },
+                { "    .byte abc",  	"Statement, Directive, Assembler, ArgumentList, Argument, Expr, Term, Identifier" },
+                { "abc .byte abc",  	"Statement, Label, Directive, Assembler, ArgumentList, Argument, Expr, Term, Identifier" },
                 { "abc .macro abc",  	"Statement, Label, Directive, Macro, OptionList, Option, Symbol" },
                 { "abc .abc abc",  		"Statement, Label, Directive, Invocation, Symbol, ParameterList, Parameter, Argument, Expr, Term, Identifier" },
                 { "abc .abc abc=def", 	"Statement, Label, Directive, Invocation, Symbol, ParameterList, Parameter, Symbol, Assignment, Argument, Expr, Term, Identifier" },
@@ -54,7 +54,7 @@ public class _Test_DirectiveParsing {
 	static ParsingScaffold parser ;
 
 
-	public _Test_DirectiveParsing(String src, String expectedContexts) {
+	public _Test_DirectiveParsing(final String src, final String expectedContexts) {
 
 		this.src = src ;
 
@@ -64,18 +64,18 @@ public class _Test_DirectiveParsing {
 
 	@BeforeClass
 	public static void setupBeforeEachTest() throws Exception {
-		
-			parser = new ParsingScaffold() ;
-			parser.init("MOS6502") ;
+
+		parser = new ParsingScaffold() ;
+		parser.init("MOS6502") ;
 	}
 
 
 	@Test
 	public void assembleTest() throws IOException {
 
-		List<String> actual = parser.parse("statement", src).processor().walked() ;
-		
-		Logger.info("{}",String.format("%-25s  %s", src, actual));
+		final List<String> actual = parser.parse("statement", src).processor().walked() ;
+
+		Logger.info("{}", String.format("%-25s  %s", src, actual)) ;
 
 		assertArrayEquals(expectedContexts.toArray(), actual.toArray()) ;
 	}

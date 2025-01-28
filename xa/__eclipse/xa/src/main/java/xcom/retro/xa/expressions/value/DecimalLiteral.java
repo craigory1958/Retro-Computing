@@ -12,12 +12,12 @@ public class DecimalLiteral extends _ValueNode {
 		super(value) ;
 	}
 
-	
+
 	public DecimalLiteral(final byte value) {
 		super(value) ;
 	}
 
-	
+
 	public DecimalLiteral(final int value) {
 		super(ExpressionUtils.asBytes(value)) ;
 	}

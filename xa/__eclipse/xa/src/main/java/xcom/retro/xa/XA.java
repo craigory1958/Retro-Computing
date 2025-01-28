@@ -74,29 +74,29 @@ public class XA {
 		//@formatter:off
 
 		CommandLine cmd ;
-		
+
 		Map<String, String> cmdArgs ;
 		public Map<String, String> cmdArgs() { return cmdArgs ; }
 
 		Map<String, iDirective> directives ;
 		public Map<String, iDirective> directives() { return directives ; }
-		
+
 		boolean list ;
 		public boolean list() { return list ; }
-		public AssemblyContext list(boolean list) {
+		public AssemblyContext list(final boolean list) {
 			this.list = list ;
 			return this ;
 		}
 
 		Map<String, MACRO> macros = new HashMap<>() ;
 		public Map<String, MACRO> macros() { return macros ; }
-		
+
 		AssemblyPhases phase ;
 		public AssemblyPhases phase() { return phase ; }
 
 		Segment segment ;
 		public Segment segment() { return segment ; }
-		public AssemblyContext segment(Segment segment) {
+		public AssemblyContext segment(final Segment segment) {
 			this.segment = segment ;
 			return this ;
 		}
@@ -112,7 +112,7 @@ public class XA {
 
 		Statement statement ;
 		public Statement statement() { return statement ; }
-		public AssemblyContext statement(Statement statement) {
+		public AssemblyContext statement(final Statement statement) {
 			this.statement = statement ;
 			return this ;
 		}
@@ -122,7 +122,7 @@ public class XA {
 
 		Symbol symbol ;
 		public Symbol symbol() { return symbol ; }
-		public AssemblyContext symbol(Symbol symbol) {
+		public AssemblyContext symbol(final Symbol symbol) {
 			this.symbol = symbol ;
 			return this ;
 		}
@@ -298,9 +298,8 @@ public class XA {
 //				System.out.println() ;
 //			}
 
-			if ( (actx.statement.bytes != null) && (actx.statement.bytes.length > 0) ) {
+			if ( (actx.statement.bytes != null) && (actx.statement.bytes.length > 0) )
 				actx.statement.block.fillBytes(actx.statement.lc, actx.statement.bytes) ;
-			}
 		}
 
 		return this ;
@@ -336,8 +335,7 @@ public class XA {
 
 			try ( FileWriter fileWriter = new FileWriter(actx.cmdArgs.get(CommandLineOption_List)); PrintWriter out = new PrintWriter(fileWriter); ) {
 
-				for ( final Statement _statement : actx.statements ) {
-
+				for ( final Statement _statement : actx.statements )
 					if ( _statement.list ) {
 
 						out.print(" ABCDEFGHIJKLMONPQRSTUVWXYZ".charAt(_statement.sn())) ;
@@ -347,23 +345,21 @@ public class XA {
 								: String.format("  %04X", _statement.lc))) ;
 
 
-						for ( int b = 0; b < 4; b++ ) {
-
+						for ( int b = 0; b < 4; b++ )
 							if ( (_statement.bytes != null) && (b < _statement.bytes.length) )
 								out.print(String.format(" %02X", _statement.bytes[b])) ;
 							else
 								out.print("   ") ;
-						}
 
 						out.println(String.format("  %s", _statement.line())) ;
 
-						if ( (_statement.bytes != null) && _statement.bytes.length > 4 ) {
+						if ( (_statement.bytes != null) && (_statement.bytes.length > 4) ) {
 							for ( int b = 4; b < _statement.bytes.length; b++ ) {
 
-								if ( b % 4 == 0 && b > 4 )
+								if ( ((b % 4) == 0) && (b > 4) )
 									out.println() ;
 
-								if ( b % 4 == 0 )
+								if ( (b % 4) == 0 )
 									out.print(String.format("        %04X", _statement.lc + b)) ;
 
 								out.print(String.format(" %02X", _statement.bytes[b])) ;
@@ -372,7 +368,6 @@ public class XA {
 							out.println() ;
 						}
 					}
-				}
 			}
 
 			System.out.println() ;
@@ -433,7 +428,7 @@ public class XA {
 			}
 
 			Console.info("\nUsage ...") ;
-			for ( Entry<String, String> arg : $.actx.cmdArgs.entrySet() )
+			for ( final Entry<String, String> arg : $.actx.cmdArgs.entrySet() )
 				Console.info("    -" + arg.getKey() + " " + StringUtils.trimToEmpty(arg.getValue())) ;
 
 			//

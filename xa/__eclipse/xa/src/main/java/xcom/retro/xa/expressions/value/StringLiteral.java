@@ -13,4 +13,9 @@ public class StringLiteral extends _ValueNode {
 	public StringLiteral(final String value) {
 		super(value.substring(1, value.length() - 1).getBytes()) ;
 	}
+
+
+	public StringLiteral(final String value, final boolean quoted) {
+		super(value.getBytes()) ;
+	}
 }

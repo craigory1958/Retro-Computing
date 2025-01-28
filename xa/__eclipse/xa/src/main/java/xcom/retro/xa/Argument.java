@@ -16,7 +16,7 @@ public class Argument extends Operand {
 
 	//@formatter:on
 
-	public Argument(_ExprNode assignment) {
+	public Argument(final _ExprNode assignment) {
 		super(assignment) ;
 	}
 }

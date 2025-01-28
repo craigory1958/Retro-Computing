@@ -21,39 +21,39 @@ public class Statement {
 	public List<Operand> operands() { return operands ; }
 
 	String assemblyCallbackMethod ;
-	public Statement assemblyCallbackMethod(String assemblyCallbackMethod) {
+	public Statement assemblyCallbackMethod(final String assemblyCallbackMethod) {
 		this.assemblyCallbackMethod = assemblyCallbackMethod ;
 		return this ;
 	}
 
 	Object assemblyCallbackObject ;
-	public Statement assemblyCallbackObject(Object assemblyCallbackObject) {
+	public Statement assemblyCallbackObject(final Object assemblyCallbackObject) {
 		this.assemblyCallbackObject = assemblyCallbackObject ;
 		return this ;
 	}
 
 	ByteBlock block ;
-	
+
 	byte[] bytes ;
 	public byte[] bytes() { return bytes ; }
-	public Statement bytes(byte[] bytes) {
+	public Statement bytes(final byte[] bytes) {
 		this.bytes = bytes ;
 		return this ;
 	}
 
 	Symbol label ;
 	public Symbol label() { return label ; }
-	public Statement label(Symbol label) {
+	public Statement label(final Symbol label) {
 		this.label = label ;
 		return this ;
 	}
 
 	String line ;
 	public String line() { return line ; }
-	
+
 	boolean list ;
 	public boolean list() { return list ; }
-	public Statement list(boolean list) {
+	public Statement list(final boolean list) {
 		this.list = list ;
 		return this ;
 	}

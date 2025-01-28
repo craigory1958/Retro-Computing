@@ -24,6 +24,5 @@ public class ENDMACRO implements iDirective {
 
 	@Log
 	@Override
-	public void parse(final ParserRuleContext pctx) {
-	}
+	public void parse(final ParserRuleContext pctx) {}
 }

@@ -14,11 +14,12 @@ import xcom.retro.xa.expressions._ExprNode ;
 
 public abstract class _ValueNode extends _ExprNode {
 
-	byte[] value ;
+	//@formatter:off
 
-	public byte[] getValue() {
-		return value ;
-	}
+	byte[] value ;
+	public byte[] value() { return value ; }
+
+	//@formatter:on
 
 
 	public _ValueNode(final byte[] value) {
@@ -26,19 +27,18 @@ public abstract class _ValueNode extends _ExprNode {
 	}
 
 
-	public _ValueNode(byte value) {
-		byte[] b = { value } ;
+	public _ValueNode(final byte value) {
+		final byte[] b = { value } ;
 		this.value = b ;
 	}
 
 
-	public int getValueAsInteger() {
-		return ExpressionUtils.asInteger(value) ;
-	}
+	public Object getValue() {
 
-
-	public String getValueAsString() {
-		return ExpressionUtils.asString(value) ;
+		if ( this instanceof StringLiteral )
+			return ExpressionUtils.asString(value) ;
+		else
+			return ExpressionUtils.asInteger(value) ;
 	}
 
 

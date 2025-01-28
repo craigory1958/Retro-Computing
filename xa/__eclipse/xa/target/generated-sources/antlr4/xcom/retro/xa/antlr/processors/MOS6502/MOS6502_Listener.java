@@ -228,16 +228,6 @@ public interface MOS6502_Listener extends ParseTreeListener {
 	 */
 	void exitInvocation(MOS6502_Parser.InvocationContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MOS6502_Parser#directives}.
-	 * @param ctx the parse tree
-	 */
-	void enterDirectives(MOS6502_Parser.DirectivesContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MOS6502_Parser#directives}.
-	 * @param ctx the parse tree
-	 */
-	void exitDirectives(MOS6502_Parser.DirectivesContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link MOS6502_Parser#argumentList}.
 	 * @param ctx the parse tree
 	 */
@@ -317,6 +307,16 @@ public interface MOS6502_Listener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSymbol(MOS6502_Parser.SymbolContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MOS6502_Parser#ideogram}.
+	 * @param ctx the parse tree
+	 */
+	void enterIdeogram(MOS6502_Parser.IdeogramContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MOS6502_Parser#ideogram}.
+	 * @param ctx the parse tree
+	 */
+	void exitIdeogram(MOS6502_Parser.IdeogramContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MOS6502_Parser#expr}.
 	 * @param ctx the parse tree

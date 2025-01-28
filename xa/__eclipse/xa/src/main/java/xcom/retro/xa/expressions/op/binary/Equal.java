@@ -21,6 +21,6 @@ public class Equal extends _BinaryOpNode {
 	@Override
 	public _ValueNode eval(final Map<String, Symbol> symbols) {
 		return new DecimalLiteral(ExpressionUtils
-				.asBytes(ExpressionUtils.asInteger(lNode.eval(symbols).getValue()) == ExpressionUtils.asInteger(rNode.eval(symbols).getValue()) ? 1 : 0)) ;
+				.asBytes(ExpressionUtils.asInteger(lNode.eval(symbols).value()) == ExpressionUtils.asInteger(rNode.eval(symbols).value()) ? 1 : 0)) ;
 	}
 }

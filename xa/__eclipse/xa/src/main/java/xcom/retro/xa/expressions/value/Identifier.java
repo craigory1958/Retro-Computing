@@ -22,6 +22,6 @@ public class Identifier extends _ValueNode {
 
 	@Override
 	public _ValueNode eval(final Map<String, Symbol> symbols) {
-		return new Identifier(symbols.get(new String(this.getValue())).value()) ;
+		return new Identifier(symbols.get(new String(value())).value()) ;
 	}
 }

@@ -48,10 +48,10 @@ public class WORD implements iDirective {
 		final byte[] bytes = actx.statement().bytes() ;
 
 		for ( int b = 0; b < bytes.length; b = b + 2 ) {
-			bytes[b] = ExpressionUtils.lsb(actx.statement().operands().get(0).assignment().eval(actx.symbols()).getValue()) ;
-			bytes[b + 1] = ExpressionUtils.msb(actx.statement().operands().get(0).assignment().eval(actx.symbols()).getValue()) ;
+			bytes[b] = ExpressionUtils.lsb(actx.statement().operands().get(0).assignment().eval(actx.symbols()).value()) ;
+			bytes[b + 1] = ExpressionUtils.msb(actx.statement().operands().get(0).assignment().eval(actx.symbols()).value()) ;
 		}
-		
+
 		actx.statement().bytes(bytes) ;
 	}
 }

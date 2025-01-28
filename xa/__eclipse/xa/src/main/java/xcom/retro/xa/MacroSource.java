@@ -25,7 +25,7 @@ public class MacroSource implements iSource {
 	public int sn() {
 		return sn ;
 	}
-	
+
 	List<String> lines ;
 	int x ;
 

@@ -16,7 +16,7 @@ public class ByteBlock {
 
 	int lc ;
 
-	public ByteBlock lc(int lc) {
+	public ByteBlock lc(final int lc) {
 		this.lc = lc ;
 		return this ;
 	}
@@ -57,7 +57,7 @@ public class ByteBlock {
 
 	public void fillBytes(final int address, final byte[] bytes) {
 
-//		for ( final byte b : this.bytes ) 
+//		for ( final byte b : this.bytes )
 //			System.out.print(String.format("%02X", b)) ;
 //		System.out.println() ;
 

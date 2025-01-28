@@ -81,7 +81,7 @@ public class DirectiveListener extends DirectivesBaseListener {
 			switch ( pctx.getChild(0).getClass().getSimpleName() ) {
 				
 				case "AssemblerContext":
-					name = pctx.getChild(0).getChild(1).getChild(0).getText().toUpperCase() ;
+					name = pctx.getChild(0).getChild(1).getText().toUpperCase() ;
 					directive = actx.directives().get(name) ;
 					break ;
 					

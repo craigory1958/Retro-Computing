@@ -60,7 +60,7 @@ public class _Test_BasicStatementParsing_MOS6502 {
 	List<String> expectedContexts ;
 
 
-	public _Test_BasicStatementParsing_MOS6502(String src, String expectedContexts) {
+	public _Test_BasicStatementParsing_MOS6502(final String src, final String expectedContexts) {
 
 		this.src = src ;
 
@@ -70,16 +70,16 @@ public class _Test_BasicStatementParsing_MOS6502 {
 
 	@BeforeClass
 	public static void setupBeforeEachTest() throws Exception {
-		
-			parser = new ParsingScaffold() ;
-			parser.init("MOS6502") ;
+
+		parser = new ParsingScaffold() ;
+		parser.init("MOS6502") ;
 	}
 
 
 	@Test
 	public void parseTest() throws IOException {
 
-		List<String> actual = parser.parse("statement", src).processor().walked() ;
+		final List<String> actual = parser.parse("statement", src).processor().walked() ;
 
 		Logger.info("{}", String.format("%-25s  %s", src, actual)) ;
 

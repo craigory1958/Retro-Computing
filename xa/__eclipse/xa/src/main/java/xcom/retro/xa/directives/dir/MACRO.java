@@ -16,10 +16,12 @@ import org.apache.commons.lang3.StringUtils ;
 
 import xcom.retro.xa.MacroSource ;
 import xcom.retro.xa.Operand ;
+import xcom.retro.xa.Option ;
 import xcom.retro.xa.Statement ;
 import xcom.retro.xa.XA.AssemblyContext ;
 import xcom.retro.xa.api.annotations.aDirective ;
 import xcom.retro.xa.api.interfaces.iDirective ;
+import xcom.retro.xa.expressions.value.StringLiteral ;
 import xcom.utils4j.format.Templator ;
 import xcom.utils4j.logging.aspects.api.annotations.Log ;
 
@@ -53,7 +55,7 @@ public class MACRO implements iDirective {
 
 		this.actx = actx ;
 		this.name = name ;
-		this.options = optioms ;
+		options = optioms ;
 		this.lines = lines ;
 
 		sn = actx.sources().size() - 1 ;
@@ -64,7 +66,7 @@ public class MACRO implements iDirective {
 	@Log
 	public void expand(final ParserRuleContext pctx) {
 
-//		System.out.println(name) ;
+//		System.err.println(name) ;
 //
 //		options.forEach(o -> { //
 //			System.out.print("option>>> " + o.name() + ": " + o.getClass().getSimpleName()) ; //
@@ -82,33 +84,27 @@ public class MACRO implements iDirective {
 
 
 		boolean ordinalMode = true ;
-		final Map<String, Object> _namedParms = new HashMap<>() ;
-		final Map<String, Object> _parms = new HashMap<>() ;
+		final Map<String, Object> parms = new HashMap<>() ;
 
-		for ( int optIdx = 0; optIdx < actx.statement().operands().size(); optIdx++ ) {
-			Operand param = actx.statement().operands().get(optIdx) ;
+		for ( int i = 0; (i < actx.statement().operands().size()) || (i < options.size()); i++ ) {
 
-			if ( param.name() == null && ordinalMode )
-				_parms.put(options.get(optIdx).name(), param.assignment().eval(actx.symbols()).getValueAsInteger()) ;
+			final Operand option = (i < options.size() ? options.get(i) : null) ;
+			final Operand operand = (i < actx.statement().operands().size() ? actx.statement().operands().get(i) : null) ;
 
-			else if ( param.name() != null ) {
+			if ( ordinalMode && ((operand == null) || (operand.name() != null)) )
 				ordinalMode = false ;
-				_namedParms.put(param.name(), param.assignment().eval(actx.symbols()).getValueAsInteger()) ;
-			}
+
+			if ( ordinalMode && (operand != null) && (operand.name() == null) )
+				parms.put(option.name(), operand.assignment().eval(actx.symbols()).getValue()) ;
+
+			if ( !ordinalMode && (option != null) && (option.assignment() != null) )
+				parms.put(option.name(), option.assignment().eval(actx.symbols()).getValue()) ;
+
+			if ( !ordinalMode && (operand != null) && (operand.name() != null) )
+				parms.put(operand.name(), operand.assignment().eval(actx.symbols()).getValue()) ;
 		}
 
-
-//		_namedParms.entrySet().stream().forEach(e -> { //
-//			System.out.print("named>>> " + e.getKey() + ": " + e.getValue().getClass().getSimpleName()) ; //
-//			if ( e.getValue() != null )
-//				System.out.print(" - " + e.getValue().getClass().getSimpleName() + ": " + e.getValue()) ; //
-//			System.out.println() ; //
-//		}) ;
-
-
-		_namedParms.entrySet().stream().forEach(e -> _parms.put(e.getKey(), e.getValue())) ;
-
-//		_parms.entrySet().stream().forEach(e -> { //
+//		parms.entrySet().stream().forEach(e -> { //
 //			System.out.print("param>>> " + e.getKey() + ": " + e.getValue().getClass().getSimpleName()) ; //
 //			if ( e.getValue() != null )
 //				System.out.print(" - " + e.getValue().getClass().getSimpleName() + ": " + e.getValue()) ; //
@@ -116,19 +112,12 @@ public class MACRO implements iDirective {
 //		}) ;
 
 
-//		final Map<String, Object> _parms = new HashMap<>() ;
-//		int i = 0 ;
-//
-//		for ( final String parm : optioms )
-//			_parms.put(parm, actx.statement().operands().get(i++).assignment().eval(actx.symbols()).getValueAsInteger()) ;
+		final List<String> lines = new ArrayList<>() ;
+		for ( final String line : this.lines )
+			// System.err.println(Templator.delimiters(UnixDelimiters).template(line).inject(parms)) ;
+			lines.add(Templator.delimiters(UnixDelimiters).template(line).inject(parms)) ;
 
-
-		final List<String> _lines = new ArrayList<>() ;
-		for ( final String _line : lines )
-			_lines.add(Templator.delimiters(UnixDelimiters).template(_line).inject(_parms)) ;
-
-
-		actx.sources().add(new MacroSource(sn, ln, _lines)) ;
+		actx.sources().add(new MacroSource(sn, ln, lines)) ;
 		actx.source().push(actx.sources().get(actx.sources().size() - 1)) ;
 	}
 
@@ -147,6 +136,8 @@ public class MACRO implements iDirective {
 	@Log
 	public static MACRO buildMacro(final AssemblyContext actx, final ParserRuleContext pctx) {
 
+		actx.statement().operands().add(new Option("list").assignment(new StringLiteral(".nolist", true))) ;
+
 //		actx.statement().operands().forEach(o -> { //
 //			System.out.print("opt>>> " + o.name() + ": " + o.getClass().getSimpleName()) ; //
 //			if ( o.assignment() != null )
@@ -154,18 +145,22 @@ public class MACRO implements iDirective {
 //			System.out.println() ; //
 //		}) ;
 
-		Statement _statement = actx.statement() ;
+		final Statement _statement = actx.statement() ;
 
 		final String name = pctx.parent.getChild(0).getText() ;
 
 		final List<String> lines = new ArrayList<>() ;
 		try {
+			lines.add("${list}") ;
+
 			String line ;
-			while ( !StringUtils.trimToEmpty(line = actx.source().peek().next()).equalsIgnoreCase(".endmacro") ) {
+			while ( !StringUtils.trimToEmpty(line = actx.source().peek().next()).equalsIgnoreCase('.' + ENDMACRO.class.getSimpleName()) ) {
 				lines.add(line) ;
 				actx.statements().add(new Statement(actx.source().peek().sn(), actx.source().peek().ln(), line, actx.segment().lc(), actx.list())) ;
 				actx.statement(actx.statements().get(actx.statements().size() - 1)) ;
 			}
+
+			lines.add(".list") ;
 			actx.statements().add(new Statement(actx.source().peek().sn(), actx.source().peek().ln(), line, actx.segment().lc(), actx.list())) ;
 			actx.statement(actx.statements().get(actx.statements().size() - 1)) ;
 		}

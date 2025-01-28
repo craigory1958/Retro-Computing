@@ -3,4 +3,4 @@ abc		.macro	abc1, abc2=123, abc3
 		 LDA		${abc1} + ${abc2} + ${abc3}
 		.endmacro
 		
-def		.abc	1, 234, abc3=567
+		.abc	1, 234, abc3=567

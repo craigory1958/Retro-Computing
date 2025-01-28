@@ -20,6 +20,6 @@ public class Plus extends _UnaryOpNode {
 
 	@Override
 	public _ValueNode eval(final Map<String, Symbol> symbols) {
-		return new DecimalLiteral(ExpressionUtils.asInteger(node.eval(symbols).getValue())) ;
+		return new DecimalLiteral(ExpressionUtils.asInteger(node.eval(symbols).value())) ;
 	}
 }

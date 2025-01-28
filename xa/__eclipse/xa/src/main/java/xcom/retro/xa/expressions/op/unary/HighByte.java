@@ -19,6 +19,6 @@ public class HighByte extends _UnaryOpNode {
 
 	@Override
 	public _ValueNode eval(final Map<String, Symbol> symbols) {
-		return new DecimalLiteral(node.eval(symbols).getValue()[1]) ;
+		return new DecimalLiteral(node.eval(symbols).value()[1]) ;
 	}
 }

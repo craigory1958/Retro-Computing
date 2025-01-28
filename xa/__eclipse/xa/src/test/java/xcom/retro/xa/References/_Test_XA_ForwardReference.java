@@ -62,17 +62,17 @@ public class _Test_XA_ForwardReference {
 	@Test
 	public void basicCheck() throws Exception {
 
-		String _dSpec = FilenameUtils.getFullPath(this.getClass().getResource(fSpec).toURI().getPath()) ;
-		String _fSpec = FilenameUtils.getBaseName(FilenameUtils.getBaseName(fSpec)) ;
+		final String _dSpec = FilenameUtils.getFullPath(this.getClass().getResource(fSpec).toURI().getPath()) ;
+		final String _fSpec = FilenameUtils.getBaseName(FilenameUtils.getBaseName(fSpec)) ;
 
-		String[] args = { "-b", _dSpec + fSpec } ;
+		final String[] args = { "-b", _dSpec + fSpec } ;
 
 		Logger.info("{}", String.format("%s - XA %s", desc, Arrays.asList(args))) ;
 
 		XA.main(args) ;
 
-		String expected = FileUtils.readFileToString(new File(_dSpec + _fSpec + ".kim"), StandardCharsets.UTF_8) ;
-		String actual = FileUtils.readFileToString(new File(_dSpec + _fSpec + ".bin"), StandardCharsets.UTF_8) ;
+		final String expected = FileUtils.readFileToString(new File(_dSpec + _fSpec + ".kim"), StandardCharsets.UTF_8) ;
+		final String actual = FileUtils.readFileToString(new File(_dSpec + _fSpec + ".bin"), StandardCharsets.UTF_8) ;
 
 		assertEquals(expected, actual) ;
 	}

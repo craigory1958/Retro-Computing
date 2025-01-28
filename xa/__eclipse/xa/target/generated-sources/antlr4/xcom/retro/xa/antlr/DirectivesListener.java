@@ -48,16 +48,6 @@ public interface DirectivesListener extends ParseTreeListener {
 	 */
 	void exitInvocation(DirectivesParser.InvocationContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DirectivesParser#directives}.
-	 * @param ctx the parse tree
-	 */
-	void enterDirectives(DirectivesParser.DirectivesContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link DirectivesParser#directives}.
-	 * @param ctx the parse tree
-	 */
-	void exitDirectives(DirectivesParser.DirectivesContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link DirectivesParser#argumentList}.
 	 * @param ctx the parse tree
 	 */
@@ -137,6 +127,16 @@ public interface DirectivesListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSymbol(DirectivesParser.SymbolContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DirectivesParser#ideogram}.
+	 * @param ctx the parse tree
+	 */
+	void enterIdeogram(DirectivesParser.IdeogramContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DirectivesParser#ideogram}.
+	 * @param ctx the parse tree
+	 */
+	void exitIdeogram(DirectivesParser.IdeogramContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link DirectivesParser#expr}.
 	 * @param ctx the parse tree

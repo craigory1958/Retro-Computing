@@ -14,7 +14,7 @@
     <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
     <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="xcom.retro.xa.XA"/>
     <stringAttribute key="org.eclipse.jdt.launching.MODULE_NAME" value="xa"/>
-    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-b -l &quot;H:\_cwg-base__Home\Computer Archtecture\Retro Computing\SBC6502\_vmk\kernal\VMK.asm&quot;"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-b -l &quot;H:\_cwg-base__Home\Computer Archtecture\Retro Computing\SBC6502\Virtual Memory Kernal\_vmk\kernal\VMK.a65&quot;"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="xa"/>
     <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
 </launchConfiguration>

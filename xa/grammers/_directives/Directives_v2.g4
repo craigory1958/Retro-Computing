@@ -10,22 +10,27 @@ import Expressions ;
 
 
 directive:  assembler | macro | invocation ;
-assembler:  '.' directives argumentList? ;
-macro: '.macro' optionList? ;
-invocation: '.' symbol parameterList? ;
 
-directives: Directives ;
+assembler:  '.' Directives argumentList? ;
+macro:  '.macro' optionList? ;
+invocation:  '.' symbol parameterList? ;
 
 
+// Assembler directive ...
 argumentList:   argument ( ',' argumentList )? ; 
 argument:  expr ;
+
+// Macro definition ...
 optionList:   option ( ',' optionList )? ; 
 option: symbol assignment? ;
-parameterList:   parameter ( ',' parameterList )? ; 
-parameter: ( symbol assignment ) | argument ;
 
-assignment:  '=' argument ;
-symbol:  Identifier ;
+// Macro invocation ...
+parameterList:  ( parameter ( ',' parameterList )? ) | ( ',' parameterList? ) ; 
+parameter: ( symbol assignment ) | ideogram | argument ;
+assignment:  '=' ( argument | ideogram ) ;
+
+symbol:  Directives | Identifier ;
+ideogram:  '.' symbol ;
 
 
 Directives:  

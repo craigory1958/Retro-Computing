@@ -9,6 +9,7 @@ options {
 
 assembly:  ( statement eol )* EOF ;
 statement:  ( label | instruction | ( label instruction ) | directive | ( label directive ) )?  ;
+
 label:  Identifier ;
 
 
@@ -63,22 +64,27 @@ Opcodes:
 //
 
 directive:  assembler | macro | invocation ;
-assembler:  '.' directives argumentList? ;
-macro: '.macro' optionList? ;
-invocation: '.' symbol parameterList? ;
 
-directives: Directives ;
+assembler:  '.' Directives argumentList? ;
+macro:  '.macro' optionList? ;
+invocation:  '.' symbol parameterList? ;
 
 
+// Assembler directive ...
 argumentList:   argument ( ',' argumentList )? ; 
 argument:  expr ;
+
+// Macro definition ...
 optionList:   option ( ',' optionList )? ; 
 option: symbol assignment? ;
-parameterList:   parameter ( ',' parameterList )? ; 
-parameter: ( symbol assignment ) | argument ;
 
-assignment:  '=' argument ;
-symbol:  Identifier ;
+// Macro invocation ...
+parameterList:  ( parameter ( ',' parameterList )? ) | ( ',' parameterList? ) ; 
+parameter: ( symbol assignment ) | ideogram | argument ;
+assignment:  '=' ( argument | ideogram ) ;
+
+symbol:  Directives | Identifier ;
+ideogram:  '.' symbol ;
 
 
 Directives:  
@@ -96,7 +102,7 @@ Directives:
 // Expresions.g4
 //
 
-expr:  term ( ( binary | comparison ) term)* ;
+expr:  term ( ( binary | comparison ) term )* ;
 
 term:  org | identifier | literal | '(' expr ')' | unary term ;
 org: '*' ;
@@ -153,6 +159,7 @@ BinaryLiteral: '0b' [0-1]+ ;
 OctalLiteral:  '0o' [0-7]+ ;
 DecimalLiteral: '0d'? [0-9]+ ;
 HexLiteral:  ('$' | '0x') [0-9A-F]+ ;
+
 
 CharacterLiteral:  '\'' ~["] ;
 StringLiteral:  '"' ~["]* '"' ;

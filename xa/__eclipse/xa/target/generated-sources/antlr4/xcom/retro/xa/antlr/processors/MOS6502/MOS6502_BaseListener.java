@@ -281,18 +281,6 @@ public class MOS6502_BaseListener implements MOS6502_Listener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDirectives(MOS6502_Parser.DirectivesContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitDirectives(MOS6502_Parser.DirectivesContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterArgumentList(MOS6502_Parser.ArgumentListContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -384,6 +372,18 @@ public class MOS6502_BaseListener implements MOS6502_Listener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitSymbol(MOS6502_Parser.SymbolContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIdeogram(MOS6502_Parser.IdeogramContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIdeogram(MOS6502_Parser.IdeogramContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

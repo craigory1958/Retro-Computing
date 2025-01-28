@@ -1,9 +1,7 @@
 		 
 
-STAIY   .macro  list, addr
-		${list}
+staiy	.macro  addr
          STA    [${addr}],Y
-        .list
         .endmacro
 		 
 		 
@@ -32,7 +30,7 @@ CHKEND   DEX                ; END OF LIST?
 		 
          RTS                ; YES. LIST IS NOW ORDERED
         
-        .STAIY	.nolist, 0
+        .staiy	0
         
-        .STAIY	.list, 1
+        .staiy	1, list=.list
         
