@@ -18,6 +18,6 @@ public class DirectiveUtils {
 		final ParseTreeListener listener = new DirectiveListener(actx) ;
 		final ParseTreeWalker walker = new ParseTreeWalker() ;
 
-		walker.walk(listener, actx.statement().prc()) ;
+		walker.walk(listener, actx.statement().pctx()) ;
 	}
 }

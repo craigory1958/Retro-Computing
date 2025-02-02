@@ -301,25 +301,28 @@ public class MOS6502 extends MOS6502_BaseListener implements iProcessor {
 	@Override
 	public void exitInstruction(final MOS6502_Parser.InstructionContext pctx) {
 
-		final String opcode = pctx.getChild(0).getText() ;
-		final String mode = pctx.getChild(1).getChild(0).getClass().getSimpleName() ;
-		Opcodes opc = Enums.valueOfIgnoreCase(Opcodes.class, opcode + "_" + mode.substring(0, mode.length() - 7)) ;
+		if ( actx.statement().assembleEnable() ) {
+			
+			final String opcode = pctx.getChild(0).getText() ;
+			final String mode = pctx.getChild(1).getChild(0).getClass().getSimpleName() ;
+			Opcodes opc = Enums.valueOfIgnoreCase(Opcodes.class, opcode + "_" + mode.substring(0, mode.length() - 7)) ;
 
-		if ( opc.zpOption != null )
-			try {
-				final _ValueNode value = actx.statement().operands().get(0).assignment().eval(actx.symbols()) ;
+			if ( opc.zpOption != null )
+				try {
+					final _ValueNode value = actx.statement().operands().get(0).assignment().eval(actx.symbols()) ;
 
-				if ( (value != null) && ((int) value.getValue() <= 255) )
-					opc = opc.zpOption ;
-			}
-			catch ( final NullPointerException ex ) {}
+					if ( (value != null) && ((int) value.getValue() <= 255) )
+						opc = opc.zpOption ;
+				}
+				catch ( final NullPointerException ex ) {}
 
-		final String callback = "set" + opc.bytes.length + "Byte" + (mode.equals("RelativeContext") ? "Relative" : "") + "Instruction" ;
+			final String callback = "set" + opc.bytes.length + "Byte" + (mode.equals("RelativeContext") ? "Relative" : "") + "Instruction" ;
 
-		actx.statement().assemblyCallbackMethod(callback) ;
-		actx.statement().assemblyCallbackObject(this) ;
-		actx.statement().bytes(Arrays.copyOf(opc.bytes, opc.bytes.length)) ;
-		actx.segment().allocateBytes(actx.statement().bytes()) ;
+			actx.statement().assemblyCallbackMethod(callback) ;
+			actx.statement().assemblyCallbackObject(this) ;
+			actx.statement().bytes(Arrays.copyOf(opc.bytes, opc.bytes.length)) ;
+			actx.segment().allocateBytes(actx.statement().bytes()) ;
+		}
 	}
 
 
@@ -327,9 +330,11 @@ public class MOS6502 extends MOS6502_BaseListener implements iProcessor {
 	@Override
 	public void exitLabel(final MOS6502_Parser.LabelContext pctx) {
 
-		actx.symbol(new Symbol(pctx.getText(), actx.segment().lc())) ;
-		actx.symbols().put(actx.symbol().name(), actx.symbol()) ;
-		actx.statement().label(actx.symbol()) ;
+		if ( actx.statement().assembleEnable() ) {
+			actx.symbol(new Symbol(pctx.getText(), actx.segment().lc())) ;
+			actx.symbols().put(actx.symbol().name(), actx.symbol()) ;
+			actx.statement().label(actx.symbol()) ;
+		}
 	}
 
 

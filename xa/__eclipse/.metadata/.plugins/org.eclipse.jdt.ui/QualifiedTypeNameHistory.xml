@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
-    <fullyQualifiedTypeName name="java.io.File"/>
     <fullyQualifiedTypeName name="org.hibernate.internal.build.AllowSysOut"/>
     <fullyQualifiedTypeName name="org.hsqldb.types.Charset"/>
     <fullyQualifiedTypeName name="java.nio.charset.Charset"/>
@@ -60,4 +59,5 @@
     <fullyQualifiedTypeName name="xcom.retro.xa.antlr.processors.MOS6502.MOS6502_Parser.SymbolContext"/>
     <fullyQualifiedTypeName name="xcom.retro.xa.Symbol"/>
     <fullyQualifiedTypeName name="xcom.retro.xa.Parameter"/>
+    <fullyQualifiedTypeName name="org.hsqldb.result.ResultMetaData.SysOffsets"/>
 </qualifiedTypeNameHistroy>

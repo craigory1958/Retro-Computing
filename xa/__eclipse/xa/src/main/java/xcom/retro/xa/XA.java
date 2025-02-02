@@ -80,6 +80,9 @@ public class XA {
 
 		Map<String, iDirective> directives ;
 		public Map<String, iDirective> directives() { return directives ; }
+		
+		Stack<Boolean> ifBlocks ;
+		public Stack<Boolean> ifBlocks() { return ifBlocks ; }
 
 		boolean list ;
 		public boolean list() { return list ; }
@@ -90,6 +93,13 @@ public class XA {
 
 		Map<String, MACRO> macros = new HashMap<>() ;
 		public Map<String, MACRO> macros() { return macros ; }
+
+//		int nestedIfLevel ;
+//		public int nestedIfLevel() { return nestedIfLevel ; }
+//		public AssemblyContext nestedIfLevel(final int nestedIfLevel) {
+//			this.nestedIfLevel = nestedIfLevel ;
+//			return this ;
+//		}
 
 		AssemblyPhases phase ;
 		public AssemblyPhases phase() { return phase ; }
@@ -132,9 +142,19 @@ public class XA {
 
 		//@formatter:on
 
+
 		public AssemblyContext() {
+
 			list = true ;
+			ifBlocks = new Stack<>() ;
+			ifBlocks.push(true) ;
 		}
+
+
+		public boolean assembleEnable() {
+			return ifBlocks.peek() ;
+		}
+
 	}
 
 
@@ -238,17 +258,28 @@ public class XA {
 
 				line = line.stripTrailing() ;
 
-				actx.statements.add(new Statement(actx.source.peek().sn(), actx.source.peek().ln(), line, actx.segment.lc, actx.list())) ;
+				actx.statements.add( //
+						new Statement( //
+								actx.source.peek().sn(), //
+								actx.source.peek().ln(), //
+								line, actx.segment.lc, //
+								actx.list(), //
+								actx.assembleEnable() //
+						)) ;
+
 				actx.statement = actx.statements.get(actx.statements.size() - 1) ;
 
 				lexer.setInputStream(CharStreams.fromString(line)) ;
 				parser.setTokenStream(new CommonTokenStream(lexer)) ;
 
-				actx.statement.prc = Reflection.method("statement").withReturnType(ParserRuleContext.class).in(parser).invoke() ;
+				actx.statement.pctx = Reflection.method("statement").withReturnType(ParserRuleContext.class).in(parser).invoke() ;
 				Console.debug(">>>{}", line) ;
-				walker.walk(processor, actx.statement.prc) ;
 
-				actx.statement.block = actx.segment.blocks.get(actx.segment.blocks.size() - 1) ;
+				walker.walk(processor, actx.statement.pctx) ;
+
+				if ( actx.statement.assembleEnable() ) {
+					actx.statement.block = actx.segment.blocks.get(actx.segment.blocks.size() - 1) ;
+				}
 			}
 
 			actx.source.pop() ;
@@ -268,14 +299,6 @@ public class XA {
 
 			if ( actx.statement.assemblyCallbackMethod != null )
 				Reflection.method(actx.statement.assemblyCallbackMethod).in(actx.statement.assemblyCallbackObject).invoke() ;
-
-//			if ( !actx.statement.line.isEmpty() && (actx.statement.bytes != null) ) {
-//				System.out.print(actx.statement.hashCode()) ;
-//				System.out.println(actx.statement.line) ;
-//				for ( int b = 0; b < actx.statement.bytes.length; b++ )
-//					System.out.print(String.format(" %02X", actx.statement.bytes[b])) ;
-//				System.out.println() ;
-//			}
 		}
 
 		return this ;
@@ -290,15 +313,7 @@ public class XA {
 		for ( final Statement statement : actx.statements ) {
 			actx.statement = statement ;
 
-//			if ( !actx.statement.line.isEmpty() && (actx.statement.bytes != null) ) {
-//				System.out.print(actx.statement.hashCode()) ;
-//				System.out.println(actx.statement.line) ;
-//				for ( int b = 0; b < actx.statement.bytes.length; b++ )
-//					System.out.print(String.format(" %02X", actx.statement.bytes[b])) ;
-//				System.out.println() ;
-//			}
-
-			if ( (actx.statement.bytes != null) && (actx.statement.bytes.length > 0) )
+			if ( actx.statement.assembleEnable() && (actx.statement.block != null) && (actx.statement.bytes != null) && (actx.statement.bytes.length > 0) )
 				actx.statement.block.fillBytes(actx.statement.lc, actx.statement.bytes) ;
 		}
 
@@ -311,16 +326,10 @@ public class XA {
 
 		actx.phase = Extrude ;
 
-		if ( actx.cmd.hasOption(CommandLineOption_Bin) ) {
-
+		if ( actx.cmd.hasOption(CommandLineOption_Bin) )
 			try ( FileWriter fileWriter = new FileWriter(actx.cmdArgs.get(CommandLineOption_Bin)); PrintWriter out = new PrintWriter(fileWriter); ) {
 				extruder.extrude(out, actx.segments()) ;
 			}
-
-			System.out.println() ;
-			System.out.println(actx.cmdArgs.get(CommandLineOption_Bin)) ;
-			System.out.println(FileUtils.readFileToString(new File(actx.cmdArgs.get(CommandLineOption_Bin)), Charset.defaultCharset())) ;
-		}
 
 		return this ;
 	}
@@ -338,11 +347,30 @@ public class XA {
 				for ( final Statement _statement : actx.statements )
 					if ( _statement.list ) {
 
-						out.print(" ABCDEFGHIJKLMONPQRSTUVWXYZ".charAt(_statement.sn())) ;
+						out.print("   A B C D E F G H I J K L M O N P Q R S T U V W X Y ZAAABACADAEAFAGAHAIAJAKALAMANAOAPAQARASATAUAVAWAXAYAZ"
+								.substring(_statement.sn() * 2, _statement.sn() * 2 + 2)) ;
 						out.print(String.format("%4d:", _statement.ln())) ;
 
-						out.print((_statement.line().isEmpty() || (_statement.bytes() == null) || (_statement.bytes().length == 0) ? "      "
-								: String.format("  %04X", _statement.lc))) ;
+
+//						if ( _statement.pctx() != null && _statement.pctx().getChild(1) != null //
+//								&& _statement.pctx().getChild(1).getChild(0) != null //
+//								&& _statement.pctx().getChild(1).getChild(0).getChild(1) != null //
+//								) //
+//							System.err.println(_statement.pctx().getChild(1).getChild(0).getChild(1).getText()) ;
+
+						out.print( //
+								(_statement.line().isEmpty() || (_statement.bytes() == null) || (_statement.bytes().length == 0)) //
+										&& (_statement.label() == null || StringUtils.trimToEmpty(_statement.label().name).isEmpty()) //
+										|| (_statement.pctx() != null && _statement.pctx().getChild(1) != null //
+												&& _statement.pctx().getChild(1).getChild(0) != null //
+												&& _statement.pctx().getChild(1).getChild(0).getClass().getSimpleName().equals("MacroContext")) //
+										|| (_statement.pctx() != null && _statement.pctx().getChild(1) != null //
+												&& _statement.pctx().getChild(1).getChild(0) != null //
+												&& _statement.pctx().getChild(1).getChild(0).getChild(1) != null //
+												&& _statement.pctx().getChild(1).getChild(0).getChild(1).getText().equalsIgnoreCase("EQU")) //
+														? "      "
+														: String.format("  %04X", _statement.lc) //
+						) ;
 
 
 						for ( int b = 0; b < 4; b++ )
@@ -370,9 +398,9 @@ public class XA {
 					}
 			}
 
-			System.out.println() ;
-			System.out.println(actx.cmdArgs.get(CommandLineOption_List)) ;
-			System.out.println(FileUtils.readFileToString(new File(actx.cmdArgs.get(CommandLineOption_List)), Charset.defaultCharset())) ;
+			Console.info("") ;
+			Console.info(actx.cmdArgs.get(CommandLineOption_List)) ;
+			Console.info(FileUtils.readFileToString(new File(actx.cmdArgs.get(CommandLineOption_List)), Charset.defaultCharset())) ;
 		}
 
 		return this ;

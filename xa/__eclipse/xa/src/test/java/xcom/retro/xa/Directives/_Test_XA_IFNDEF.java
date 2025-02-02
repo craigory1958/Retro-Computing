@@ -22,7 +22,7 @@ import xcom.retro.xa.XA ;
 
 
 @RunWith(Parameterized.class)
-public class _Test_XA_ByteDirective {
+public class _Test_XA_IFNDEF {
 
 	@Parameterized.Parameters
 	public static Collection<Object[]> data() {
@@ -33,8 +33,7 @@ public class _Test_XA_ByteDirective {
 
                 // { String desc, String srcFSpec }
 
-                { "Single Operand", "ByteDirective_SingleOperand.a65", },
-                { "Multiple Operands", "ByteDirective_MultipleOperands.a65", },
+                { "Basic", "IFNDEF_Basic.a65", },
         } ;
 
         //@formatter:on
@@ -43,13 +42,13 @@ public class _Test_XA_ByteDirective {
 	}
 
 
-	private static final Logger Logger = LoggerFactory.getLogger(_Test_XA_ByteDirective.class) ;
+	private static final Logger Logger = LoggerFactory.getLogger(_Test_XA_IFNDEF.class) ;
 
 	String desc ;
 	String srcFSpec ;
 
 
-	public _Test_XA_ByteDirective(final String desc, final String srcFSpec) {
+	public _Test_XA_IFNDEF(final String desc, final String srcFSpec) {
 
 		this.desc = desc ;
 		this.srcFSpec = srcFSpec ;

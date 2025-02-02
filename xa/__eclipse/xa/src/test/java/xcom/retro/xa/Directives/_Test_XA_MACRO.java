@@ -22,7 +22,7 @@ import xcom.retro.xa.XA ;
 
 
 @RunWith(Parameterized.class)
-public class _Test_XA_ListDirective {
+public class _Test_XA_MACRO {
 
 	@Parameterized.Parameters
 	public static Collection<Object[]> data() {
@@ -33,8 +33,7 @@ public class _Test_XA_ListDirective {
 
                 // { String desc, String srcFSpec }
 
-                { "Basic .list/.nolist", "ListDirective_Basic.a65", },
-                { "Macro", "ListDirective_Macro.a65", },
+                { "Bsic Macro", "MACRO_Basic.a65", },
         } ;
 
         //@formatter:on
@@ -43,13 +42,13 @@ public class _Test_XA_ListDirective {
 	}
 
 
-	private static final Logger Logger = LoggerFactory.getLogger(_Test_XA_ListDirective.class) ;
+	private static final Logger Logger = LoggerFactory.getLogger(_Test_XA_MACRO.class) ;
 
 	String desc ;
 	String srcFSpec ;
 
 
-	public _Test_XA_ListDirective(final String desc, final String srcFSpec) {
+	public _Test_XA_MACRO(final String desc, final String srcFSpec) {
 
 		this.desc = desc ;
 		this.srcFSpec = srcFSpec ;
@@ -62,14 +61,14 @@ public class _Test_XA_ListDirective {
 		final String _dSpec = FilenameUtils.getFullPath(this.getClass().getResource(srcFSpec).toURI().getPath()) ;
 		final String _fSpec = FilenameUtils.getBaseName(FilenameUtils.getBaseName(srcFSpec)) ;
 
-		final String[] args = { "-l", _dSpec + srcFSpec } ;
+		final String[] args = { "-b", _dSpec + srcFSpec } ;
 
 		Logger.info("{}", String.format("%s - XA %s", desc, Arrays.asList(args))) ;
 
 		XA.main(args) ;
 
-		final String expected = FileUtils.readFileToString(new File(_dSpec + _fSpec + ".expected.lis"), StandardCharsets.UTF_8) ;
-		final String actual = FileUtils.readFileToString(new File(_dSpec + _fSpec + ".lis"), StandardCharsets.UTF_8) ;
+		final String expected = FileUtils.readFileToString(new File(_dSpec + _fSpec + ".expected.bin"), StandardCharsets.UTF_8) ;
+		final String actual = FileUtils.readFileToString(new File(_dSpec + _fSpec + ".bin"), StandardCharsets.UTF_8) ;
 
 		assertEquals(expected, actual) ;
 	}

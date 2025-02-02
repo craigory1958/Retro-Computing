@@ -22,7 +22,7 @@ import xcom.retro.xa.XA ;
 
 
 @RunWith(Parameterized.class)
-public class _Test_XA_OrgDirective {
+public class _Test_XA_ORG {
 
 	@Parameterized.Parameters
 	public static Collection<Object[]> data() {
@@ -33,9 +33,9 @@ public class _Test_XA_OrgDirective {
 
                 // { String desc, String srcFSpec }
 
-                { "No Org Directive", "OrgDirective_NoOrgDirective.a65", },
-                { "Simple Org", "OrgDirective_SimpleOrg.a65", },
-                { "Non-Consecutive Blocks", "OrgDirective_NonConsecutiveBlocks.a65", },
+                { "No Org Directive", "ORG_NoDirective.a65", },
+                { "Simple Org", "ORG_BAsic.a65", },
+                { "Non-Consecutive Blocks", "ORG_NonConsecutiveBlocks.a65", },
         } ;
 
         //@formatter:on
@@ -44,13 +44,13 @@ public class _Test_XA_OrgDirective {
 	}
 
 
-	private static final Logger Logger = LoggerFactory.getLogger(_Test_XA_OrgDirective.class) ;
+	private static final Logger Logger = LoggerFactory.getLogger(_Test_XA_ORG.class) ;
 
 	String desc ;
 	String srcFSpec ;
 
 
-	public _Test_XA_OrgDirective(final String desc, final String srcFSpec) {
+	public _Test_XA_ORG(final String desc, final String srcFSpec) {
 
 		this.desc = desc ;
 		this.srcFSpec = srcFSpec ;

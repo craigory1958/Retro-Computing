@@ -22,7 +22,7 @@ import xcom.retro.xa.XA ;
 
 
 @RunWith(Parameterized.class)
-public class _Test_XA_MacroDirective {
+public class _Test_XA_IFDEF {
 
 	@Parameterized.Parameters
 	public static Collection<Object[]> data() {
@@ -33,7 +33,7 @@ public class _Test_XA_MacroDirective {
 
                 // { String desc, String srcFSpec }
 
-                { "Bsic Macro", "MacroDirective_Basic.a65", },
+                { "Basic", "IFDEF_Basic.a65", },
         } ;
 
         //@formatter:on
@@ -42,13 +42,13 @@ public class _Test_XA_MacroDirective {
 	}
 
 
-	private static final Logger Logger = LoggerFactory.getLogger(_Test_XA_MacroDirective.class) ;
+	private static final Logger Logger = LoggerFactory.getLogger(_Test_XA_IFDEF.class) ;
 
 	String desc ;
 	String srcFSpec ;
 
 
-	public _Test_XA_MacroDirective(final String desc, final String srcFSpec) {
+	public _Test_XA_IFDEF(final String desc, final String srcFSpec) {
 
 		this.desc = desc ;
 		this.srcFSpec = srcFSpec ;

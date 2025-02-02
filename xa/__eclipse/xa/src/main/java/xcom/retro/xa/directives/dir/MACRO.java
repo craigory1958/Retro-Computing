@@ -129,7 +129,7 @@ public class MACRO implements iDirective {
 		final MACRO m = buildMacro(actx, pctx) ;
 		actx.macros().put(m.name().toLowerCase(), m) ;
 
-		actx.statement().bytes(new byte[0]) ;
+//		actx.statement().bytes(new byte[0]) ;
 	}
 
 
@@ -156,12 +156,12 @@ public class MACRO implements iDirective {
 			String line ;
 			while ( !StringUtils.trimToEmpty(line = actx.source().peek().next()).equalsIgnoreCase('.' + ENDMACRO.class.getSimpleName()) ) {
 				lines.add(line) ;
-				actx.statements().add(new Statement(actx.source().peek().sn(), actx.source().peek().ln(), line, actx.segment().lc(), actx.list())) ;
+				actx.statements().add(new Statement(actx.source().peek().sn(), actx.source().peek().ln(), line, actx.segment().lc(), actx.list(), actx.assembleEnable())) ;
 				actx.statement(actx.statements().get(actx.statements().size() - 1)) ;
 			}
 
 			lines.add(".list") ;
-			actx.statements().add(new Statement(actx.source().peek().sn(), actx.source().peek().ln(), line, actx.segment().lc(), actx.list())) ;
+			actx.statements().add(new Statement(actx.source().peek().sn(), actx.source().peek().ln(), line, actx.segment().lc(), actx.list(), actx.assembleEnable())) ;
 			actx.statement(actx.statements().get(actx.statements().size() - 1)) ;
 		}
 		catch ( final IOException e ) {}

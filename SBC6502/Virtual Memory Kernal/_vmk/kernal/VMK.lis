@@ -1,0 +1,115 @@
+     1:                    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     2:                    ;                                                                              ;
+     3:                    ;                      Virtual Memory Kernal (VMK) v0.0.1                      ;
+     4:                    ;                                                                              ;
+     5:                    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+     6:                    
+     7:                                            .include    "VMK.def.a65"
+ A   1:                    ;                   .segment    "code"
+ A   2:                    ;                   .segment    "data"
+ A   3:                    ;                   .segment    "io"
+ A   4:                    
+ A   5:                    true                   .equ    1
+ A   6:                    false                  .equ    0
+ A   7:                    
+ A   8:                    _vmk_kernal_pid        .equ    0
+ A   9:                    
+     8:                                            .include    "../CPUs/_CPU.def.a65"
+ B   1:                    ;
+ B   2:                    ; CPU Type Definitions
+ B   3:                    ;
+ B   4:                    
+ B   5:                    MOS6502                .equ    "MOS6502"
+ B   6:                    W65C02                 .equ    "W65C02"
+ B   7:                    
+ B   8:                    
+ B   9:                    __cpu_declare_type .macro  type
+ B  10:                                       .ifndef _cpu_declared
+ B  11:                    _cpu_declared          .equ     ${type}
+ B  12:                                           .include "../CPUs/" + ${type} + ".lib.asm"
+ B  13:                                       .endif
+ B  14:                                       .endmacro
+ B  15:                    
+     9:                    ;                        .include    "../archs/_ARCH.def.a65"
+    10:                    ;                        .include    "../devices/MMUs/_MMU.def.a65"
+    11:                    
+    12:                                           .__cpu_declare_type  MOS6502, list=.list
+ B  14:                                       .ifndef _cpu_declared
+ B  15:                    _cpu_declared          .equ     1297044278
+ B  16:                                           .include "../CPUs/" + 1297044278 + ".lib.asm"
+ B  17:                                       .endif
+    13:                    ;                       .__arch_declare_type SBC6502v1_8K
+    14:                    ;                       .__mmu_declare_type  MMUv1
+    15:                    
+    16:                    
+    17:                     ;                  .segment    "code"
+    18:                     ;                      .org    _SBC6502_rom
+    19:                     ;                  .segment    "data"
+    20:                     ;                      .org    _SBC6502_ram
+    21:                     ;                  .segment    "io"
+    22:                    ;                       .org    _SBC6502_io
+    23:                    
+    24:                    ;
+    25:                    ; Memory Management Unit (MMU) Configutation
+    26:                    ;
+    27:                    
+    28:                                            ; 2 PID Bits, 20 Virtual Address Bits, 10 Segment Offset Bits
+    29:                    
+    30:                    bitsPID                .equ    2                   ; Kernal = 0, User = 01 thru 11
+    31:                    bitsVirtualAddr        .equ    20                  ; SBC6502 with 20 bit virtual address bus
+    32:                    bitsPhysicalAddr       .equ    16                  ; MCS650X with 16 bit address bus
+    33:                    bitsSegmentOffset      .equ    10                  ; SBC6502 with 10 bit segment size
+    34:                    
+    35:                    ;                       .__mmu_instantiate   bitsPID, bitsVirtualAddr, bitsPhysicalAddr, bitsSegmentOffset
+    36:                    
+    37:                    ;
+    38:                    ; SBC6500 Initialization (Power-Up and Reset (RST))
+    39:                    ;
+    40:                    ;                   .segment    "code"
+    41:                    
+    42:  0000              VMK_RESET
+    43:  0000 A2 FF                                LDX     #0xFF        ; Initialize stack pointer
+    44:  0002 9A                                   TXS
+    45:                    
+    46:                    ;                        JSR     _mmu_initialize
+    47:                    
+    48:                    ; Allowcate SBC6502 segment vectors for kernal ...
+    49:                    
+    50:                    ;      Tag        Physical Address         Effective Address
+    51:                    ;    xx00.0000 - 0000.00xx.xxxx.xxxx -> 0000.0000.00xx.xxxx.xxxx - RAM (ZP & Stack & RAM)
+    52:                    ;    xx00.0001 - 0000.01xx.xxxx.xxxx -> 1110.1111.10xx.xxxx.xxxx - IO
+    53:                    ;    xx00.0010 - 0000.10xx.xxxx.xxxx -> 1111.1111.00xx.xxxx.xxxx - ROM
+    54:                    ;    xx00.0011 - 0000.11xx.xxxx.xxxx -> 1111.1111.01xx.xxxx.xxxx - ROM
+    55:                    ;    xx00.0100 - 0001.00xx.xxxx.xxxx -> 1111.1111.10xx.xxxx.xxxx - ROM
+    56:                    ;    xx00.0101 - 0001.01xx.xxxx.xxxx -> 1111.1111.11xx.xxxx.xxxx - ROM
+    57:                    
+    58:                    ;                       .__mmu_map_segment   _vmk_kernal_pid, _SBC6502_ram, _SBC6502_effect_ram
+    59:                    
+    60:                    ;                       .__mmu_map_segment   _vmk_kernal_pid, _SBC6502_io, _SBC6502_effect_IO
+    61:                    
+    62:                    ;                       .__mmu_map_segment   _vmk_kernal_pid, _SBC6502_rom, _SBC6502_effect_rom
+    63:                    
+    64:                    ;
+    65:                    ; VMK Kernal
+    66:                    ;
+    67:                    ;                   .segment    "code"
+    68:                    
+    69:  0003              VMK_KERNAL
+    70:  0003 4C 03 00                             JMP     VMK_KERNAL
+    71:                    
+    72:                    ;
+    73:                    ; MCS650X Interupt Vectors
+    74:                    ;
+    75:                    ;                   .segment    "code"
+    76:                                           .org    0xFFFA
+    77:                    
+    78:  FFFA                  MCS650X_INTERRUPT_VECTORS
+    79:                    
+    80:  FFFA 00 00            MCS650X_NMI        .word   0x0000
+    81:  FFFC 00 00            MCS650X_RST        .word   VMK_RESET
+    82:  FFFE 00 00            MCS650X_IRQ        .word   0x0000
+    83:                    
+    84:  10000                  MCS650X_INTERRUPT_VECTORS_
+    85:                    
+    86:                                       .end
+    87:                    

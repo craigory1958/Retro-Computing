@@ -24,5 +24,11 @@ public class ENDIF implements iDirective {
 
 	@Log
 	@Override
-	public void parse(final ParserRuleContext pctx) {}
+	public void parse(final ParserRuleContext pctx) {
+		
+//		for(int i=0;i<actx.ifBlocks().size();i++) {
+//			System.out.println(actx.ifBlocks().elementAt(i)) ;
+//		}
+		actx.ifBlocks().pop() ;
+	}
 }

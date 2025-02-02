@@ -17,6 +17,9 @@ public class Statement {
 
 	//@formatter:off
 
+	boolean assembleEnable ;
+	public boolean assembleEnable() { return assembleEnable ; }
+
 	List<Operand> operands ;
 	public List<Operand> operands() { return operands ; }
 
@@ -67,8 +70,8 @@ public class Statement {
 	Map<String, Parameter> parameters ;
 	public Map<String, Parameter> parameters() { return parameters ; }
 
-	ParserRuleContext prc ;
-	public ParserRuleContext prc() { return prc ; }
+	ParserRuleContext pctx ;
+	public ParserRuleContext pctx() { return pctx ; }
 
 	int sn ;
 	public int sn() { return sn ; }
@@ -77,8 +80,9 @@ public class Statement {
 
 
 	@Log
-	public Statement(final int sn, final int ln, final String line, final int lc, final boolean list) {
+	public Statement(final int sn, final int ln, final String line, final int lc, final boolean list, final boolean assembleEnable) {
 
+		this.assembleEnable = assembleEnable ;
 		this.lc = lc ;
 		this.line = line ;
 		this.list = list ;

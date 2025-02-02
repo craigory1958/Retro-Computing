@@ -10,10 +10,12 @@ import org.junit.runners.Suite ;
 //@formatter:off
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-	_Test_XA_ByteDirective.class,
-	_Test_XA_ListDirective.class,
-	_Test_XA_MacroDirective.class,
-	_Test_XA_OrgDirective.class
+	_Test_XA_BYTE.class,
+	_Test_XA_IFDEF.class,
+	_Test_XA_IFNDEF.class,
+	_Test_XA_LIST.class,
+	_Test_XA_MACRO.class,
+	_Test_XA_ORG.class
 })
 //@formatter:on
 

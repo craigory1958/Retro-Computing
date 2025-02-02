@@ -31,6 +31,6 @@ public class ORG implements iDirective {
 		final _ValueNode value = actx.statement().operands().get(0).assignment().eval(actx.symbols()) ;
 		actx.segment().setOrg((int) value.getValue()) ;
 
-		actx.statement().bytes(new byte[0]) ;
+//		actx.statement().bytes(new byte[0]) ;
 	}
 }

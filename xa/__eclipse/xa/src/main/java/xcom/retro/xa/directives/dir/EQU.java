@@ -32,6 +32,6 @@ public class EQU implements iDirective {
 		actx.symbol(new Symbol(pctx.getParent().getChild(0).getChild(0).getText(), value.value())) ;
 		actx.symbols().put(pctx.getParent().getChild(0).getChild(0).getText(), actx.symbol()) ;
 
-		actx.statement().bytes(new byte[0]) ;
+//		actx.statement().bytes(new byte[0]) ;
 	}
 }
