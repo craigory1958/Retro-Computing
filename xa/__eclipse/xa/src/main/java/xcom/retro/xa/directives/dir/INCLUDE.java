@@ -36,8 +36,6 @@ public class INCLUDE implements iDirective {
 
 			actx.sources().add(new FileSource(actx.sources().size(), fSpec)) ;
 			actx.source().push(actx.sources().get(actx.sources().size() - 1)) ;
-
-//			actx.statement().bytes(new byte[0]) ;
 		}
 		catch ( final FileNotFoundException e ) {}
 	}

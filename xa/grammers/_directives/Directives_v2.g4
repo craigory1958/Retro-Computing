@@ -34,6 +34,7 @@ ideogram:  '.' symbol ;
 
 
 Directives:  
+	'align' | 
 	'byte' | 
 	'end' | 'endif' | 'endmacro' | 'equ' | 
 	'if' |'ifdef' | 'ifndef' | 'include' | 
@@ -41,4 +42,5 @@ Directives:
 	'nolist' |
 	'org' | 
 	'page' |
+	'segment' |
 	'word' ;

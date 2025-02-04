@@ -5,9 +5,12 @@
 MMUv1                  .equ    1
                         
                         
-__mmu_declare_type .macro  type
-                   .ifndef _mmu_declared
-_mmu_declared          .equ    true
-                       .if ${type} == MMUv1 -> .include "../devices/MMUs/MMUv1.lib.asm"
-                   .endif
-                   .endmacro
+__mmu_declare_type     .macro  type
+                           .ifndef _mmu_declared
+_mmu_declared                  .equ    ${type}
+
+                               .if ${type} == MMUv1
+                                   .include "../devices/MMUs/MMUv1.lib.a65"
+                               .endif
+                           .endif
+                       .endmacro

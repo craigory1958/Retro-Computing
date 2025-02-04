@@ -31,7 +31,7 @@ public class _Test_KIM1_ROM {
 		final String _dSpec = FilenameUtils.getFullPath(this.getClass().getResource(srcFSpec).toURI().getPath()) ;
 		final String _fSpec = FilenameUtils.getBaseName(FilenameUtils.getBaseName(srcFSpec)) ;
 
-		final String[] args = { "-b", _dSpec + srcFSpec } ;
+		final String[] args = { "-b", "-l", _dSpec + srcFSpec } ;
 
 		Logger.info("{}", String.format("%s - XA %s", "KIM-1 ROM", Arrays.asList(args))) ;
 

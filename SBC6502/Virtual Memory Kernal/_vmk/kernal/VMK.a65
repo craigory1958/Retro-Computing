@@ -4,22 +4,17 @@
 ;                                                                              ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-                        .include    "VMK.def.a65"
-                        .include    "../CPUs/_CPU.def.a65"
-;                        .include    "../archs/_ARCH.def.a65"
-;                        .include    "../devices/MMUs/_MMU.def.a65"
+                       .nolist
+                       .include    "VMK.def.a65"
+                       .include    "../CPUs/_CPU.def.a65"
+                       .include    "../archs/_ARCH.def.a65"
+                       .include    "../devices/MMUs/_MMU.def.a65"
+                       .list
 
                        .__cpu_declare_type  MOS6502, list=.list
-;                       .__arch_declare_type SBC6502v1_8K
-;                       .__mmu_declare_type  MMUv1
+                       .__arch_declare_type SBC6502v1_8K, list=.list
+                       .__mmu_declare_type  MMUv1, list=.list
         
-        
- ;                  .segment    "code"
- ;                      .org    _SBC6502_rom
- ;                  .segment    "data"
- ;                      .org    _SBC6502_ram
- ;                  .segment    "io"
-;                       .org    _SBC6502_io
 
 ;
 ; Memory Management Unit (MMU) Configutation 
@@ -32,18 +27,18 @@ bitsVirtualAddr        .equ    20                  ; SBC6502 with 20 bit virtual
 bitsPhysicalAddr       .equ    16                  ; MCS650X with 16 bit address bus
 bitsSegmentOffset      .equ    10                  ; SBC6502 with 10 bit segment size
 
-;                       .__mmu_instantiate   bitsPID, bitsVirtualAddr, bitsPhysicalAddr, bitsSegmentOffset
+                       .__mmu_instantiate   bitsPID, bitsVirtualAddr, bitsPhysicalAddr, bitsSegmentOffset, list=.list
 
 ;
 ; SBC6500 Initialization (Power-Up and Reset (RST))
 ;
-;                   .segment    "code"
+                       .segment "_SBC6502_code"
                     
 VMK_RESET
                         LDX     #0xFF        ; Initialize stack pointer
                         TXS
                         
-;                        JSR     _mmu_initialize
+                        JSR     _mmu_initialize
                         
 ; Allowcate SBC6502 segment vectors for kernal ...
 
@@ -55,16 +50,15 @@ VMK_RESET
 ;    xx00.0100 - 0001.00xx.xxxx.xxxx -> 1111.1111.10xx.xxxx.xxxx - ROM
 ;    xx00.0101 - 0001.01xx.xxxx.xxxx -> 1111.1111.11xx.xxxx.xxxx - ROM
                         
-;                       .__mmu_map_segment   _vmk_kernal_pid, _SBC6502_ram, _SBC6502_effect_ram
+                       .__mmu_map_segment   _vmk_kernal_pid, _SBC6502_ram, _SBC6502_effect_ram
 
-;                       .__mmu_map_segment   _vmk_kernal_pid, _SBC6502_io, _SBC6502_effect_IO
+                       .__mmu_map_segment   _vmk_kernal_pid, _SBC6502_io, _SBC6502_effect_IO
 
-;                       .__mmu_map_segment   _vmk_kernal_pid, _SBC6502_rom, _SBC6502_effect_rom    
+                       .__mmu_map_segment   _vmk_kernal_pid, _SBC6502_rom, _SBC6502_effect_rom    
 
 ;
 ; VMK Kernal 
 ;
-;                   .segment    "code"
                     
 VMK_KERNAL
                         JMP     VMK_KERNAL
@@ -72,8 +66,7 @@ VMK_KERNAL
 ;
 ; MCS650X Interupt Vectors
 ;
-;                   .segment    "code"
-                       .org    0xFFFA
+                       .segment "_MOS6502_vectors"
         
     MCS650X_INTERRUPT_VECTORS
     

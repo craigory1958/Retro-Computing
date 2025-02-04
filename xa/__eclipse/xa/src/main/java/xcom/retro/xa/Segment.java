@@ -46,7 +46,6 @@ public class Segment {
 			blocks.add(new ByteBlock()) ;
 
 		lc = blocks.get(blocks.size() - 1).setOrg(value) ;
-//		     blocks.get(blocks.size() - 1).setOrg(value) ;
 		blocks.get(blocks.size() - 1).lc(value) ;
 	}
 }

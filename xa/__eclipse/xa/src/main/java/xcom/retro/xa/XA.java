@@ -94,13 +94,6 @@ public class XA {
 		Map<String, MACRO> macros = new HashMap<>() ;
 		public Map<String, MACRO> macros() { return macros ; }
 
-//		int nestedIfLevel ;
-//		public int nestedIfLevel() { return nestedIfLevel ; }
-//		public AssemblyContext nestedIfLevel(final int nestedIfLevel) {
-//			this.nestedIfLevel = nestedIfLevel ;
-//			return this ;
-//		}
-
 		AssemblyPhases phase ;
 		public AssemblyPhases phase() { return phase ; }
 
@@ -306,7 +299,7 @@ public class XA {
 
 
 	@Log
-	XA generate() {
+	XA generate() throws IOException {
 
 		actx.phase = Generate ;
 
@@ -330,6 +323,10 @@ public class XA {
 			try ( FileWriter fileWriter = new FileWriter(actx.cmdArgs.get(CommandLineOption_Bin)); PrintWriter out = new PrintWriter(fileWriter); ) {
 				extruder.extrude(out, actx.segments()) ;
 			}
+
+		Console.info("") ;
+		Console.info(actx.cmdArgs.get(CommandLineOption_Bin)) ;
+		Console.info(FileUtils.readFileToString(new File(actx.cmdArgs.get(CommandLineOption_Bin)), Charset.defaultCharset())) ;
 
 		return this ;
 	}

@@ -1,10 +1,8 @@
 ;
 ; Memory Managment Unit (MMU) Definitions
 ;
-
-__mmu_declared         .equ    true
                 
-__mmu_instantiate  .macro  numBitsPID, numBitsVirtualAddr, numBitsPhysicalAddr, numBitsSegmentOffset
+__mmu_instantiate      .macro  numBitsPID, numBitsVirtualAddr, numBitsPhysicalAddr, numBitsSegmentOffset
  
 _mmu_NumBitsPID            .equ    ${numBitsPID}
 _mmu_NumBitsVirtualAddr    .equ    ${numBitsVirtualAddr}
@@ -16,20 +14,17 @@ _mmu_NumSegmentTags        .equ    1 << _mmu_NumBitsSegmentTag + ${numBitsPID}
 _mmu_ConfigValue           .equ    (${numBitsPID} << 6) ! ((${numBitsVirtualAddr} - ${numBitsPhysicalAddr}) << 3) ! ((${numBitsSegmentOffset} -8) << 0)
 
 
-                   .segment    "io"
+                       .segment "_SBC6502_io"
+_mmu
+_mmu_R0                .byte    0x00        ; Control Register
+_mmu_R1                .byte    0x00        ; Configuration Register        
 
-    _mmu
-    _mmu_R0                .byte    0x00        ; Control Register
-    _mmu_R1                .byte    0x00        ; Configuration Register        
-                           .align   0x04
-    _mmu_vectors            
-                           .org    * + (_mmu_NumBitsSegmentTag << 1)    ; Allocate 2 bytes for each vector.
-    _mmu_vectors_
-    _mmu_
+_mmu_vectors           .align   0x04 
+_mmu_vectors_          .org    * + (_mmu_NumBitsSegmentTag << 1)    ; Allocate 2 bytes for each vector.
+_mmu_
  
  
-                   .segment    "data"
-   
+                       .segment "_MOS6502_zp"
     _mmu_parms
     _mmu_parms_pid         .byte   0x00
     _mmu_parms_addr        .word   0x0000
@@ -37,8 +32,7 @@ _mmu_ConfigValue           .equ    (${numBitsPID} << 6) ! ((${numBitsVirtualAddr
     _mmu_parms_
                     
 
-                    .segment    "code"
-                        
+                       .segment "_SBC6502_code"
                         ; Initialize MMU...
     _mmu_initialize
                         LDA     #0x00            ; Set boot mode (should already be in boot mode after hardware reset.)
@@ -66,7 +60,9 @@ _mmu_ConfigValue           .equ    (${numBitsPID} << 6) ! ((${numBitsVirtualAddr
 
 
                         
-__mmu_map_segment  .macro  pid, physicalAddress, effectiveAddress
+__mmu_map_segment      .macro  pid, physicalAddress, effectiveAddress
+
+                       .segment "_MOS6502_code"
 
                         LDA     #${pid}
                         STA     _mmu_parms_pid
