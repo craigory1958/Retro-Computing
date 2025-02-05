@@ -7,3 +7,12 @@ _SBC6502_code          .org     0x0200
 
                        .segment "_SBC6502_io"
 _SBC6502_io            .org     0x1000
+
+_SBC6502_ram           .equ     0x0000
+_SBC6502_eram          .equ     0x000000
+
+_SBC6502_io            .equ     0x0000
+_SBC6502_eio           .equ     0x000000
+
+_SBC6502_rom           .equ     0x0000
+_SBC6502_erom          .equ     0x000000

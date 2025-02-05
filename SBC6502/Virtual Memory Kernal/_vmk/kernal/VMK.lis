@@ -49,6 +49,15 @@
  H   8:                                           .segment "_SBC6502_io"
  H   9:  0000              _SBC6502_io            .org     0x1000
  H  10:                    
+ H  11:                    _SBC6502_ram           .equ     0x0000
+ H  12:                    _SBC6502_eram          .equ     0x000000
+ H  13:                    
+ H  14:                    _SBC6502_io            .equ     0x0000
+ H  15:                    _SBC6502_eio           .equ     0x000000
+ H  16:                    
+ H  17:                    _SBC6502_rom           .equ     0x0000
+ H  18:                    _SBC6502_erom          .equ     0x000000
+ H  19:                    
  C  21:                                                   .endif
  C  22:                                               .endif
     16:                                           .__mmu_declare_type  MMUv1, list=.list
@@ -223,38 +232,86 @@
     43:                    ; Allowcate SBC6502 segment vectors for kernal ...
     44:                    
     45:                    ;      Tag        Physical Address         Effective Address
-    46:                    ;    xx00.0000 - 0000.00xx.xxxx.xxxx -> 0000.0000.00xx.xxxx.xxxx - RAM (ZP & Stack & RAM)
-    47:                    ;    xx00.0001 - 0000.01xx.xxxx.xxxx -> 1110.1111.10xx.xxxx.xxxx - IO
-    48:                    ;    xx00.0010 - 0000.10xx.xxxx.xxxx -> 1111.1111.00xx.xxxx.xxxx - ROM
-    49:                    ;    xx00.0011 - 0000.11xx.xxxx.xxxx -> 1111.1111.01xx.xxxx.xxxx - ROM
-    50:                    ;    xx00.0100 - 0001.00xx.xxxx.xxxx -> 1111.1111.10xx.xxxx.xxxx - ROM
-    51:                    ;    xx00.0101 - 0001.01xx.xxxx.xxxx -> 1111.1111.11xx.xxxx.xxxx - ROM
-    52:                    
-    53:                    ;                       .__mmu_map_segment   _vmk_kernal_pid, _SBC6502_ram, _SBC6502_effect_ram
-    54:                    
-    55:                    ;                       .__mmu_map_segment   _vmk_kernal_pid, _SBC6502_io, _SBC6502_effect_IO
-    56:                    
-    57:                    ;                       .__mmu_map_segment   _vmk_kernal_pid, _SBC6502_rom, _SBC6502_effect_rom
-    58:                    
-    59:                    ;
-    60:                    ; VMK Kernal
-    61:                    ;
+    46:                    ;    xx00.0000 - 0000.00xx.xxxx.xxxx -> 0000.0000.00xx.xxxx.xxxx - RAM (ZP & Stack & RAM) (1Kb)
+    47:                    ;    xx00.0001 - 0000.01xx.xxxx.xxxx -> 1110.1111.10xx.xxxx.xxxx - IO (1Kb)
+    48:                    ;    xx00.0010 - 0000.10xx.xxxx.xxxx -> 1111.1111.00xx.xxxx.xxxx - ROM (1Kb)
+    49:                    
+    50:                                           .__mmu_map_segment   _vmk_kernal_pid, _SBC6502_ram, _SBC6502_eram, list=.list
+ J  81:                    
+ J  82:                                           .segment "_MOS6502_code"
+ J  83:                    
+ J  84:  0000 A9 00                                LDA     #0
+ J  85:  0002 85 00                                STA     _mmu_parms_pid
+ J  86:                    
+ J  87:  0004 A9 00                                LDA     #<0
+ J  88:  0006 85 01                                STA     _mmu_parms_addr
+ J  89:  0008 A9 00                                LDA     #>0
+ J  90:  000A 85 02                                STA     _mmu_parms_addr +1
+ J  91:                    
+ J  92:  000C A9 00                                LDA     #<0
+ J  93:  000E 85 03                                STA     _mmu_parms_effect_addr
+ J  94:  0010 A9 00                                LDA     #>0
+ J  95:  0012 85 04                                STA     _mmu_parms_effect_addr +1
+ J  96:                    
+ J  97:  0014 20 19 02                             JSR     _mmu_map_segment
+    51:                    
+    52:                                           .__mmu_map_segment   _vmk_kernal_pid, _SBC6502_io, _SBC6502_eio, list=.list
+ J  81:                    
+ J  82:                                           .segment "_MOS6502_code"
+ J  83:                    
+ J  84:  0017 A9 00                                LDA     #0
+ J  85:  0019 85 00                                STA     _mmu_parms_pid
+ J  86:                    
+ J  87:  001B A9 00                                LDA     #<0
+ J  88:  001D 85 01                                STA     _mmu_parms_addr
+ J  89:  001F A9 00                                LDA     #>0
+ J  90:  0021 85 02                                STA     _mmu_parms_addr +1
+ J  91:                    
+ J  92:  0023 A9 00                                LDA     #<0
+ J  93:  0025 85 03                                STA     _mmu_parms_effect_addr
+ J  94:  0027 A9 00                                LDA     #>0
+ J  95:  0029 85 04                                STA     _mmu_parms_effect_addr +1
+ J  96:                    
+ J  97:  002B 20 19 02                             JSR     _mmu_map_segment
+    53:                    
+    54:                                           .__mmu_map_segment   _vmk_kernal_pid, _SBC6502_rom, _SBC6502_erom, list=.list
+ J  81:                    
+ J  82:                                           .segment "_MOS6502_code"
+ J  83:                    
+ J  84:  002E A9 00                                LDA     #0
+ J  85:  0030 85 00                                STA     _mmu_parms_pid
+ J  86:                    
+ J  87:  0032 A9 00                                LDA     #<0
+ J  88:  0034 85 01                                STA     _mmu_parms_addr
+ J  89:  0036 A9 00                                LDA     #>0
+ J  90:  0038 85 02                                STA     _mmu_parms_addr +1
+ J  91:                    
+ J  92:  003A A9 00                                LDA     #<0
+ J  93:  003C 85 03                                STA     _mmu_parms_effect_addr
+ J  94:  003E A9 00                                LDA     #>0
+ J  95:  0040 85 04                                STA     _mmu_parms_effect_addr +1
+ J  96:                    
+ J  97:  0042 20 19 02                             JSR     _mmu_map_segment
+    55:                    
+    56:                    ;
+    57:                    ; VMK Kernal
+    58:                    ;
+    59:                    
+    60:  0045              VMK_KERNAL
+    61:  0045 4C 45 00                             JMP     VMK_KERNAL
     62:                    
-    63:  0220              VMK_KERNAL
-    64:  0220 4C 20 02                             JMP     VMK_KERNAL
-    65:                    
-    66:                    ;
-    67:                    ; MCS650X Interupt Vectors
-    68:                    ;
-    69:                                           .segment "_MOS6502_vectors"
-    70:                    
-    71:  FFFA                  MCS650X_INTERRUPT_VECTORS
-    72:                    
-    73:  FFFA 00 00            MCS650X_NMI        .word   0x0000
-    74:  FFFC 1A 02            MCS650X_RST        .word   VMK_RESET
-    75:  FFFE 00 00            MCS650X_IRQ        .word   0x0000
-    76:                    
-    77:  10000                  MCS650X_INTERRUPT_VECTORS_
-    78:                    
-    79:                                       .end
-    80:                    
+    63:                    ;
+    64:                    ; MCS650X Interupt Vectors
+    65:                    ;
+    66:                                           .segment "_MOS6502_vectors"
+    67:                    
+    68:  FFFA                  MCS650X_INTERRUPT_VECTORS
+    69:                    
+    70:  FFFA 00 00            MCS650X_NMI        .word   0x0000
+    71:  FFFC 1A 02            MCS650X_RST        .word   VMK_RESET
+    72:  FFFE 00 00            MCS650X_IRQ        .word   0x0000
+    73:                    
+    74:  10000                  MCS650X_INTERRUPT_VECTORS_
+    75:                    
+    76:                                       .end
+    77:                    

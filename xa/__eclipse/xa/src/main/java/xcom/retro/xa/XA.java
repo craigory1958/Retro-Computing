@@ -193,6 +193,7 @@ public class XA {
 	Parser parser ;
 	iExtruder extruder ;
 	Map<String, Class<Class<? extends iExtruder>>> extruders ;
+	iExtruder lister ;
 	ParseTreeListener processor ;
 	Map<String, Class<Class<? extends iProcessor>>> processors ;
 
@@ -229,6 +230,13 @@ public class XA {
 			extruder = Reflection.constructor().in(extruderClass).newInstance() ;
 		}
 
+		{
+			final String extruderClassname = extruders.get("Lister").getName() ;
+			final Class<? extends iExtruder> extruderClass = Reflection.type(extruderClassname).loadAs(iExtruder.class) ;
+			lister = Reflection.constructor().in(extruderClass).newInstance() ;
+		}
+
+		
 		return this ;
 	}
 
@@ -321,7 +329,7 @@ public class XA {
 
 		if ( actx.cmd.hasOption(CommandLineOption_Bin) )
 			try ( FileWriter fileWriter = new FileWriter(actx.cmdArgs.get(CommandLineOption_Bin)); PrintWriter out = new PrintWriter(fileWriter); ) {
-				extruder.extrude(out, actx.segments()) ;
+				extruder.extrude(out, actx) ;
 			}
 
 		Console.info("") ;
@@ -340,59 +348,7 @@ public class XA {
 		if ( actx.cmd.hasOption(CommandLineOption_List) ) {
 
 			try ( FileWriter fileWriter = new FileWriter(actx.cmdArgs.get(CommandLineOption_List)); PrintWriter out = new PrintWriter(fileWriter); ) {
-
-				for ( final Statement _statement : actx.statements )
-					if ( _statement.list ) {
-
-						out.print("   A B C D E F G H I J K L M O N P Q R S T U V W X Y ZAAABACADAEAFAGAHAIAJAKALAMANAOAPAQARASATAUAVAWAXAYAZ"
-								.substring(_statement.sn() * 2, _statement.sn() * 2 + 2)) ;
-						out.print(String.format("%4d:", _statement.ln())) ;
-
-
-//						if ( _statement.pctx() != null && _statement.pctx().getChild(1) != null //
-//								&& _statement.pctx().getChild(1).getChild(0) != null //
-//								&& _statement.pctx().getChild(1).getChild(0).getChild(1) != null //
-//								) //
-//							System.err.println(_statement.pctx().getChild(1).getChild(0).getChild(1).getText()) ;
-
-						out.print( //
-								(_statement.line().isEmpty() || (_statement.bytes() == null) || (_statement.bytes().length == 0)) //
-										&& (_statement.label() == null || StringUtils.trimToEmpty(_statement.label().name).isEmpty()) //
-										|| (_statement.pctx() != null && _statement.pctx().getChild(1) != null //
-												&& _statement.pctx().getChild(1).getChild(0) != null //
-												&& _statement.pctx().getChild(1).getChild(0).getClass().getSimpleName().equals("MacroContext")) //
-										|| (_statement.pctx() != null && _statement.pctx().getChild(1) != null //
-												&& _statement.pctx().getChild(1).getChild(0) != null //
-												&& _statement.pctx().getChild(1).getChild(0).getChild(1) != null //
-												&& _statement.pctx().getChild(1).getChild(0).getChild(1).getText().equalsIgnoreCase("EQU")) //
-														? "      "
-														: String.format("  %04X", _statement.lc) //
-						) ;
-
-
-						for ( int b = 0; b < 4; b++ )
-							if ( (_statement.bytes != null) && (b < _statement.bytes.length) )
-								out.print(String.format(" %02X", _statement.bytes[b])) ;
-							else
-								out.print("   ") ;
-
-						out.println(String.format("  %s", _statement.line())) ;
-
-						if ( (_statement.bytes != null) && (_statement.bytes.length > 4) ) {
-							for ( int b = 4; b < _statement.bytes.length; b++ ) {
-
-								if ( ((b % 4) == 0) && (b > 4) )
-									out.println() ;
-
-								if ( (b % 4) == 0 )
-									out.print(String.format("        %04X", _statement.lc + b)) ;
-
-								out.print(String.format(" %02X", _statement.bytes[b])) ;
-							}
-
-							out.println() ;
-						}
-					}
+				lister.extrude(out, actx) ;
 			}
 
 			Console.info("") ;

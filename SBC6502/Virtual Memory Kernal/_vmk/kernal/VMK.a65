@@ -43,18 +43,15 @@ VMK_RESET
 ; Allowcate SBC6502 segment vectors for kernal ...
 
 ;      Tag        Physical Address         Effective Address
-;    xx00.0000 - 0000.00xx.xxxx.xxxx -> 0000.0000.00xx.xxxx.xxxx - RAM (ZP & Stack & RAM)
-;    xx00.0001 - 0000.01xx.xxxx.xxxx -> 1110.1111.10xx.xxxx.xxxx - IO
-;    xx00.0010 - 0000.10xx.xxxx.xxxx -> 1111.1111.00xx.xxxx.xxxx - ROM
-;    xx00.0011 - 0000.11xx.xxxx.xxxx -> 1111.1111.01xx.xxxx.xxxx - ROM
-;    xx00.0100 - 0001.00xx.xxxx.xxxx -> 1111.1111.10xx.xxxx.xxxx - ROM
-;    xx00.0101 - 0001.01xx.xxxx.xxxx -> 1111.1111.11xx.xxxx.xxxx - ROM
+;    xx00.0000 - 0000.00xx.xxxx.xxxx -> 0000.0000.00xx.xxxx.xxxx - RAM (ZP & Stack & RAM) (1Kb)
+;    xx00.0001 - 0000.01xx.xxxx.xxxx -> 1110.1111.10xx.xxxx.xxxx - IO (1Kb)
+;    xx00.0010 - 0000.10xx.xxxx.xxxx -> 1111.1111.00xx.xxxx.xxxx - ROM (1Kb)
                         
-                       .__mmu_map_segment   _vmk_kernal_pid, _SBC6502_ram, _SBC6502_effect_ram
+                       .__mmu_map_segment   _vmk_kernal_pid, _SBC6502_ram, _SBC6502_eram, list=.list
 
-                       .__mmu_map_segment   _vmk_kernal_pid, _SBC6502_io, _SBC6502_effect_IO
+                       .__mmu_map_segment   _vmk_kernal_pid, _SBC6502_io, _SBC6502_eio, list=.list
 
-                       .__mmu_map_segment   _vmk_kernal_pid, _SBC6502_rom, _SBC6502_effect_rom    
+                       .__mmu_map_segment   _vmk_kernal_pid, _SBC6502_rom, _SBC6502_erom, list=.list
 
 ;
 ; VMK Kernal 

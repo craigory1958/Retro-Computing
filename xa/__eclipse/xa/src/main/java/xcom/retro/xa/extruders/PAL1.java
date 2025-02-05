@@ -5,12 +5,12 @@ package xcom.retro.xa.extruders ;
 
 import java.io.PrintWriter ;
 import java.util.Arrays ;
-import java.util.Map ;
 import java.util.function.BiConsumer ;
 import java.util.function.Consumer ;
 
 import xcom.retro.xa.ByteBlock ;
 import xcom.retro.xa.Segment ;
+import xcom.retro.xa.XA.AssemblyContext ;
 import xcom.retro.xa.api.annotations.aExtruder ;
 import xcom.retro.xa.api.interfaces.iExtruder ;
 
@@ -25,9 +25,9 @@ public class PAL1 implements iExtruder {
 
 
 	@Override
-	public void extrude(final PrintWriter out, final Map<String, Segment> segments) {
+	public void extrude(final PrintWriter out, final AssemblyContext actx) {
 
-		segments.forEach(new BiConsumer<String, Segment>() {
+		actx.segments().forEach(new BiConsumer<String, Segment>() {
 			@Override
 			public void accept(final String k, final Segment segment) {
 				segment.getBlocks().forEach(new Consumer<ByteBlock>() {
