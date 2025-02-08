@@ -26,7 +26,5 @@ public class NOLIST implements iDirective {
 
 		actx.list(false) ;
 		actx.statement().list(false) ;
-
-//		actx.statement().bytes(new byte[0]) ;
 	}
 }

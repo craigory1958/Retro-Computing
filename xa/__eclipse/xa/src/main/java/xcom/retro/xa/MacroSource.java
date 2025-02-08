@@ -11,6 +11,14 @@ import xcom.retro.xa.api.interfaces.iSource ;
 
 public class MacroSource implements iSource {
 
+	//@formatter:off
+
+	boolean list ;
+	public boolean list() { return list ; }
+	public MacroSource list(final boolean list) {
+		this.list = list ;
+		return this ;
+	}
 
 	int ln ;
 
@@ -27,13 +35,18 @@ public class MacroSource implements iSource {
 	}
 
 	List<String> lines ;
+	
 	int x ;
 
-	public MacroSource(final int sn, final int ln, final List<String> lines) {
+	//@formatter:on
+
+
+	public MacroSource(final int sn, final int ln, final List<String> lines, boolean list) {
 
 		this.sn = sn ;
 		this.ln = ln - 1 ;
 		this.lines = lines ;
+		this.list = list ;
 
 		x = 0 ;
 	}

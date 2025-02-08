@@ -34,7 +34,12 @@ public class INCLUDE implements iDirective {
 			final String fSpec =
 					FilenameUtils.getFullPath(actx.cmdArgs().get("source")) + actx.statement().operands().get(0).assignment().eval(actx.symbols()).getValue() ;
 
-			actx.sources().add(new FileSource(actx.sources().size(), fSpec)) ;
+			boolean list = (actx.statement().operands().size() == 2 //
+					? actx.statement().operands().get(1).assignment().eval(actx.symbols()).getValue().equals(".list") //
+					: false) ;
+			actx.list(list) ;
+			
+			actx.sources().add(new FileSource(actx.sources().size(), fSpec, list)) ;
 			actx.source().push(actx.sources().get(actx.sources().size() - 1)) ;
 		}
 		catch ( final FileNotFoundException e ) {}

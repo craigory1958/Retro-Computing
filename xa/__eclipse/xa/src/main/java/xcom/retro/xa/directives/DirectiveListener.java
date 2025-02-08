@@ -100,7 +100,6 @@ public class DirectiveListener extends DirectivesBaseListener {
 //			System.out.println("exit directive: " + name + " @" + phase) ;
 //			System.out.println("worker: " + worker) ;
 //			System.out.println("macros: " + actx.macros().keySet()) ;
-//			System.out.println("macros: "+ actx.getMacros().size()) ;
 
 //			if ( directive == null )
 //				directive = actx.macros().get(name) ;

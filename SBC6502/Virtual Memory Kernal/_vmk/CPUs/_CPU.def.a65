@@ -6,7 +6,7 @@ MOS6502                .equ    1
 W65C02                 .equ    2
 
 
-__cpu_declare_type     .macro  type
+_cpu_declare_type     .macro  type
                            .ifndef _cpu_declared
 _cpu_declared                  .equ     ${type}
 

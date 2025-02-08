@@ -2,14 +2,14 @@
 ; MOS6502 Definitions
 ;
 
-                       .segment "_MOS6502_zp"
-_MOS6502_zp            .org     0x0000         ; 1st 256 bytes of memory
-_MOS6502_zp_           .equ     * +0xFF
+                       .segment "_MPU65XX_zp"
+_MPU65XX_zp            .org     0x0000         ; 1st 256 bytes of memory
+_MPU65XX_zp_           .equ     * +0xFF
 
-                       .segment "_MOS6502_stack"
-_MOS6502_stack         .org     0x0100         ; 2nd 256 bytes of memory
-_MOS6502_stack_        .equ     * +0xFF
+                       .segment "_MPU65XX_stack"
+_MPU65XX_stack         .org     0x0100         ; 2nd 256 bytes of memory
+_MPU65XX_stack_        .equ     * +0xFF
 
-                       .segment "_MOS6502_vectors"
-_MOS6502_vectors       .org     0xFFFA         ; MOS6502 Interrupt Vectors
-_MOS6502_vectors_      .equ     * +0x05
+                       .segment "_MPU65XX_vectors"
+_MPU65XX_vectors       .org     0xFFFA         ; MOS6502 Interrupt Vectors
+_MPU65XX_vectors_      .equ     * +0x05

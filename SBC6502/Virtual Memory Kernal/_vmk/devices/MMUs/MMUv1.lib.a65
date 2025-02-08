@@ -2,80 +2,88 @@
 ; Memory Managment Unit (MMU) Definitions
 ;
                 
-__mmu_instantiate      .macro  numBitsPID, numBitsVirtualAddr, numBitsPhysicalAddr, numBitsSegmentOffset
+_mmu_instantiate       .macro       bitsPhysicalAddr, bitsEffectiveAddr, bitsSegmentSize, bitsPID
  
-_mmu_NumBitsPID            .equ    ${numBitsPID}
-_mmu_NumBitsVirtualAddr    .equ    ${numBitsVirtualAddr}
-_mmu_NumBitsPhysicalAddr   .equ    ${numBitsPhysicalAddr}
-_mmu_NumBitsSegmentOffset  .equ    ${numBitsSegmentOffset}
+_mmu_bitsPhysicalAddr      .equ     ${bitsPhysicalAddr}
+_mmu_bitsEffectiveAddr     .equ     ${bitsEffectiveAddr}
+_mmu_bitsSegmentSize       .equ     ${bitsSegmentSize}
+_mmu_bitsPID               .equ     ${bitsPID}
 
-_mmu_NumBitsSegmentTag     .equ    ${numBitsPhysicalAddr} - ${numBitsSegmentOffset}
-_mmu_NumSegmentTags        .equ    1 << _mmu_NumBitsSegmentTag + ${numBitsPID}
-_mmu_ConfigValue           .equ    (${numBitsPID} << 6) ! ((${numBitsVirtualAddr} - ${numBitsPhysicalAddr}) << 3) ! ((${numBitsSegmentOffset} -8) << 0)
+_mmu_bitsSegmentAddr       .equ     ${bitsPhysicalAddr} - ${bitsSegmentSize}
+_mmu_numSegmentTags        .equ     1 << _mmu_bitsSegmentAddr + ${bitsPID}
+_mmu_configValue           .equ     (${bitsPID} << 6) ! ((${bitsEffectiveAddr} - ${bitsPhysicalAddr}) << 3) ! ((${_mmu_bitsSegmentSize} -8) << 0)
 
 
-                       .segment "_SBC6502_io"
+                       .segment     "_SBC6502_io"
 _mmu
-_mmu_R0                .byte    0x00        ; Control Register
-_mmu_R1                .byte    0x00        ; Configuration Register        
+_mmu_R0                    .byte    0x00                ; Mode Register (0x0200)
+_mmu_R1                    .byte    0x00                ; Status Register (0x0201)
+_mmu_CR0                   .byte    0x00                ; Config Register 0 (0x0202)
+_mmu_CR1                   .byte    0x00                ; Config Register 1 (0x0203)
 
-_mmu_vectors           .align   0x04 
-_mmu_vectors_          .org    * + (_mmu_NumBitsSegmentTag << 1)    ; Allocate 2 bytes for each vector.
+_mmu_vectors               .align   0x04 
+_mmu_vectors_          .org         * + (_mmu_bitsSegmentAddr << 1)    ; Allocate 2 bytes for each vector.
 _mmu_
  
  
-                       .segment "_MOS6502_zp"
-    _mmu_parms
-    _mmu_parms_pid         .byte   0x00
-    _mmu_parms_addr        .word   0x0000
-    _mmu_parms_effect_addr .word   0x0000
-    _mmu_parms_
+                       .segment     "_MPU65XX_zp"
+_mmu_parms
+_mmu_parms_pid             .byte    0x00
+_mmu_parms_addr            .word    0x0000
+_mmu_parms_effect_addr     .word    0x0000
+_mmu_parms_
                     
 
-                       .segment "_SBC6502_code"
-                        ; Initialize MMU...
-    _mmu_initialize
-                        LDA     #0x00            ; Set boot mode (should already be in boot mode after hardware reset.)
-                        STA     _mmu_R0
-        
-                        LDA     #_mmu_ConfigValue
+                       .segment     "_SBC6502_code"
 
-                        STA     _mmu_R1
+_mmu_initialize
+                            LDA     #0x00               ; Set boot mode (should already be in boot mode after hardware reset.)
+                            STA     _mmu_R0
+        
+                            LDA     #_mmu_configValue
+
+                            STA     _mmu_R1
         
                         ; Clear segment vectors...
 
-                        LDA     #0x00
-                        LDX     #_mmu_NumSegmentTags
-    loop
-                        STA     _mmu_vectors, X
-                        DEX
-                        STA     _mmu_vectors, X
-                        DEX
-                        BNE     loop
-                        RTS        
+                            LDA     #0x00
+                            LDX     #_mmu_numSegmentTags
+        loop
+                            STA     _mmu_vectors, X
+                            DEX
+                            STA     _mmu_vectors, X
+                            DEX
+                            BNE     loop
+                            
+                            RTS        
 
-    _mmu_map_segment
-                        RTS
-                   .endmacro
+
+_mmu_timer_initialize
+                            RTS
+
+
+_mmu_map_segment
+                            RTS
+                       .endmacro
 
 
                         
-__mmu_map_segment      .macro  pid, physicalAddress, effectiveAddress
+_mmu_map_segment       .macro  pid, physicalAddress, effectiveAddress
 
-                       .segment "_MOS6502_code"
+                       .segment "_SBC6502_code"
 
-                        LDA     #${pid}
-                        STA     _mmu_parms_pid
+                            LDA     #${pid}
+                            STA     _mmu_parms_pid
                         
-                        LDA     #<${physicalAddress}
-                        STA     _mmu_parms_addr
-                        LDA     #>${physicalAddress}
-                        STA     _mmu_parms_addr +1
+                            LDA     #<${physicalAddress}
+                            STA     _mmu_parms_addr
+                            LDA     #>${physicalAddress}
+                            STA     _mmu_parms_addr +1
                         
-                        LDA     #<${effectiveAddress}     
-                        STA     _mmu_parms_effect_addr
-                        LDA     #>${effectiveAddress}
-                        STA     _mmu_parms_effect_addr +1
+                            LDA     #<${effectiveAddress}     
+                            STA     _mmu_parms_effect_addr
+                            LDA     #>${effectiveAddress}
+                            STA     _mmu_parms_effect_addr +1
                          
-                        JSR     _mmu_map_segment
-                   .endmacro
+                            JSR     _mmu_map_segment
+                       .endmacro

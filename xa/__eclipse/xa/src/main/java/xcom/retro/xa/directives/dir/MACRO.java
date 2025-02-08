@@ -114,10 +114,13 @@ public class MACRO implements iDirective {
 
 		final List<String> lines = new ArrayList<>() ;
 		for ( final String line : this.lines )
-			// System.err.println(Templator.delimiters(UnixDelimiters).template(line).inject(parms)) ;
 			lines.add(Templator.delimiters(UnixDelimiters).template(line).inject(parms)) ;
 
-		actx.sources().add(new MacroSource(sn, ln, lines)) ;
+
+		boolean list = (parms.containsKey("list") ? parms.get("list").equals(".list") : false) ;
+		actx.list(list);
+
+		actx.sources().add(new MacroSource(sn, ln, lines, list)) ;
 		actx.source().push(actx.sources().get(actx.sources().size() - 1)) ;
 	}
 
@@ -139,10 +142,10 @@ public class MACRO implements iDirective {
 		actx.statement().operands().add(new Option("list").assignment(new StringLiteral(".nolist", true))) ;
 
 //		actx.statement().operands().forEach(o -> { //
-//			System.out.print("opt>>> " + o.name() + ": " + o.getClass().getSimpleName()) ; //
+//			System.err.print("opt>>> " + o.name() + ": " + o.getClass().getSimpleName()) ; //
 //			if ( o.assignment() != null )
-//				System.out.print(" - " + o.assignment().getClass().getSimpleName() + ": " + o.assignment()) ; //
-//			System.out.println() ; //
+//				System.err.print(" - " + o.assignment().getClass().getSimpleName() + ": " + o.assignment()) ; //
+//			System.err.println() ; //
 //		}) ;
 
 		final Statement _statement = actx.statement() ;
@@ -151,17 +154,19 @@ public class MACRO implements iDirective {
 
 		final List<String> lines = new ArrayList<>() ;
 		try {
-			lines.add("${list}") ;
+//			lines.add("${list}") ;
 
 			String line ;
 			while ( !StringUtils.trimToEmpty(line = actx.source().peek().next()).equalsIgnoreCase('.' + ENDMACRO.class.getSimpleName()) ) {
 				lines.add(line) ;
-				actx.statements().add(new Statement(actx.source().peek().sn(), actx.source().peek().ln(), line, actx.segment().lc(), actx.list(), actx.assembleEnable())) ;
+				actx.statements().add(
+						new Statement(actx.source().peek().sn(), actx.source().peek().ln(), line, actx.segment().lc(), actx.list(), actx.assembleEnable())) ;
 				actx.statement(actx.statements().get(actx.statements().size() - 1)) ;
 			}
 
-			lines.add(".list") ;
-			actx.statements().add(new Statement(actx.source().peek().sn(), actx.source().peek().ln(), line, actx.segment().lc(), actx.list(), actx.assembleEnable())) ;
+//			lines.add(".list") ;
+			actx.statements()
+					.add(new Statement(actx.source().peek().sn(), actx.source().peek().ln(), line, actx.segment().lc(), actx.list(), actx.assembleEnable())) ;
 			actx.statement(actx.statements().get(actx.statements().size() - 1)) ;
 		}
 		catch ( final IOException e ) {}

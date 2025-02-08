@@ -1,0 +1,13 @@
+
+;
+; MOS6502 Interupt Vectors
+;
+                       .segment "_MPU65XX_vectors"
+        
+_MPU65XX_INTERRUPT_VECTORS
+    
+_MPU65XX_NMI_VECTOR            .word    _MPU65XX_NMI
+_MPU65XX_RESET_VECTOR          .word    _MPU65XX_RESET
+_MPU65XX_IRQ_BRK_VECTOR        .word    _MPU65XX_IRQ_BRK
+
+_MPU65XX_INTERRUPT_VECTORS_    .equ    * -1

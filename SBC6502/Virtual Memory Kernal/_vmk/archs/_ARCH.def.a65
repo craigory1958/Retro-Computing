@@ -5,7 +5,7 @@
 SBC6502v1_8K           .equ    1
 
 
-__arch_declare_type    .macro  type
+_arch_declare_type    .macro  type
                            .ifndef _arch_declared
 _arch_declared                 .equ     ${type}
 

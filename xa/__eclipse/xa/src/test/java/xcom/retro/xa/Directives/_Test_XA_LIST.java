@@ -36,6 +36,7 @@ public class _Test_XA_LIST {
                 { "Basic .list/.nolist", "LIST_Basic.a65", },
                 { "IFDEF", "LIST_IFDEF.a65", },
                 { "IFNDEF", "LIST_IFNDEF.a65", },
+                { "INCLUDE", "LIST_INCLUDE.a65", },
                 { "MACRO", "LIST_MACRO.a65", },
         } ;
 

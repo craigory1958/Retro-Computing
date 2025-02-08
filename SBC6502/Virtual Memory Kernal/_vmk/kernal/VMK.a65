@@ -4,42 +4,43 @@
 ;                                                                              ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-                       .nolist
                        .include    "VMK.def.a65"
                        .include    "../CPUs/_CPU.def.a65"
                        .include    "../archs/_ARCH.def.a65"
                        .include    "../devices/MMUs/_MMU.def.a65"
-                       .list
 
-                       .__cpu_declare_type  MOS6502, list=.list
-                       .__arch_declare_type SBC6502v1_8K, list=.list
-                       .__mmu_declare_type  MMUv1, list=.list
+
+                           ._cpu_declare_type  MOS6502
+                           ._arch_declare_type SBC6502v1_8K
+                           ._mmu_declare_type  MMUv1
         
 
 ;
 ; Memory Management Unit (MMU) Configutation 
 ;
-            
-                        ; 2 PID Bits, 20 Virtual Address Bits, 10 Segment Offset Bits
+; 2 PID Bits, 20 Virtual Address Bits, 10 Segment Offset Bits
+;
 
-bitsPID                .equ    2                   ; Kernal = 0, User = 01 thru 11
-bitsVirtualAddr        .equ    20                  ; SBC6502 with 20 bit virtual address bus
-bitsPhysicalAddr       .equ    16                  ; MCS650X with 16 bit address bus
-bitsSegmentOffset      .equ    10                  ; SBC6502 with 10 bit segment size
+        bitsPhysicalAddr   .equ     16                  ; MPU65XX with 16 bit address bus (65536)
+        bitsEffectiveAddr  .equ     20                  ; SBC6502 with 20 bit effective address bus (1,048,576)
+        bitsSegmentSize    .equ     10                  ; SBC6502 with 10 bit segment size (1024)
+        bitsPID            .equ     2                   ; Kernal = 0x0, User = 0x1 thru 0x2
 
-                       .__mmu_instantiate   bitsPID, bitsVirtualAddr, bitsPhysicalAddr, bitsSegmentOffset, list=.list
+                           ._mmu_instantiate    bitsPhysicalAddr, bitsEffectiveAddr, bitsSegmentSize, bitsPID, list=.list
 
 ;
 ; SBC6500 Initialization (Power-Up and Reset (RST))
 ;
-                       .segment "_SBC6502_code"
+                       .segment     "_SBC6502_code"
                     
-VMK_RESET
-                        LDX     #0xFF        ; Initialize stack pointer
-                        TXS
+_MPU65XX_RESET
+                            SEI                         ; Disable interrupts if entering via code 
+                            LDX     #0xFF               ; Initialize stack pointer
+                            TXS
                         
-                        JSR     _mmu_initialize
-                        
+                            JSR     _mmu_initialize
+                     
+
 ; Allowcate SBC6502 segment vectors for kernal ...
 
 ;      Tag        Physical Address         Effective Address
@@ -47,30 +48,31 @@ VMK_RESET
 ;    xx00.0001 - 0000.01xx.xxxx.xxxx -> 1110.1111.10xx.xxxx.xxxx - IO (1Kb)
 ;    xx00.0010 - 0000.10xx.xxxx.xxxx -> 1111.1111.00xx.xxxx.xxxx - ROM (1Kb)
                         
-                       .__mmu_map_segment   _vmk_kernal_pid, _SBC6502_ram, _SBC6502_eram, list=.list
+                           ._mmu_map_segment    _vmk_kernal_pid, _SBC6502_ram, _SBC6502_eram, list=.list
 
-                       .__mmu_map_segment   _vmk_kernal_pid, _SBC6502_io, _SBC6502_eio, list=.list
+                           ._mmu_map_segment    _vmk_kernal_pid, _SBC6502_io, _SBC6502_eio
 
-                       .__mmu_map_segment   _vmk_kernal_pid, _SBC6502_rom, _SBC6502_erom, list=.list
+                           ._mmu_map_segment    _vmk_kernal_pid, _SBC6502_rom, _SBC6502_erom
+
+
+; Initialize quantum time interrupt (IRQ) ...
+
+                            JSR _mmu_timer_initialize
 
 ;
 ; VMK Kernal 
 ;
                     
-VMK_KERNAL
-                        JMP     VMK_KERNAL
+_MPU65XX_IRQ_BRK
+                            RTI
+                    
+_MPU65XX_NMI
+                            RTI
+                    
+_MPU65XX_IRQ_BRK
+                            RTI
 
-;
-; MCS650X Interupt Vectors
-;
-                       .segment "_MOS6502_vectors"
-        
-    MCS650X_INTERRUPT_VECTORS
-    
-    MCS650X_NMI        .word   0x0000
-    MCS650X_RST        .word   VMK_RESET
-    MCS650X_IRQ        .word   0x0000
 
-    MCS650X_INTERRUPT_VECTORS_
+                       .include "../CPUs/MOS6502_Vectors.lib.a65", list=.list
 
-                   .end
+                       .end

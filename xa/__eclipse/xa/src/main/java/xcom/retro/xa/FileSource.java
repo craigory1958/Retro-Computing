@@ -20,8 +20,14 @@ public class FileSource implements iSource {
 
 	BufferedReader br ;
 
-	int ln = 0 ;
+	boolean list ;
+	public boolean list() { return list ; }
+	public FileSource list(final boolean list) {
+		this.list = list ;
+		return this ;
+	}
 
+	int ln = 0 ;
 	@Override
 	public int ln() {
 		return ln ;
@@ -38,10 +44,11 @@ public class FileSource implements iSource {
 	boolean wasEmpty = false ;
 
 
-	public FileSource(final int sn, final String fSpec) throws FileNotFoundException {
+	public FileSource(final int sn, final String fSpec, boolean list) throws FileNotFoundException {
 
 		this.sn = sn ;
 		this.fSpec = fSpec ;
+		this.list=list;
 
 		br = new BufferedReader(new InputStreamReader(new FileInputStream(fSpec))) ;
 	}
@@ -59,6 +66,7 @@ public class FileSource implements iSource {
 
 		if ( line != null )
 			wasEmpty = StringUtils.trimToEmpty(line).isEmpty() ;
+		
 		else if ( wasNull )
 			line = null ;
 

@@ -25,6 +25,5 @@ public class LIST implements iDirective {
 	public void parse(final ParserRuleContext pctx) {
 		actx.list(true) ;
 		actx.statement().list(false) ;
-//		actx.statement().bytes(new byte[0]) ;
 	}
 }

@@ -4,314 +4,168 @@
      4:                    ;                                                                              ;
      5:                    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
      6:                    
-    13:                    
-    14:                                           .__cpu_declare_type  MOS6502, list=.list
- B  21:                                               .ifndef _cpu_declared
- B  22:                    _cpu_declared                  .equ     1
- B  23:                    
- B  24:                                                   .if 1 == MOS6502
- B  25:                                                       .include "../CPUs/MOS6502.lib.a65"
- F   1:                    ;
- F   2:                    ; MOS6502 Definitions
- F   3:                    ;
- F   4:                    
- F   5:                                           .segment "_MOS6502_zp"
- F   6:  0000              _MOS6502_zp            .org     0x0000         ; 1st 256 bytes of memory
- F   7:                    _MOS6502_zp_           .equ     * +0xFF
- F   8:                    
- F   9:                                           .segment "_MOS6502_stack"
- F  10:  0000              _MOS6502_stack         .org     0x0100         ; 2nd 256 bytes of memory
- F  11:                    _MOS6502_stack_        .equ     * +0xFF
- F  12:                    
- F  13:                                           .segment "_MOS6502_vectors"
- F  14:  0000              _MOS6502_vectors       .org     0xFFFA         ; MOS6502 Interrupt Vectors
- F  15:                    _MOS6502_vectors_      .equ     * +0x05
- F  16:                    
- B  26:                                                   .endif
- B  27:                    
- B  28:                                                   .if 1 == W65C02
- B  29:                                                       .include "../CPUs/W65C02.lib.a65"
- B  30:                                                   .endif
- B  31:                                               .endif
-    15:                                           .__arch_declare_type SBC6502v1_8K, list=.list
- C  16:                                               .ifndef _arch_declared
- C  17:                    _arch_declared                 .equ     1
- C  18:                    
- C  19:                                                   .if 1 == SBC6502v1_8K
- C  20:                                                       .include "../archs/SBC6502v1_8K.lib.a65"
- H   1:                    ;
- H   2:                    ; SBC6502 (8K ROM) Definitions
- H   3:                    ;
- H   4:                    
- H   5:                                           .segment "_SBC6502_code"
- H   6:  0000              _SBC6502_code          .org     0x0200
- H   7:                    
- H   8:                                           .segment "_SBC6502_io"
- H   9:  0000              _SBC6502_io            .org     0x1000
- H  10:                    
- H  11:                    _SBC6502_ram           .equ     0x0000
- H  12:                    _SBC6502_eram          .equ     0x000000
- H  13:                    
- H  14:                    _SBC6502_io            .equ     0x0000
- H  15:                    _SBC6502_eio           .equ     0x000000
- H  16:                    
- H  17:                    _SBC6502_rom           .equ     0x0000
- H  18:                    _SBC6502_erom          .equ     0x000000
- H  19:                    
- C  21:                                                   .endif
- C  22:                                               .endif
-    16:                                           .__mmu_declare_type  MMUv1, list=.list
- D  16:                                               .ifndef _mmu_declared
- D  17:                    _mmu_declared                  .equ    1
- D  18:                    
- D  19:                                                   .if 1 == MMUv1
- D  20:                                                       .include "../devices/MMUs/MMUv1.lib.a65"
- J   1:                    ;
- J   2:                    ; Memory Managment Unit (MMU) Definitions
- J   3:                    ;
- J   4:                    
- J   5:                    __mmu_instantiate      .macro  numBitsPID, numBitsVirtualAddr, numBitsPhysicalAddr, numBitsSegmentOffset
- J   6:                     
- J   7:                    _mmu_NumBitsPID            .equ    ${numBitsPID}
- J   8:                    _mmu_NumBitsVirtualAddr    .equ    ${numBitsVirtualAddr}
- J   9:                    _mmu_NumBitsPhysicalAddr   .equ    ${numBitsPhysicalAddr}
- J  10:                    _mmu_NumBitsSegmentOffset  .equ    ${numBitsSegmentOffset}
- J  11:                    
- J  12:                    _mmu_NumBitsSegmentTag     .equ    ${numBitsPhysicalAddr} - ${numBitsSegmentOffset}
- J  13:                    _mmu_NumSegmentTags        .equ    1 << _mmu_NumBitsSegmentTag + ${numBitsPID}
- J  14:                    _mmu_ConfigValue           .equ    (${numBitsPID} << 6) ! ((${numBitsVirtualAddr} - ${numBitsPhysicalAddr}) << 3) ! ((${numBitsSegmentOffset} -8) << 0)
- J  15:                    
- J  16:                    
- J  17:                                           .segment "_SBC6502_io"
- J  18:                    _mmu
- J  19:                    _mmu_R0                .byte    0x00        ; Control Register
- J  20:                    _mmu_R1                .byte    0x00        ; Configuration Register        
- J  21:                    
- J  22:                    _mmu_vectors           .align   0x04 
- J  23:                    _mmu_vectors_          .org    * + (_mmu_NumBitsSegmentTag << 1)    ; Allocate 2 bytes for each vector.
- J  24:                    _mmu_
- J  25:                     
- J  26:                     
- J  27:                                           .segment "_MOS6502_zp"
- J  28:                        _mmu_parms
- J  29:                        _mmu_parms_pid         .byte   0x00
- J  30:                        _mmu_parms_addr        .word   0x0000
- J  31:                        _mmu_parms_effect_addr .word   0x0000
- J  32:                        _mmu_parms_
- J  33:                                        
- J  34:                    
- J  35:                                           .segment "_SBC6502_code"
- J  36:                                            ; Initialize MMU...
- J  37:                        _mmu_initialize
- J  38:                                            LDA     #0x00            ; Set boot mode (should already be in boot mode after hardware reset.)
- J  39:                                            STA     _mmu_R0
- J  40:                            
- J  41:                                            LDA     #_mmu_ConfigValue
- J  42:                    
- J  43:                                            STA     _mmu_R1
- J  44:                            
- J  45:                                            ; Clear segment vectors...
- J  46:                    
- J  47:                                            LDA     #0x00
- J  48:                                            LDX     #_mmu_NumSegmentTags
- J  49:                        loop
- J  50:                                            STA     _mmu_vectors, X
- J  51:                                            DEX
- J  52:                                            STA     _mmu_vectors, X
- J  53:                                            DEX
- J  54:                                            BNE     loop
- J  55:                                            RTS        
- J  56:                    
- J  57:                        _mmu_map_segment
- J  58:                                            RTS
- J  59:                                       .endmacro
- J  60:                    
- J  61:                    
- J  62:                    
- J  63:                    __mmu_map_segment      .macro  pid, physicalAddress, effectiveAddress
- J  64:                    
- J  65:                                           .segment "_MOS6502_code"
- J  66:                    
- J  67:                                            LDA     #${pid}
- J  68:                                            STA     _mmu_parms_pid
- J  69:                                            
- J  70:                                            LDA     #<${physicalAddress}
- J  71:                                            STA     _mmu_parms_addr
- J  72:                                            LDA     #>${physicalAddress}
- J  73:                                            STA     _mmu_parms_addr +1
- J  74:                                            
- J  75:                                            LDA     #<${effectiveAddress}     
- J  76:                                            STA     _mmu_parms_effect_addr
- J  77:                                            LDA     #>${effectiveAddress}
- J  78:                                            STA     _mmu_parms_effect_addr +1
- J  79:                                             
- J  80:                                            JSR     _mmu_map_segment
- J  81:                                       .endmacro
- J  82:                    
- D  21:                                                   .endif
- D  22:                                               .endif
+     7:                                           .include    "VMK.def.a65"
+     8:                                           .include    "../CPUs/_CPU.def.a65"
+     9:                                           .include    "../archs/_ARCH.def.a65"
+    10:                                           .include    "../devices/MMUs/_MMU.def.a65"
+    11:                    
+    12:                    
+    13:                                               ._cpu_declare_type  MOS6502
+    14:                                               ._arch_declare_type SBC6502v1_8K
+    15:                                               ._mmu_declare_type  MMUv1
+    16:                    
     17:                    
-    18:                    
-    19:                    ;
-    20:                    ; Memory Management Unit (MMU) Configutation
-    21:                    ;
-    22:                    
-    23:                                            ; 2 PID Bits, 20 Virtual Address Bits, 10 Segment Offset Bits
-    24:                    
-    25:                    bitsPID                .equ    2                   ; Kernal = 0, User = 01 thru 11
-    26:                    bitsVirtualAddr        .equ    20                  ; SBC6502 with 20 bit virtual address bus
-    27:                    bitsPhysicalAddr       .equ    16                  ; MCS650X with 16 bit address bus
-    28:                    bitsSegmentOffset      .equ    10                  ; SBC6502 with 10 bit segment size
-    29:                    
-    30:                                           .__mmu_instantiate   bitsPID, bitsVirtualAddr, bitsPhysicalAddr, bitsSegmentOffset, list=.list
- J  59:                    
- J  60:                    _mmu_NumBitsPID            .equ    2
- J  61:                    _mmu_NumBitsVirtualAddr    .equ    20
- J  62:                    _mmu_NumBitsPhysicalAddr   .equ    16
- J  63:                    _mmu_NumBitsSegmentOffset  .equ    10
- J  64:                    
- J  65:                    _mmu_NumBitsSegmentTag     .equ    16 - 10
- J  66:                    _mmu_NumSegmentTags        .equ    1 << _mmu_NumBitsSegmentTag + 2
- J  67:                    _mmu_ConfigValue           .equ    (2 << 6) ! ((20 - 16) << 3) ! ((10 -8) << 0)
- J  68:                    
- J  69:                    
- J  70:                                           .segment "_SBC6502_io"
- J  71:  1000              _mmu
- J  72:  1000 00           _mmu_R0                .byte    0x00        ; Control Register
- J  73:  1001 00           _mmu_R1                .byte    0x00        ; Configuration Register
- J  74:                    
- J  75:  1002              _mmu_vectors           .align   0x04
- J  76:  0004              _mmu_vectors_          .org    * + (_mmu_NumBitsSegmentTag << 1)    ; Allocate 2 bytes for each vector.
- J  77:  0010              _mmu_
- J  78:                    
- J  79:                    
- J  80:                                           .segment "_MOS6502_zp"
- J  81:  0000                  _mmu_parms
- J  82:  0000 00               _mmu_parms_pid         .byte   0x00
- J  83:  0001 00 00            _mmu_parms_addr        .word   0x0000
- J  84:  0003 00 00            _mmu_parms_effect_addr .word   0x0000
- J  85:  0005                  _mmu_parms_
- J  86:                    
+    18:                    ;
+    19:                    ; Memory Management Unit (MMU) Configutation
+    20:                    ;
+    21:                    ; 2 PID Bits, 20 Virtual Address Bits, 10 Segment Offset Bits
+    22:                    ;
+    23:                    
+    24:                            bitsPhysicalAddr   .equ     16                  ; MPU65XX with 16 bit address bus (65536)
+    25:                            bitsEffectiveAddr  .equ     20                  ; SBC6502 with 20 bit effective address bus (1,048,576)
+    26:                            bitsSegmentSize    .equ     10                  ; SBC6502 with 10 bit segment size (1024)
+    27:                            bitsPID            .equ     2                   ; Kernal = 0x0, User = 0x1 thru 0x2
+    28:                    
+    29:                                               ._mmu_instantiate    bitsPhysicalAddr, bitsEffectiveAddr, bitsSegmentSize, bitsPID, list=.list
+ J  66:                    
+ J  67:                    _mmu_bitsPhysicalAddr      .equ     16
+ J  68:                    _mmu_bitsEffectiveAddr     .equ     20
+ J  69:                    _mmu_bitsSegmentSize       .equ     10
+ J  70:                    _mmu_bitsPID               .equ     2
+ J  71:                    
+ J  72:                    _mmu_bitsSegmentAddr       .equ     16 - 10
+ J  73:                    _mmu_numSegmentTags        .equ     1 << _mmu_bitsSegmentAddr + 2
+ J  74:                    _mmu_configValue           .equ     (2 << 6) ! ((20 - 16) << 3) ! (( -8) << 0)
+ J  75:                    
+ J  76:                    
+ J  77:                                           .segment     "_SBC6502_io"
+ J  78:  A000              _mmu
+ J  79:  A000 00           _mmu_R0                    .byte    0x00                ; Mode Register (0x0200)
+ J  80:  A001 00           _mmu_R1                    .byte    0x00                ; Status Register (0x0201)
+ J  81:  A002 00           _mmu_CR0                   .byte    0x00                ; Config Register 0 (0x0202)
+ J  82:  A003 00           _mmu_CR1                   .byte    0x00                ; Config Register 1 (0x0203)
+ J  83:                    
+ J  84:  A004              _mmu_vectors               .align   0x04
+ J  85:  0004              _mmu_vectors_          .org         * + (_mmu_bitsSegmentAddr << 1)    ; Allocate 2 bytes for each vector.
+ J  86:  0010              _mmu_
  J  87:                    
- J  88:                                           .segment "_SBC6502_code"
- J  89:                                            ; Initialize MMU...
- J  90:  0200                  _mmu_initialize
- J  91:  0200 A9 00                                LDA     #0x00            ; Set boot mode (should already be in boot mode after hardware reset.)
- J  92:  0202 8D 00 10                             STA     _mmu_R0
- J  93:                    
- J  94:  0205 A9 80                                LDA     #_mmu_ConfigValue
+ J  88:                    
+ J  89:                                           .segment     "_MPU65XX_zp"
+ J  90:  0000              _mmu_parms
+ J  91:  0000 00           _mmu_parms_pid             .byte    0x00
+ J  92:  0001 00 00        _mmu_parms_addr            .word    0x0000
+ J  93:  0003 00 00        _mmu_parms_effect_addr     .word    0x0000
+ J  94:  0005              _mmu_parms_
  J  95:                    
- J  96:  0207 8D 01 10                             STA     _mmu_R1
- J  97:                    
- J  98:                                            ; Clear segment vectors...
- J  99:                    
- J 100:  020A A9 00                                LDA     #0x00
- J 101:  020C A2 00                                LDX     #_mmu_NumSegmentTags
- J 102:  020E                  loop
- J 103:  020E 9D 02 10                             STA     _mmu_vectors, X
- J 104:  0211 CA                                   DEX
- J 105:  0212 9D 02 10                             STA     _mmu_vectors, X
- J 106:  0215 CA                                   DEX
- J 107:  0216 D0 F6                                BNE     loop
- J 108:  0218 60                                   RTS
- J 109:                    
- J 110:  0219                  _mmu_map_segment
- J 111:  0219 60                                   RTS
-    31:                    
-    32:                    ;
-    33:                    ; SBC6500 Initialization (Power-Up and Reset (RST))
-    34:                    ;
-    35:                                           .segment "_SBC6502_code"
-    36:                    
-    37:  021A              VMK_RESET
-    38:  021A A2 FF                                LDX     #0xFF        ; Initialize stack pointer
-    39:  021C 9A                                   TXS
+ J  96:                    
+ J  97:                                           .segment     "_SBC6502_code"
+ J  98:                    
+ J  99:  E000              _mmu_initialize
+ J 100:  E000 A9 00                                    LDA     #0x00               ; Set boot mode (should already be in boot mode after hardware reset.)
+ J 101:  E002 8D 00 A0                                 STA     _mmu_R0
+ J 102:                    
+ J 103:  E005 A9 80                                    LDA     #_mmu_configValue
+ J 104:                    
+ J 105:  E007 8D 01 A0                                 STA     _mmu_R1
+ J 106:                    
+ J 107:                                            ; Clear segment vectors...
+ J 108:                    
+ J 109:  E00A A9 00                                    LDA     #0x00
+ J 110:  E00C A2 00                                    LDX     #_mmu_numSegmentTags
+ J 111:  E00E                      loop
+ J 112:  E00E 9D 04 A0                                 STA     _mmu_vectors, X
+ J 113:  E011 CA                                       DEX
+ J 114:  E012 9D 04 A0                                 STA     _mmu_vectors, X
+ J 115:  E015 CA                                       DEX
+ J 116:  E016 D0 F6                                    BNE     loop
+ J 117:                    
+ J 118:  E018 60                                       RTS
+ J 119:                    
+ J 120:                    
+ J 121:  E019              _mmu_timer_initialize
+ J 122:  E019 60                                       RTS
+ J 123:                    
+ J 124:                    
+ J 125:  E01A              _mmu_map_segment
+ J 126:  E01A 60                                       RTS
+    30:                    
+    31:                    ;
+    32:                    ; SBC6500 Initialization (Power-Up and Reset (RST))
+    33:                    ;
+    34:                                           .segment     "_SBC6502_code"
+    35:                    
+    36:  E01B              _MPU65XX_RESET
+    37:  E01B 78                                       SEI                         ; Disable interrupts if entering via code
+    38:  E01C A2 FF                                    LDX     #0xFF               ; Initialize stack pointer
+    39:  E01E 9A                                       TXS
     40:                    
-    41:  021D 20 00 02                             JSR     _mmu_initialize
+    41:  E01F 20 00 E0                                 JSR     _mmu_initialize
     42:                    
-    43:                    ; Allowcate SBC6502 segment vectors for kernal ...
-    44:                    
-    45:                    ;      Tag        Physical Address         Effective Address
-    46:                    ;    xx00.0000 - 0000.00xx.xxxx.xxxx -> 0000.0000.00xx.xxxx.xxxx - RAM (ZP & Stack & RAM) (1Kb)
-    47:                    ;    xx00.0001 - 0000.01xx.xxxx.xxxx -> 1110.1111.10xx.xxxx.xxxx - IO (1Kb)
-    48:                    ;    xx00.0010 - 0000.10xx.xxxx.xxxx -> 1111.1111.00xx.xxxx.xxxx - ROM (1Kb)
-    49:                    
-    50:                                           .__mmu_map_segment   _vmk_kernal_pid, _SBC6502_ram, _SBC6502_eram, list=.list
- J  81:                    
- J  82:                                           .segment "_MOS6502_code"
- J  83:                    
- J  84:  0000 A9 00                                LDA     #0
- J  85:  0002 85 00                                STA     _mmu_parms_pid
- J  86:                    
- J  87:  0004 A9 00                                LDA     #<0
- J  88:  0006 85 01                                STA     _mmu_parms_addr
- J  89:  0008 A9 00                                LDA     #>0
- J  90:  000A 85 02                                STA     _mmu_parms_addr +1
- J  91:                    
- J  92:  000C A9 00                                LDA     #<0
- J  93:  000E 85 03                                STA     _mmu_parms_effect_addr
- J  94:  0010 A9 00                                LDA     #>0
- J  95:  0012 85 04                                STA     _mmu_parms_effect_addr +1
- J  96:                    
- J  97:  0014 20 19 02                             JSR     _mmu_map_segment
-    51:                    
-    52:                                           .__mmu_map_segment   _vmk_kernal_pid, _SBC6502_io, _SBC6502_eio, list=.list
- J  81:                    
- J  82:                                           .segment "_MOS6502_code"
- J  83:                    
- J  84:  0017 A9 00                                LDA     #0
- J  85:  0019 85 00                                STA     _mmu_parms_pid
- J  86:                    
- J  87:  001B A9 00                                LDA     #<0
- J  88:  001D 85 01                                STA     _mmu_parms_addr
- J  89:  001F A9 00                                LDA     #>0
- J  90:  0021 85 02                                STA     _mmu_parms_addr +1
- J  91:                    
- J  92:  0023 A9 00                                LDA     #<0
- J  93:  0025 85 03                                STA     _mmu_parms_effect_addr
- J  94:  0027 A9 00                                LDA     #>0
- J  95:  0029 85 04                                STA     _mmu_parms_effect_addr +1
- J  96:                    
- J  97:  002B 20 19 02                             JSR     _mmu_map_segment
-    53:                    
-    54:                                           .__mmu_map_segment   _vmk_kernal_pid, _SBC6502_rom, _SBC6502_erom, list=.list
- J  81:                    
- J  82:                                           .segment "_MOS6502_code"
- J  83:                    
- J  84:  002E A9 00                                LDA     #0
- J  85:  0030 85 00                                STA     _mmu_parms_pid
- J  86:                    
- J  87:  0032 A9 00                                LDA     #<0
- J  88:  0034 85 01                                STA     _mmu_parms_addr
- J  89:  0036 A9 00                                LDA     #>0
- J  90:  0038 85 02                                STA     _mmu_parms_addr +1
- J  91:                    
- J  92:  003A A9 00                                LDA     #<0
- J  93:  003C 85 03                                STA     _mmu_parms_effect_addr
- J  94:  003E A9 00                                LDA     #>0
- J  95:  0040 85 04                                STA     _mmu_parms_effect_addr +1
- J  96:                    
- J  97:  0042 20 19 02                             JSR     _mmu_map_segment
-    55:                    
-    56:                    ;
-    57:                    ; VMK Kernal
-    58:                    ;
+    43:                    
+    44:                    ; Allowcate SBC6502 segment vectors for kernal ...
+    45:                    
+    46:                    ;      Tag        Physical Address         Effective Address
+    47:                    ;    xx00.0000 - 0000.00xx.xxxx.xxxx -> 0000.0000.00xx.xxxx.xxxx - RAM (ZP & Stack & RAM) (1Kb)
+    48:                    ;    xx00.0001 - 0000.01xx.xxxx.xxxx -> 1110.1111.10xx.xxxx.xxxx - IO (1Kb)
+    49:                    ;    xx00.0010 - 0000.10xx.xxxx.xxxx -> 1111.1111.00xx.xxxx.xxxx - ROM (1Kb)
+    50:                    
+    51:                                               ._mmu_map_segment    _vmk_kernal_pid, _SBC6502_ram, _SBC6502_eram, list=.list
+ J  88:                    
+ J  89:                                           .segment "_SBC6502_code"
+ J  90:                    
+ J  91:  E022 A9 00                                    LDA     #0
+ J  92:  E024 85 00                                    STA     _mmu_parms_pid
+ J  93:                    
+ J  94:  E026 A9 00                                    LDA     #<0
+ J  95:  E028 85 01                                    STA     _mmu_parms_addr
+ J  96:  E02A A9 00                                    LDA     #>0
+ J  97:  E02C 85 02                                    STA     _mmu_parms_addr +1
+ J  98:                    
+ J  99:  E02E A9 00                                    LDA     #<0
+ J 100:  E030 85 03                                    STA     _mmu_parms_effect_addr
+ J 101:  E032 A9 00                                    LDA     #>0
+ J 102:  E034 85 04                                    STA     _mmu_parms_effect_addr +1
+ J 103:                    
+ J 104:  E036 20 1A E0                                 JSR     _mmu_map_segment
+    52:                    
+    53:                                               ._mmu_map_segment    _vmk_kernal_pid, _SBC6502_io, _SBC6502_eio
+    54:                    
+    55:                                               ._mmu_map_segment    _vmk_kernal_pid, _SBC6502_rom, _SBC6502_erom
+    56:                    
+    57:                    
+    58:                    ; Initialize quantum time interrupt (IRQ) ...
     59:                    
-    60:  0045              VMK_KERNAL
-    61:  0045 4C 45 00                             JMP     VMK_KERNAL
-    62:                    
-    63:                    ;
-    64:                    ; MCS650X Interupt Vectors
-    65:                    ;
-    66:                                           .segment "_MOS6502_vectors"
-    67:                    
-    68:  FFFA                  MCS650X_INTERRUPT_VECTORS
-    69:                    
-    70:  FFFA 00 00            MCS650X_NMI        .word   0x0000
-    71:  FFFC 1A 02            MCS650X_RST        .word   VMK_RESET
-    72:  FFFE 00 00            MCS650X_IRQ        .word   0x0000
-    73:                    
-    74:  10000                  MCS650X_INTERRUPT_VECTORS_
+    60:  E067 20 19 E0                                 JSR _mmu_timer_initialize
+    61:                    
+    62:                    ;
+    63:                    ; VMK Kernal
+    64:                    ;
+    65:                    
+    66:  E06A              _MPU65XX_IRQ_BRK
+    67:  E06A 40                                       RTI
+    68:                    
+    69:  E06B              _MPU65XX_NMI
+    70:  E06B 40                                       RTI
+    71:                    
+    72:  E06C              _MPU65XX_IRQ_BRK
+    73:  E06C 40                                       RTI
+    74:                    
     75:                    
-    76:                                       .end
+    76:                                           .include "../CPUs/MOS6502_Vectors.lib.a65", list=.list
+ N   1:                    
+ N   2:                    ;
+ N   3:                    ; MOS6502 Interupt Vectors
+ N   4:                    ;
+ N   5:                                           .segment "_MPU65XX_vectors"
+ N   6:                    
+ N   7:  FFFA              _MPU65XX_INTERRUPT_VECTORS
+ N   8:                    
+ N   9:  FFFA 6B E0        _MPU65XX_NMI_VECTOR            .word    _MPU65XX_NMI
+ N  10:  FFFC 1B E0        _MPU65XX_RESET_VECTOR          .word    _MPU65XX_RESET
+ N  11:  FFFE 6C E0        _MPU65XX_IRQ_BRK_VECTOR        .word    _MPU65XX_IRQ_BRK
+ N  12:                    
+ N  13:                    _MPU65XX_INTERRUPT_VECTORS_    .equ    * -1
+ N  14:                    
     77:                    
+    78:                                           .end
+    79:                    

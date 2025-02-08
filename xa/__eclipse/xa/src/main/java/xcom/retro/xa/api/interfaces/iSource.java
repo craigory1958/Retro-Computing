@@ -7,6 +7,8 @@ import java.io.IOException ;
 
 
 public interface iSource {
+	
+	boolean list() ;
 
 	int ln() ;
 

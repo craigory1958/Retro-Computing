@@ -71,7 +71,7 @@ invocation:  '.' symbol parameterList? ;
 
 
 // Assembler directive ...
-argumentList:   argument ( ',' argumentList )? ; 
+argumentList:   ( argument | option ) ( ',' argumentList )? ; 
 argument:  expr ;
 
 // Macro definition ...

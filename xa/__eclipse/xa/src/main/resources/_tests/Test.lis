@@ -1,19 +1,10 @@
      1:                    
-     2:                    			.segment "abc"
-     3:                    			.org 0x0100
-     4:                    
-     5:                    			.segment "def"
-     6:                    			.org 0x0200
+     2:                    	.include "abc.a65"
+     3:                    
+     4:                    	.include "abc.a65", list=.list
+ B   1:                    
+ B   2:  0002 A9 FF        	LDA	#$FF
+ B   3:                    
+     5:                    
+     6:                    	.include "abc.a65", list=.nolist
      7:                    
-     8:                    			.segment "abc"
-     9:  0100 A9 00        			LDA #0x00
-    10:                    
-    11:                    			.segment "def"
-    12:  0200 A9 FF        			LDA #0xFF
-    13:                    
-    14:                    			.segment "abc"
-    15:  0102 A9 01        			LDA #0x01
-    16:                    
-    17:                    			.segment "def"
-    18:  0202 A9 FE        			LDA #0xFe
-    19:                    

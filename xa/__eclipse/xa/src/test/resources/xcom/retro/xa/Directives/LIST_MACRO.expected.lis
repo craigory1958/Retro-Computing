@@ -9,15 +9,27 @@
      9:  0002 C8                    INY
     10:  0003 D1 30                 CMP    [$30],Y     ; IS IT LARGER THAN THE NEXT ELEMENT?
     11:  0005 90 10                 BCC    CHKEND
-    26:  0017 CA           CHKEND   DEX                ; END OF LIST?
-    27:  0018 D0 E6                 BNE    NXTEL       ; NO. FETCH NEXT ELEMENT
-    28:  001A 24 32                 BIT    $32         ; YES. EXCHANGE FLAG STILL OFF?
-    29:  001C 30 F9                 BMI    CHKEND      ; NO. GO THROUGH LIST AGAIN
+    12:  0007 F0 0E                 BEQ    CHKEND
+    13:                                                ; YES. EXCHANGE ELEMENTS IN MEMORY
+    14:  0009 48                    PHA                ; BY SAVING LOW BYTE ON STACK.
+    15:  000A B1 30                 LDA    [$30],Y     ; THEN GET HIGH BYTE AND
+    16:  000C 88                    DEY                ; STORE IT AT LOW ADDRESS
+    17:  000D 91 30                 STA  	[$30],Y
+    18:  000F 68                    PLA                ; PULL LOW BYTE FROM STACK
+    19:  0010 C8                    INY                ; AND STORE IT AT HIGH ADDRESS
+    20:  0011 91 30                 STA  	[$30],Y
+    21:  0013 A9 FF                 LDA    #$FF        ; TURN EXCHANGE FLAG ON (= -1)
+    22:  0015 85 32                 STA    $32
+    23:                    
+    24:  0017 CA           CHKEND   DEX                ; END OF LIST?
+    25:  0018 D0 E6                 BNE    NXTEL       ; NO. FETCH NEXT ELEMENT
+    26:  001A 24 32                 BIT    $32         ; YES. EXCHANGE FLAG STILL OFF?
+    27:  001C 30 F9                 BMI    CHKEND      ; NO. GO THROUGH LIST AGAIN
+    28:                    
+    29:  001E 60                    RTS                ; YES. LIST IS NOW ORDERED
     30:                    
-    31:  001E 60                    RTS                ; YES. LIST IS NOW ORDERED
+    31:                            .staiy	0
     32:                    
-    33:                            .staiy	0
+    33:                            .staiy	1, list=.list
+     4:  0021 91 01                 STA    [1],Y
     34:                    
-    35:                            .staiy	1, list=.list
-     5:  0021 91 01                 STA    [1],Y
-    36:                    

@@ -8,6 +8,13 @@ import xcom.retro.xa.api.interfaces.iSource ;
 
 public class InjectSource implements iSource {
 
+	boolean list ;
+	public boolean list() { return list ; }
+	public InjectSource list(final boolean list) {
+		this.list = list ;
+		return this ;
+	}
+
 	int ln ;
 
 	@Override

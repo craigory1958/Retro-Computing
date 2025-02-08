@@ -1,0 +1,7 @@
+
+	.include "abc.a65"
+
+	.include "abc.a65", list=.list
+
+	.include "abc.a65", list=.nolist
+	

@@ -246,7 +246,7 @@ public class XA {
 
 		actx.phase = Parse ;
 
-		actx.sources.add(new FileSource(actx.sources.size(), actx.cmdArgs.get("source"))) ;
+		actx.sources.add(new FileSource(actx.sources.size(), actx.cmdArgs.get("source"), actx.list())) ;
 		actx.source.push(actx.sources.get(actx.sources.size() - 1)) ;
 
 		actx.segments.put("<default>", new Segment("<default>")) ;
@@ -254,7 +254,10 @@ public class XA {
 		final ParseTreeWalker walker = new ParseTreeWalker() ;
 
 		while ( !actx.source.isEmpty() ) {
-
+			
+			actx.list(actx.source.peek().list()) ;
+//			System.err.println(actx.list()) ;
+			
 			for ( String line; (line = actx.source.peek().next()) != null; ) {
 
 				line = line.stripTrailing() ;
