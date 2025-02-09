@@ -9,13 +9,11 @@ import xcom.retro.xa.expressions.ExpressionUtils ;
 public class Symbol {
 
 	String name ;
-
 	public String name() {
 		return name ;
 	}
 
 	byte[] value ;
-
 	public byte[] value() {
 		return value ;
 	}

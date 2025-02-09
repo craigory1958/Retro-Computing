@@ -1,8 +1,8 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;                                                                              ;
-;                      Virtual Memory Kernal (VMK) v0.0.1                      ;
-;                                                                              ;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                                                                                        ;
+;                           Virtual Memory Kernal (VMK) v0.0.1                           ;
+;                                                                                        ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
                        .include    "VMK.def.a65"
                        .include    "../CPUs/_CPU.def.a65"
@@ -18,9 +18,9 @@
 ;
 ; Memory Management Unit (MMU) Configutation 
 ;
-; 2 PID Bits, 20 Virtual Address Bits, 10 Segment Offset Bits
-;
 
+        ; 2 PID Bits, 20 Virtual Address Bits, 10 Segment Offset Bits
+        
         bitsPhysicalAddr   .equ     16                  ; MPU65XX with 16 bit address bus (65536)
         bitsEffectiveAddr  .equ     20                  ; SBC6502 with 20 bit effective address bus (1,048,576)
         bitsSegmentSize    .equ     10                  ; SBC6502 with 10 bit segment size (1024)
@@ -63,13 +63,11 @@ _MPU65XX_RESET
 ; VMK Kernal 
 ;
                     
-_MPU65XX_IRQ_BRK
+_MPU65XX_IRQ
+_MPU65XX_BRK
                             RTI
                     
 _MPU65XX_NMI
-                            RTI
-                    
-_MPU65XX_IRQ_BRK
                             RTI
 
 

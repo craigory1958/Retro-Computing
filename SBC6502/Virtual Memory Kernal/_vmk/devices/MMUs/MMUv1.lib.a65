@@ -10,19 +10,87 @@ _mmu_bitsSegmentSize       .equ     ${bitsSegmentSize}
 _mmu_bitsPID               .equ     ${bitsPID}
 
 _mmu_bitsSegmentAddr       .equ     ${bitsPhysicalAddr} - ${bitsSegmentSize}
-_mmu_numSegmentTags        .equ     1 << _mmu_bitsSegmentAddr + ${bitsPID}
+_mmu_numVectors            .equ     1 << _mmu_bitsSegmentAddr + ${bitsPID}
 _mmu_configValue           .equ     (${bitsPID} << 6) ! ((${bitsEffectiveAddr} - ${bitsPhysicalAddr}) << 3) ! ((${_mmu_bitsSegmentSize} -8) << 0)
 
-
                        .segment     "_SBC6502_io"
-_mmu
-_mmu_R0                    .byte    0x00                ; Mode Register (0x0200)
-_mmu_R1                    .byte    0x00                ; Status Register (0x0201)
-_mmu_CR0                   .byte    0x00                ; Config Register 0 (0x0202)
-_mmu_CR1                   .byte    0x00                ; Config Register 1 (0x0203)
 
-_mmu_vectors               .align   0x04 
-_mmu_vectors_          .org         * + (_mmu_bitsSegmentAddr << 1)    ; Allocate 2 bytes for each vector.
+_mmu
+
+        ;
+        ;  R0 - Mode Register
+        ;
+        ;  ┌─┬─┬───────────┐
+        ;  │7 6 5 4 3 2 1 0│
+        ;  └┬┴┬┴─────┬─────┘
+        ;   │ │      └───────┤ PID (1-6 bits) 
+        ;   │ │              
+        ;   │ └──────────────┤ ~Kernal Mode (0 is enabled) / User Mode (1 is enabled)
+        ;   │                
+        ;   └────────────────┤ ~Boot Mode (0 is enabled) / Address Translate Mode (1 is enanled)
+        ;                    
+_mmu_R0                    .byte    0x00                ; Mode Register
+
+        ;
+        ;  R1 - Status Register
+        ;
+        ;  ┌─┬─┬─┬─┬─┬─┬─┬─┐
+        ;  │7 6 5 4 3 2 1 0│
+        ;  └┬┴┬┴┬┴┬┴┬┴┬┴┬┴┬┘
+        ;   │ │ │ │ │ │ │ └──┤ Boot Address Error
+        ;
+_mmu_R1                    .byte    0x00                ; Status Register
+
+        ;
+        ;  CR0 - Config Register 0
+        ;
+        ;  ┌───────┬───────┐
+        ;  │7 6 5 4 3 2 1 0│
+        ;  └───┬───┴───┬───┘
+        ;      │       └─────┤ # Page Offset Bits (0-15 bits)
+        ;      │             
+        ;      └─────────────┤ # Page Segment Bits (0-15 bits)
+        ;                    
+_mmu_CR0                   .byte    0x00                ; Config Register 0
+
+        ;
+        ;  CR1 - Config Register 1
+        ;
+        ;  ┌───────────────┐
+        ;  │7 6 5 4 3 2 1 0│
+        ;  └──┬──┴────┬────┘
+        ;     │       └──────┤ # Effective Address Bits (0-31 bits)
+        ;     │             
+        ;     └──────────────┤ # PID Bits (0-6 bits)
+        ;
+_mmu_CR1                   .byte    0x00                ; Config Register 1
+
+        ;
+        ;  MVR(s) - Memory Vector Register(s)
+        ;
+        ;                  ┌───────────────┐
+        ;                  │7 6 5 4 3 2 1 0│─┤ MVR low
+        ;                  └───────────────┘
+        ;                  .               .
+        ;  ┌───────────────┐               .
+        ;  │7 6 5 4 3 2 1 0│─────────────────┤ MVR high
+        ;  └───────────────┘               .
+        ;  .               .               .
+        ;  ┌─┬─┬─┬─────────────────────────┐
+        ;  │5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0│
+        ;  └┬┴┬┴┬┴────────────┬────────────┘
+        ;   │ │ │             └──────────────┤ Upper Effective Address Bits (0-13 bits)
+        ;   │ │ │                   
+        ;   │ │ └────────────────────────────┤ Page Dirty
+        ;   │ │                 
+        ;   │ └──────────────────────────────┤ Write Enable
+        ;   │
+        ;   └────────────────────────────────┤ Vector Enable
+        ;                   
+                       .align       0x10 
+_mmu_vectors 
+                       .org         * + (_mmu_numVectors << 1)    ; Allocate 2 bytes for each vector.
+_mmu_vectors_ 
 _mmu_
  
  
@@ -44,17 +112,16 @@ _mmu_initialize
 
                             STA     _mmu_R1
         
-                        ; Clear segment vectors...
+        ; Reset segment vectors ...
 
                             LDA     #0x00
-                            LDX     #_mmu_numSegmentTags
+                            LDX     #_mmu_numVectors
         loop
-                            STA     _mmu_vectors, X
+                            STA     _mmu_vectors, X     ; Only need to clear 2 highest bits of a segment vector.
                             DEX
-                            STA     _mmu_vectors, X
                             DEX
                             BNE     loop
-                            
+
                             RTS        
 
 
