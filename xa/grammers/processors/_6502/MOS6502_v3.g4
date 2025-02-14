@@ -68,6 +68,7 @@ directive:  assembler | macro | invocation ;
 assembler:  '.' Directives argumentList? ;
 macro: '.' symbol  '.macro' optionList? ;
 invocation:  '.' symbol parameterList? ;
+struct: '.' symbol  '.struct' optionList? ;
 
 
 // Assembler directive ...
@@ -90,7 +91,7 @@ ideogram:  '.' symbol ;
 Directives:  
 	'align' | 
 	'byte' | 
-	'end' | 'endif' | 'endmacro' | 'equ' | 
+	'end' | 'endif' | 'endmacro' | 'endstruct' | 'equ' | 
 	'if' |'ifdef' | 'ifndef' | 'include' | 
 	'list' |
 	'nolist' |
