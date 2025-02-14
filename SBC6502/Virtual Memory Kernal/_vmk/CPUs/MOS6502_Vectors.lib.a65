@@ -1,8 +1,7 @@
-
 ;
 ; MOS6502 Interupt Vectors
 ;
-                       .segment "_MPU65XX_vectors"
+                       .segment "_MPU65XX_VECTORS"
         
 _MPU65XX_INTERRUPT_VECTORS
     

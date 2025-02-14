@@ -1,1 +1,4 @@
-*.FCBak
+
+xa/__eclipse/.metadata/**/*
+.settings/**/*
+xa/__eclipse/xa/target/**/*

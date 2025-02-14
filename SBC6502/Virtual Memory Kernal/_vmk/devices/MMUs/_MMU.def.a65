@@ -5,7 +5,7 @@
 MMUv1                  .equ    1
                         
                         
-_mmu_declare_type     .macro  type
+._mmu_declare_type     .macro  type
                            .ifndef _mmu_declared
 _mmu_declared                  .equ    ${type}
 

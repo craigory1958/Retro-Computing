@@ -2,15 +2,15 @@
 ; SBC6502 (8K ROM) Definitions
 ;
                         
-SBC6502v1_8K           .equ    1
+SBC6502v1_4K           .equ    1
 
 
-_arch_declare_type    .macro  type
+._arch_declare_type   .macro  type
                            .ifndef _arch_declared
 _arch_declared                 .equ     ${type}
 
-                               .if ${type} == SBC6502v1_8K 
-                                   .include "../archs/SBC6502v1_8K.lib.a65"
+                               .if ${type} == SBC6502v1_4K 
+                                   .include "../archs/SBC6502v1_4K.lib.a65"
                                .endif
                            .endif
                        .endmacro

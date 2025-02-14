@@ -1,6 +1,6 @@
 		 
 
-staiy   .macro  addr
+.staiy  .macro  addr
          STA    [${addr}],Y
         .endmacro
 		 

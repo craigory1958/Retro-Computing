@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="    "/>
+		<item key="selection" value="DeleteDirectory"/>
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="false"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="true"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
+			<item value="Mappings_VVFormDataToViewTemplates"/>
+			<item value="brk"/>
+			<item value="extruder"/>
+			<item value="__mmu_instantiate"/>
 			<item value="&#x09;"/>
 			<item value="\t"/>
 			<item value="options"/>
@@ -19,12 +23,9 @@
 			<item value="fSpec"/>
 			<item value="VEB"/>
 			<item value=",x"/>
-			<item value="v2"/>
-			<item value="V1_"/>
-			<item value="V1"/>
-			<item value="MOS6502v1"/>
 		</list>
 		<list key="replacehistory">
+			<item value="DeleteDirectory"/>
 			<item value="    "/>
 			<item value="srcFSpec"/>
 			<item value=""/>
@@ -39,12 +40,11 @@
 			<item value="shunt:"/>
 			<item value="shunt"/>
 			<item value="Opcode"/>
-			<item value="OpcodeBranch"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
-		<item key="DIALOG_X_ORIGIN" value="1540"/>
-		<item key="DIALOG_Y_ORIGIN" value="243"/>
+		<item key="DIALOG_X_ORIGIN" value="1940"/>
+		<item key="DIALOG_Y_ORIGIN" value="211"/>
 		<item key="DIALOG_WIDTH" value="322"/>
 		<item key="DIALOG_HEIGHT" value="391"/>
 		<item key="DIALOG_FONT_NAME" value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|5|0|Segoe UI"/>

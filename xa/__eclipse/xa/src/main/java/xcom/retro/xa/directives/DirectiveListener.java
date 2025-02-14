@@ -97,9 +97,9 @@ public class DirectiveListener extends DirectivesBaseListener {
 					break ;
 			}
 
-//			System.out.println("exit directive: " + name + " @" + phase) ;
-//			System.out.println("worker: " + worker) ;
-//			System.out.println("macros: " + actx.macros().keySet()) ;
+			System.out.println("exit directive: " + name + " @" + phase) ;
+			System.out.println("worker: " + worker) ;
+			System.out.println("macros: " + actx.macros().keySet()) ;
 
 //			if ( directive == null )
 //				directive = actx.macros().get(name) ;

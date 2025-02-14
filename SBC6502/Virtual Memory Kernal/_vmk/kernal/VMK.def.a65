@@ -2,4 +2,17 @@
 true                   .equ    1
 false                  .equ    0
 
+VMK_v1                 .equ    1
+
 _vmk_kernal_pid        .equ    0
+
+
+._vmk_declare_type    .macro  type
+                           .ifndef _vmk_declared
+_vmk_declared                  .equ     ${type}
+
+                               .if ${type} == VMK_v1
+                                   .include "VMK.lib.a65"
+                               .endif
+                           .endif
+                       .endmacro

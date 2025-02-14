@@ -60,7 +60,7 @@ public class MOS6502 extends MOS6502_BaseListener implements iProcessor {
 		BMI_relative(null, (byte) 0x30, (byte) 0x00), //
 		BNE_relative(null, (byte) 0xD0, (byte) 0x00), //
 		BPL_relative(null, (byte) 0x10, (byte) 0x00), //
-		BRK_implied(null, (byte) 0x00), //
+		BRK_immediate(null, (byte) 0x00, (byte) 0x00), //
 		BVC_relative(null, (byte) 0x50, (byte) 0x00), //
 		BVS_relative(null, (byte) 0x70, (byte) 0x00), //
 		CLC_implied(null, (byte) 0x18), //

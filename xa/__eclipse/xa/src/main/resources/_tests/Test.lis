@@ -1,10 +1,7 @@
      1:                    
-     2:                    	.include "abc.a65"
-     3:                    
-     4:                    	.include "abc.a65", list=.list
- B   1:                    
- B   2:  0002 A9 FF        	LDA	#$FF
- B   3:                    
+     2:                    .abc    .macro  abc1, abc2=123, abc3
+     3:                             LDA    ${abc1} + ${abc2} + ${abc3}
+     4:                            .endmacro
      5:                    
-     6:                    	.include "abc.a65", list=.nolist
+     6:                            .abc    1, 234, abc3=567
      7:                    

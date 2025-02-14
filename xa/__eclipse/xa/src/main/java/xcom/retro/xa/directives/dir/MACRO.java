@@ -150,7 +150,7 @@ public class MACRO implements iDirective {
 
 		final Statement _statement = actx.statement() ;
 
-		final String name = pctx.parent.getChild(0).getText() ;
+		final String name = pctx.getChild(0).getChild(1).getText() ;
 
 		final List<String> lines = new ArrayList<>() ;
 		try {

@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
-    <fullyQualifiedTypeName name="org.hibernate.internal.build.AllowSysOut"/>
-    <fullyQualifiedTypeName name="org.hsqldb.types.Charset"/>
-    <fullyQualifiedTypeName name="java.nio.charset.Charset"/>
-    <fullyQualifiedTypeName name="java.util.Arrays"/>
-    <fullyQualifiedTypeName name="xcom.retro.xa.expressions.value.HexLiteral"/>
-    <fullyQualifiedTypeName name="java.util.LinkedHashMap"/>
-    <fullyQualifiedTypeName name="com.fazecast.jSerialComm.SerialPort"/>
     <fullyQualifiedTypeName name="java.io.InputStream"/>
     <fullyQualifiedTypeName name="java.io.ByteArrayOutputStream"/>
     <fullyQualifiedTypeName name="com.google.common.io.CharStreams"/>
@@ -47,7 +40,6 @@
     <fullyQualifiedTypeName name="java.util.Map.Entry"/>
     <fullyQualifiedTypeName name="xcom.utils4j.data.structured.map.Maps"/>
     <fullyQualifiedTypeName name="xcom.retro.xa.SmokeTests.__Test_xcom_retro_xa_SmokeTests_"/>
-    <fullyQualifiedTypeName name="xcom.utils4j.logging.aspects.api.annotations.Log"/>
     <fullyQualifiedTypeName name="xcom.retro.xa.Operand"/>
     <fullyQualifiedTypeName name="javax.swing.text.html.Option"/>
     <fullyQualifiedTypeName name="xcom.retro.xa.Option"/>
@@ -60,4 +52,12 @@
     <fullyQualifiedTypeName name="xcom.retro.xa.Symbol"/>
     <fullyQualifiedTypeName name="xcom.retro.xa.Parameter"/>
     <fullyQualifiedTypeName name="org.hsqldb.result.ResultMetaData.SysOffsets"/>
+    <fullyQualifiedTypeName name="xcom.retro.xa.api.annotations.aLister"/>
+    <fullyQualifiedTypeName name="xcom.retro.xa.api.interfaces.iLister"/>
+    <fullyQualifiedTypeName name="xcom.retro.xa.api.interfaces.iExtruder"/>
+    <fullyQualifiedTypeName name="xcom.retro.xa.api.annotations.aExtruder"/>
+    <fullyQualifiedTypeName name="java.math.BigInteger"/>
+    <fullyQualifiedTypeName name="java.util.Arrays"/>
+    <fullyQualifiedTypeName name="xcom.apps.args.DeleteDirectory_CLArgs"/>
+    <fullyQualifiedTypeName name="xcom.utils4j.logging.aspects.api.annotations.Log"/>
 </qualifiedTypeNameHistroy>

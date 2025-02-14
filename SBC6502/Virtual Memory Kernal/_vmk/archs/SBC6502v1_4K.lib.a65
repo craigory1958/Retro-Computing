@@ -1,0 +1,17 @@
+;
+; SBC6502 (8K ROM) Definitions
+;
+
+                       .segment "_SBC6502_DATA"
+_SBC6502_ram           .org     0x0200
+_SBC6502_ram_          .equ     * + 40960 - 0x0200
+_SBC6502_eram          .equ     0x000000
+
+                       .segment "_SBC6502_IO"       ; 16Kb
+_SBC6502_IO            .org     _SBC6502_ram_
+_SBC6502_IO_           .equ     * + 16384
+_SBC6502_eio           .equ     0x000000
+
+                       .segment "_SBC6502_CODE"     ; 8Kb
+_SBC6502_rom           .org     _SBC6502_IO_
+_SBC6502_erom          .equ     0x000000

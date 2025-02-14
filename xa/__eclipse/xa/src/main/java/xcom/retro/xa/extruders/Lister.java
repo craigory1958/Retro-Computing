@@ -67,7 +67,7 @@ public class Lister implements iExtruder {
 							out.println() ;
 
 						if ( (b % 4) == 0 )
-							out.print(String.format("        %04X", _statement.lc() + b)) ;
+							out.print(String.format("         %04X", _statement.lc() + b)) ;
 
 						out.print(String.format(" %02X", _statement.bytes()[b])) ;
 					}

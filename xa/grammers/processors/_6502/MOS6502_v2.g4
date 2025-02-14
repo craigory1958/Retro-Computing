@@ -66,7 +66,7 @@ Opcodes:
 directive:  assembler | macro | invocation ;
 
 assembler:  '.' Directives argumentList? ;
-macro:  '.macro' optionList? ;
+macro: '.' symbol  '.macro' optionList? ;
 invocation:  '.' symbol parameterList? ;
 
 

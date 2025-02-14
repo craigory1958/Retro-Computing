@@ -1,7 +1,7 @@
 
-	.include "abc.a65"
+	.include "LIST_INCLUDE_abc.a65"
 
-	.include "abc.a65", list=.list
+	.include "LIST_INCLUDE_abc.a65", list=.list
 
-	.include "abc.a65", list=.nolist
+	.include "LIST_INCLUDE_abc.a65", list=.nolist
 	

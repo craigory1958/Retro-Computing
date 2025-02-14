@@ -35,7 +35,7 @@ public class _Test_DirectiveParsing {
 
                 { "    .byte abc",  	"Statement, Directive, Assembler, ArgumentList, Argument, Expr, Term, Identifier" },
                 { "abc .byte abc",  	"Statement, Label, Directive, Assembler, ArgumentList, Argument, Expr, Term, Identifier" },
-                { "abc .macro abc",  	"Statement, Label, Directive, Macro, OptionList, Option, Symbol" },
+                { ".abc .macro abc",  	"Statement, Directive, Macro, Symbol, OptionList, Option, Symbol" },
                 { "abc .abc abc",  		"Statement, Label, Directive, Invocation, Symbol, ParameterList, Parameter, Argument, Expr, Term, Identifier" },
                 { "abc .abc abc=def", 	"Statement, Label, Directive, Invocation, Symbol, ParameterList, Parameter, Symbol, Assignment, Argument, Expr, Term, Identifier" },
         } ;
