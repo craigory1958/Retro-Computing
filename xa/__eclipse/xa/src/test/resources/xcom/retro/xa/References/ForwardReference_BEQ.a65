@@ -1,3 +1,0 @@
-    
-    BEQ AHEAD
-AHEAD

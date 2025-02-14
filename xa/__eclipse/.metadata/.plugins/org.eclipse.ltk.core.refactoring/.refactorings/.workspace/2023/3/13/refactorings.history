@@ -1,3 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">&#x0A;<refactoring comment="Rename resource &apos;parent&apos; to &apos;_parent&apos;" description="Rename resource &apos;parent&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="/parent" name="_parent" stamp="1680103876591" updateReferences="true"/>&#x0A;<refactoring comment="Rename resource &apos;utils4j&apos; to &apos;Java Utilities&apos;" description="Rename resource &apos;utils4j&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="/utils4j" name="Java Utilities" stamp="1680187674345" updateReferences="true"/>
-</session>

@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Rename local variable &apos;bytesIn&apos; in &apos;PAL1Mon.main(...)&apos; to &apos;bytesOut&apos;&#x0D;&#x0A;- Original project: &apos;__Testomatic&apos;&#x0D;&#x0A;- Original element: &apos;PAL1Mon.main(String[]).bytesIn&apos;&#x0D;&#x0A;- Renamed element: &apos;bytesIn&apos;&#x0D;&#x0A;- Update references to refactored element" description="Rename local variable &apos;bytesIn&apos;" id="org.eclipse.jdt.ui.rename.local.variable" input="/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;{PAL1Mon.java[PAL1Mon~main~\[QString;@bytesIn!654!683!661!667!\[B!0!false" name="bytesOut" references="true" stamp="1688914871715" version="1.0"/>
-</session>
