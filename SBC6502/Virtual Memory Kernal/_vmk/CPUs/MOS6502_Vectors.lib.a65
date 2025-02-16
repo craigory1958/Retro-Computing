@@ -5,10 +5,10 @@
         
 _MPU65XX_INTERRUPT_VECTORS
     
-_MPU65XX_NMI_VECTOR            .word    _MPU65XX_NMI
-_MPU65XX_RESET_VECTOR          .word    _MPU65XX_RESET
+_MPU65XX_NMI_VECTOR        .word    _MPU65XX_NMI
+_MPU65XX_RESET_VECTOR      .word    _MPU65XX_RESET
 _MPU65XX_IRQ_VECTOR 
 _MPU65XX_BRK_VECTOR
-                               .word    _MPU65XX_IRQ 
+                           .word    _MPU65XX_IRQ 
 
 _MPU65XX_INTERRUPT_VECTORS_    .equ    * -1

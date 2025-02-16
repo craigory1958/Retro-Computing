@@ -183,7 +183,7 @@
     55:                    
     56:                                               ._mmu_map_segment    _vmk_kernal_pid, _SBC6502_rom, _SBC6502_erom
     57:                    
-    58: (0008)                     curTaskSegment     .equ     8
+    58: (0009)                     curTaskSegment     .equ     9
     59:                    
     60:                    ; Initialize quantum time interrupt (IRQ) ...
     61:                    
@@ -193,44 +193,85 @@
     65:                    ; VMK Kernal
     66:                    ;
     67:                                           .segment     "_MPU65XX_ZP"
-    68:  0005                      tasks          .word
-    69:  0005                      curTask        .word
-    70:  0005                      curTaskRegY    .byte
-    71:                    
-    72:                    ;
-    73:                    ; Routine for BRK or IRQ event; BRK instruction will set Break bit.
-    74:                    ;
-    75:                    
-    76:                                           .segment     "_SBC6502_CODE"
-    77:  E067              _MPU65XX_IRQ
-    78:  E067              _MPU65XX_BRK
-    79:                    
-    80:                            ; Save current process state.
-    81:                    
-    82:  E067 84 05                                    STY     curTaskRegY
-    83:  E069 A0 00                                    LDY     #0x00
-    84:  E06B 91 05                                    STA     [curTask], Y    ; Save A
-    85:  E06D A5 05                                    LDA     curTaskRegY
-    86:  E06F C8                                       INY
-    87:  E070 91 05                                    STA     [curTask], Y    ; Save Y
-    88:  E072 8A                                       TXA
-    89:  E073 C8                                       INY
-    90:  E074 91 05                                    STA     [curTask], Y    ; Save X
-    91:  E076 BA                                       TSX
-    92:  E077 8A                                       TXA
-    93:  E078 C8                                       INY
-    94:  E079 91 05                                    STA     [curTask], Y    ; Save S
-    95:                    
-    96:  E07B AA                                       TAX
-    97:  E07C BD 00 21                                 LDA     (curTaskSegment <<  bitsSegmentSize) + 0x0100, X
-    98:                    
-    99:  E07F 40                                       RTI
-   100:                    
-   101:  E080              _MPU65XX_NMI
-   102:  E080 40                                       RTI
-   103:                    
-   104:                    
-   105:                                           .include "../CPUs/MOS6502_Vectors.lib.a65", list=.list
+    68:  0005                      task           .word
+    69:  0005                      tasks          .word
+    70:  0005                      curTask        .word
+    71:  0005                      curTaskRegY    .byte
+    72:                    
+    73:                    ;
+    74:                    ; Routine for BRK or IRQ event; BRK instruction will set Break bit.
+    75:                    ;
+    76:                    
+    77:                                           .segment     "_SBC6502_CODE"
+    78:  E067              _MPU65XX_IRQ
+    79:  E067              _MPU65XX_BRK
+    80:                    
+    81:                            ; Save current task state.
+    82:                    
+    83:  E067 84 05                                    STY     curTaskRegY
+    84:  E069 A0 00                                    LDY     #0x00
+    85:  E06B 91 05                                    STA     [curTask], Y    ; Save A
+    86:  E06D A5 05                                    LDA     curTaskRegY
+    87:  E06F C8                                       INY
+    88:  E070 91 05                                    STA     [curTask], Y    ; Save Y
+    89:  E072 8A                                       TXA
+    90:  E073 C8                                       INY
+    91:  E074 91 05                                    STA     [curTask], Y    ; Save X
+    92:  E076 BA                                       TSX
+    93:  E077 8A                                       TXA
+    94:  E078 C8                                       INY
+    95:  E079 91 05                                    STA     [curTask], Y    ; Save S
+    96:                    
+    97:  E07B AA                                       TAX
+    98:  E07C CA                                       DEX
+    99:  E07D BD 00 25                                 LDA     (curTaskSegment <<  bitsSegmentSize) + 0x0100, X    ; Use X as stack pointer into current task's stack
+   100:  E080 C8                                       INY
+   101:  E081 91 05                                    STA     [curTask], Y    ; Save P
+   102:  E083 CA                                       DEX
+   103:  E084 BD 00 25                                 LDA     (curTaskSegment <<  bitsSegmentSize) + 0x0100, X
+   104:  E087 C8                                       INY
+   105:  E088 91 05                                    STA     [curTask], Y    ; Save PCL
+   106:  E08A CA                                       DEX
+   107:  E08B BD 00 25                                 LDA     (curTaskSegment <<  bitsSegmentSize) + 0x0100, X
+   108:  E08E C8                                       INY
+   109:  E08F 91 05                                    STA     [curTask], Y    ; Save PCH
+   110:                    
+   111:                    
+   112:                            ; Find next task to execute.
+   113:                    
+   114:  E091 A5 05                                    LDA     tasks
+   115:  E093 F0 1C                                    BEQ     Error       ; Error is tasks list structure
+   116:  E095 85 05                                    STA     task
+   117:  E097 A5 06                                    LDA     tasks +1
+   118:  E099 85 06                                    STA     task +1
+   119:                    
+   120:  E09B                      CheckNextTaskStatus
+   121:  E09B A0 00                                    LDY     #0x00
+   122:  E09D B1 05                                    LDA     [task], Y   ; Fetch status byte of next task
+   123:  E09F 29 01                                    AND     #0x01
+   124:  E0A1 D0 0E                                    BNE     ExecuteNextTask     ; Found next task to execute
+   125:                    
+   126:  E0A3 B1 05                                    LDA     [task], Y   ; Fetch pointer to next tasks in list
+   127:  E0A5 F0 0A                                    BEQ     Error       ; Error is tasks list structure
+   128:  E0A7 85 05                                    STA     task
+   129:  E0A9 C8                                       INY
+   130:  E0AA B1 05                                    LDA     [task], Y   ; Fetch pointer to next tasks in list
+   131:  E0AC 85 06                                    STA     task +1
+   132:                    
+   133:  E0AE 4C 9B E0                                 JMP     CheckNextTaskStatus
+   134:                    
+   135:                    
+   136:                    
+   137:  E0B1                      ExecuteNextTask
+   138:  E0B1                      Error
+   139:                    
+   140:  E0B1 40                                       RTI
+   141:                    
+   142:  E0B2              _MPU65XX_NMI
+   143:  E0B2 40                                       RTI
+   144:                    
+   145:                    
+   146:                                           .include "../CPUs/MOS6502_Vectors.lib.a65", list=.list
  Q   1:                    ;
  Q   2:                    ; MOS6502 Interupt Vectors
  Q   3:                    ;
@@ -238,14 +279,14 @@
  Q   5:                    
  Q   6:  FFFA              _MPU65XX_INTERRUPT_VECTORS
  Q   7:                    
- Q   8:  FFFA 80 E0        _MPU65XX_NMI_VECTOR            .word    _MPU65XX_NMI
- Q   9:  FFFC 18 E0        _MPU65XX_RESET_VECTOR          .word    _MPU65XX_RESET
+ Q   8:  FFFA B2 E0        _MPU65XX_NMI_VECTOR        .word    _MPU65XX_NMI
+ Q   9:  FFFC 18 E0        _MPU65XX_RESET_VECTOR      .word    _MPU65XX_RESET
  Q  10:  FFFE              _MPU65XX_IRQ_VECTOR
  Q  11:  FFFE              _MPU65XX_BRK_VECTOR
- Q  12:  FFFE 67 E0                                       .word    _MPU65XX_IRQ
+ Q  12:  FFFE 67 E0                                   .word    _MPU65XX_IRQ
  Q  13:                    
  Q  14: (FFFF)             _MPU65XX_INTERRUPT_VECTORS_    .equ    * -1
  Q  15:                    
-   106:                    
-   107:                                           .end
-   108:                    
+   147:                    
+   148:                                           .end
+   149:                    

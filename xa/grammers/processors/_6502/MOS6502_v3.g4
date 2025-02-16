@@ -63,12 +63,12 @@ Opcodes:
 // Directives.g4
 //
 
-directive:  assembler | macro | invocation ;
+directive:  assembler | macro | struct | invocation ;
 
 assembler:  '.' Directives argumentList? ;
-macro: '.' symbol  '.macro' optionList? ;
+macro: '.' symbol '.macro' optionList? ;
+struct: '.' symbol '.struct' optionList? ;
 invocation:  '.' symbol parameterList? ;
-struct: '.' symbol  '.struct' optionList? ;
 
 
 // Assembler directive ...

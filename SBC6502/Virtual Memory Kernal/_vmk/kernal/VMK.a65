@@ -130,11 +130,12 @@ _MPU65XX_BRK
                             LDA     [task], Y   ; Fetch pointer to next tasks in list
                             STA     task +1
 
-                            BRA     CheckNextTaskStatus
+                            JMP     CheckNextTaskStatus
 
 
 
         ExecuteNextTask
+        Error
 
                             RTI
                     

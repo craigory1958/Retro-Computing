@@ -9,13 +9,13 @@ import java.util.List ;
 import xcom.retro.xa.api.interfaces.iSource ;
 
 
-public class MacroSource implements iSource {
+public class BlockSource implements iSource {
 
 	//@formatter:off
 
 	boolean list ;
 	public boolean list() { return list ; }
-	public MacroSource list(final boolean list) {
+	public BlockSource list(final boolean list) {
 		this.list = list ;
 		return this ;
 	}
@@ -41,7 +41,7 @@ public class MacroSource implements iSource {
 	//@formatter:on
 
 
-	public MacroSource(final int sn, final int ln, final List<String> lines, boolean list) {
+	public BlockSource(final int sn, final int ln, final List<String> lines, boolean list) {
 
 		this.sn = sn ;
 		this.ln = ln - 1 ;

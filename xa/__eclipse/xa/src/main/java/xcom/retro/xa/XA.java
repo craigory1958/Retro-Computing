@@ -58,6 +58,7 @@ import xcom.retro.xa.api.interfaces.iExtruder ;
 import xcom.retro.xa.api.interfaces.iProcessor ;
 import xcom.retro.xa.api.interfaces.iSource ;
 import xcom.retro.xa.directives.dir.MACRO ;
+import xcom.retro.xa.directives.dir.STRUCT ;
 import xcom.utils4j.logging.aspects.api.annotations.Log ;
 import xcom.utils4j.resources.Props ;
 
@@ -122,6 +123,9 @@ public class XA {
 
 		List<Statement> statements = new ArrayList<>() ;
 		public List<Statement> statements() { return statements ; }
+
+		Map<String, STRUCT> structs = new HashMap<>() ;
+		public Map<String, STRUCT> structs() { return structs ; }
 
 		Symbol symbol ;
 		public Symbol symbol() { return symbol ; }

@@ -27,7 +27,7 @@ import xcom.utils4j.logging.aspects.api.annotations.Log ;
 
 
 @aDirective
-public class MACRO implements iDirective {
+public class STRUCT implements iDirective {
 
 	//@formatter:off
 
@@ -48,12 +48,12 @@ public class MACRO implements iDirective {
 	//@formatter:on
 
 
-	public MACRO(final AssemblyContext actx) {
+	public STRUCT(final AssemblyContext actx) {
 		this.actx = actx ;
 	}
 
 
-	public MACRO(final AssemblyContext actx, final String name, final List<Operand> optioms, final List<String> lines) {
+	public STRUCT(final AssemblyContext actx, final String name, final List<Operand> optioms, final List<String> lines) {
 
 		this.actx = actx ;
 		this.name = name ;
@@ -96,6 +96,7 @@ public class MACRO implements iDirective {
 
 
 		boolean list = (parms.containsKey("list") ? parms.get("list").equals(".list") : false) ;
+//		list = true ;
 		actx.list(list) ;
 
 		actx.sources().add(new BlockSource(sn, ln, lines, list)) ;
@@ -107,13 +108,13 @@ public class MACRO implements iDirective {
 	@Override
 	public void parse(final ParserRuleContext pctx) {
 
-		final MACRO macro = buildMacro(actx, pctx) ;
-		actx.macros().put(macro.name().toLowerCase(), macro) ;
+		final STRUCT struct = buildStruct(actx, pctx) ;
+		actx.structs().put(struct.name().toLowerCase(), struct) ;
 	}
 
 
 	@Log
-	public static MACRO buildMacro(final AssemblyContext actx, final ParserRuleContext pctx) {
+	public static STRUCT buildStruct(final AssemblyContext actx, final ParserRuleContext pctx) {
 
 		actx.statement().operands().add(new Option("list").assignment(new StringLiteral(".nolist", true))) ;
 		final Statement _statement = actx.statement() ;
@@ -122,7 +123,7 @@ public class MACRO implements iDirective {
 		final List<String> lines = new ArrayList<>() ;
 		try {
 			String line ;
-			while ( !StringUtils.trimToEmpty(line = actx.source().peek().next()).equalsIgnoreCase('.' + ENDMACRO.class.getSimpleName()) ) {
+			while ( !StringUtils.trimToEmpty(line = actx.source().peek().next()).equalsIgnoreCase('.' + ENDSTRUCT.class.getSimpleName()) ) {
 				lines.add(line) ;
 				actx.statements().add(
 						new Statement(actx.source().peek().sn(), actx.source().peek().ln(), line, actx.segment().lc(), actx.list(), actx.assembleEnable())) ;
@@ -136,6 +137,6 @@ public class MACRO implements iDirective {
 		catch ( final IOException e ) {}
 
 
-		return new MACRO(actx, name, _statement.operands(), lines) ;
+		return new STRUCT(actx, name, _statement.operands(), lines) ;
 	}
 }

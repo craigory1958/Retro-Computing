@@ -5,10 +5,10 @@ IF NOT "%1"=="" SET uPfam=%1
 SET uP=MOS6502
 IF NOT "%2"=="" SET uP=%2
 
-SET uPver=v2
+SET uPver=v3
 IF NOT "%3"=="" SET uPver=%3
 
-SET dirVer=v2
+SET dirVer=v3
 IF NOT "%4"=="" SET dirVer=%4
 
 SET exprVer=v1

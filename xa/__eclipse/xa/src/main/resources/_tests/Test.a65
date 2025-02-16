@@ -1,6 +1,10 @@
+.xyz    .struct status=0xFF
+status  .word   ${status}
+pid     .byte   0x00
+next    .word   0x0000
+        .endstruct
 		
-.abc    .macro  abc1, abc2=123, abc3
-         LDA    ${abc1} + ${abc2} + ${abc3}
-        .endmacro
+def     .xyz    status=0xFFFF, list=.list
 
-        .abc    1, 234, abc3=567
+         LDY    #.xyz.pid
+         LDA	[def], Y

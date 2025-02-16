@@ -53,7 +53,7 @@ public class DirectiveListener extends DirectivesBaseListener {
 	public void exitDirective(final ParserRuleContext pctx) {
 
 		try {
-			 String phase = actx.phase().name().toLowerCase() ;
+			String phase = actx.phase().name().toLowerCase() ;
 
 //			for ( int x = 0; (x < pctx.getChildCount()); x++ ) {
 //				System.out.println("_" + pctx.getChild(x).getClass().getSimpleName()) ;
@@ -61,7 +61,7 @@ public class DirectiveListener extends DirectivesBaseListener {
 
 //			System.out.println("directives: " + actx.directives().keySet()) ;
 //			System.out.println("macros: " + actx.macros().keySet()) ;
-			
+
 //			System.out.println("r: " + pctx.getClass().getSimpleName()) ;
 //			System.out.println("r: " + pctx.getChildCount()) ;
 //			System.out.println("r.1: " + pctx.getChild(0).getClass().getSimpleName()) ;
@@ -77,29 +77,37 @@ public class DirectiveListener extends DirectivesBaseListener {
 //			System.out.println("r.1.3: " + pctx.getChild(0).getChild(2).getChildCount()) ;
 
 			String name = null ;
-			iDirective worker = null;
+			iDirective worker = null ;
 			switch ( pctx.getChild(0).getClass().getSimpleName() ) {
-				
+
 				case "AssemblerContext":
 					name = pctx.getChild(0).getChild(1).getText().toUpperCase() ;
 					worker = actx.directives().get(name) ;
 					break ;
-					
+
 				case "InvocationContext":
 					name = pctx.getChild(0).getChild(1).getText() ;
-					worker = actx.macros().get(name) ;
+
+					worker = (actx.macros().containsKey(name) ? actx.macros().get(name) : actx.structs().get(name)) ;
+
 					phase = "expand" ;
 					break ;
-					
+
 				case "MacroContext":
 					name = "MACRO" ;
 					worker = actx.directives().get(name) ;
 					break ;
+
+				case "StructContext":
+					name = "STRUCT" ;
+					worker = actx.directives().get(name) ;
+					break ;
 			}
 
-			System.out.println("exit directive: " + name + " @" + phase) ;
-			System.out.println("worker: " + worker) ;
-			System.out.println("macros: " + actx.macros().keySet()) ;
+//			System.out.println("exit directive: " + name + " @" + phase) ;
+//			System.out.println("worker: " + worker) ;
+//			System.out.println("macros: " + actx.macros().keySet()) ;
+//			System.out.println("structs: " + actx.structs().keySet()) ;
 
 //			if ( directive == null )
 //				directive = actx.macros().get(name) ;
