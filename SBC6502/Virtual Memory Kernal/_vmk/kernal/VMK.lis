@@ -1,292 +1,291 @@
-     1:                    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-     2:                    ;                                                                           ;
-     3:                    ;                     Virtual Memory Kernal (VMK) v0.0.1                    ;
-     4:                    ;                                                                           ;
-     5:                    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-     6:                    
-     7:                                           .include    "VMK.def.a65"
-     8:                                           .include    "../CPUs/_CPU.def.a65"
-     9:                                           .include    "../archs/_ARCH.def.a65"
-    10:                                           .include    "../devices/MMUs/_MMU.def.a65"
-    11:                    
-    12:                    
-    13:                                               ._vmk_declare_type  VMK_v1
-    14:                                               ._cpu_declare_type  MOS6502
-    15:                                               ._arch_declare_type SBC6502v1_4K
-    16:                                               ._mmu_declare_type  MMUv1
-    17:                    
-    18:                    
-    19:                    ;
-    20:                    ; Memory Management Unit (MMU) Configutation
-    21:                    ;
-    22:                    
-    23:                            ; 2 PID Bits, 20 Effective Address Bits, 10 Segment Offset Bits
-    24:                    
-    25: (0010)                     bitsPhysicalAddr   .equ     16          ; MPU65XX with 16 bit address bus (65536)
-    26: (0014)                     bitsEffectiveAddr  .equ     20          ; SBC6502 with 20 bit effective address bus (1,048,576)
-    27: (000A)                     bitsSegmentSize    .equ     10          ; SBC6502 with 10 bit segment size (1024)
-    28: (0002)                     bitsPID            .equ     2           ; Kernal = 0x0, User = 0x1 thru 0x2
-    29:                    
-    30:                                               ._mmu_instantiate    bitsPhysicalAddr, bitsEffectiveAddr, bitsSegmentSize, bitsPID, list=.list
- L 133:                    
- L 134: (0010)             _mmu_bitsPhysicalAddr      .equ     16
- L 135: (0014)             _mmu_bitsEffectiveAddr     .equ     20
- L 136: (000A)             _mmu_bitsSegmentSize       .equ     10
- L 137: (0002)             _mmu_bitsPID               .equ     2
- L 138:                    
- L 139: (0006)             _mmu_bitsSegmentAddr       .equ     _mmu_bitsPhysicalAddr - _mmu_bitsSegmentSize
- L 140: (0100)             _mmu_numVectors            .equ     1 << _mmu_bitsSegmentAddr + 2
- L 141: (0080)             _mmu_configValue           .equ     (_mmu_bitsPID << 6) ! ((_mmu_bitsEffectiveAddr - _mmu_bitsPhysicalAddr) << 3) ! ((_mmu_bitsSegmentSize -8) << 0)
- L 142:                    
- L 143:                    
- L 144:                                           .segment     "_SBC6502_IO"
- L 145:  A000              _mmu
- L 146:                    
- L 147:                    ;
- L 148:                    ;   R0 - Mode Register
- L 149:                    ;
- L 150:                    ;   ┌─┬─┬───────────┐
- L 151:                    ;   │7 6 5 4 3 2 1 0│
- L 152:                    ;   └┬┴┬┴─────┬─────┘
- L 153:                    ;    │ │      └───────┤ PID (1-6 bits)
- L 154:                    ;    │ │
- L 155:                    ;    │ └──────────────┤ ~Kernal Mode (0 is enabled) / User Mode (1 is enabled)
- L 156:                    ;    │
- L 157:                    ;    └────────────────┤ ~Boot Mode (0 is enabled) / Address Translate Mode (1 is enanled)
- L 158:                    
- L 159:  A000 00           _mmu_R0                    .byte    0x00         ; Mode Register
- L 160:                    
- L 161:                    ;
- L 162:                    ;   R1 - Status Register
- L 163:                    ;
- L 164:                    ;   ┌─┬─┬─┬─┬─┬─┬─┬─┐
- L 165:                    ;   │7 6 5 4 3 2 1 0│
- L 166:                    ;   └┬┴┬┴┬┴┬┴┬┴┬┴┬┴┬┘
- L 167:                    ;    │ │ │ │ │ │ │ └──┤ Boot Address Error
- L 168:                    
- L 169:  A001 00           _mmu_R1                    .byte    0x00         ; Status Register
- L 170:                    
- L 171:                    ;
- L 172:                    ;   CR0 - Config Register 0
- L 173:                    ;
- L 174:                    ;   ┌───────┬───────┐
- L 175:                    ;   │7 6 5 4 3 2 1 0│
- L 176:                    ;   └───┬───┴───┬───┘
- L 177:                    ;       │       └─────┤ # Page Offset Bits (0-15 bits)
- L 178:                    ;       │
- L 179:                    ;       └─────────────┤ # Page Segment Bits (0-15 bits)
- L 180:                    
- L 181:  A002 00           _mmu_CR0                   .byte    0x00         ; Config Register 0
- L 182:                    
- L 183:                    ;
- L 184:                    ;   CR1 - Config Register 1
- L 185:                    ;
- L 186:                    ;   ┌───────────────┐
- L 187:                    ;   │7 6 5 4 3 2 1 0│
- L 188:                    ;   └──┬──┴────┬────┘
- L 189:                    ;      │       └──────┤ # Effective Address Bits (0-31 bits)
- L 190:                    ;      │
- L 191:                    ;      └──────────────┤ # PID Bits (0-6 bits)
- L 192:                    
- L 193:  A003 00           _mmu_CR1                   .byte    0x00         ; Config Register 1
- L 194:                    
- L 195:                    ;
- L 196:                    ;   MVR(s) - Memory Vector Register(s)
- L 197:                    ;
- L 198:                    ;                   ┌───────────────┐
- L 199:                    ;                   │7 6 5 4 3 2 1 0│─┤ MVR low
- L 200:                    ;                   └───────────────┘
- L 201:                    ;                   .               .
- L 202:                    ;   ┌───────────────┐               .
- L 203:                    ;   │7 6 5 4 3 2 1 0│─────────────────┤ MVR high
- L 204:                    ;   └───────────────┘               .
- L 205:                    ;   .               .               .
- L 206:                    ;   ┌─┬─┬─┬─────────────────────────┐
- L 207:                    ;   │5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0│
- L 208:                    ;   └┬┴┬┴┬┴────────────┬────────────┘
- L 209:                    ;    │ │ │             └──────────────┤ Upper Effective Address Bits (0-13 bits)
- L 210:                    ;    │ │ │
- L 211:                    ;    │ │ └────────────────────────────┤ Page Dirty
- L 212:                    ;    │ │
- L 213:                    ;    │ └──────────────────────────────┤ Write Enable
- L 214:                    ;    │
- L 215:                    ;    └────────────────────────────────┤ Vector Enable
- L 216:                    
- L 217:                                           .align       0x10
- L 218:  A010              _mmu_vectors
- L 219:                                           .org         * + (_mmu_numVectors << 1)    ; Allocate 2 bytes for each vector.
- L 220:  A210              _mmu_vectors_
- L 221:  A210              _mmu_
- L 222:                    
- L 223:                    
- L 224:                                           .segment     "_MPU65XX_ZP"
- L 225:  0000              _mmu_parms
- L 226:  0000 00           _mmu_parms_pid             .byte    0x00
- L 227:  0001 00 00        _mmu_parms_addr            .word    0x0000
- L 228:  0003 00 00        _mmu_parms_effect_addr     .word    0x0000
- L 229:  0005              _mmu_parms_
- L 230:                    
- L 231:                    
- L 232:                                           .segment     "_SBC6502_CODE"
- L 233:                    
- L 234:  E000              _mmu_initialize
- L 235:  E000 A9 00                                    LDA     #0x00               ; Set boot mode (should already be in boot mode after hardware reset.)
- L 236:  E002 8D 00 A0                                 STA     _mmu_R0
- L 237:                    
- L 238:  E005 A9 80                                    LDA     #_mmu_configValue
- L 239:                    
- L 240:  E007 8D 01 A0                                 STA     _mmu_R1
- L 241:                    
- L 242:                                                ; Reset segment vectors ...
- L 243:                    
- L 244:  E00A A9 00                                    LDA     #0x00
- L 245:  E00C A2 00                                    LDX     #_mmu_numVectors
- L 246:  E00E                      loop
- L 247:  E00E 9D 10 A0                                 STA     _mmu_vectors, X     ; Only need to clear 2 highest bits of a segment vector.
- L 248:  E011 CA                                       DEX
- L 249:  E012 CA                                       DEX
- L 250:  E013 D0 F9                                    BNE     loop
- L 251:                    
- L 252:  E015 60                                       RTS
- L 253:                    
- L 254:                    
- L 255:  E016              _mmu_timer_initialize
- L 256:  E016 60                                       RTS
- L 257:                    
- L 258:                    
- L 259:  E017              _mmu_map_segment
- L 260:  E017 60                                       RTS
-    31:                    
-    32:                    ;
-    33:                    ; SBC6500 Initialization (Power-Up and uP Reset (RST))
-    34:                    ;
-    35:                                           .segment     "_SBC6502_CODE"
-    36:                    
-    37:  E018              _MPU65XX_RESET
-    38:  E018 78                                       SEI                 ; Disable interrupts when entering via code
-    39:  E019 A2 FF                                    LDX     #0xFF       ; Initialize stack pointer
-    40:  E01B 9A                                       TXS
-    41:                    
-    42:  E01C 20 00 E0                                 JSR     _mmu_initialize
-    43:                    
-    44:                    
-    45:                    ; Allowcate SBC6502 segment vectors for kernal ...
-    46:                    
-    47:                    ;      Tag        Physical Address         Effective Address
-    48:                    ;    xx00.0000 - 0000.00xx.xxxx.xxxx -> 0000.0000.00xx.xxxx.xxxx - RAM (ZP & Stack & RAM) (1Kb)
-    49:                    ;    xx00.0001 - 0000.01xx.xxxx.xxxx -> 1110.1111.10xx.xxxx.xxxx - IO (1Kb)
-    50:                    ;    xx00.0010 - 0000.10xx.xxxx.xxxx -> 1111.1111.00xx.xxxx.xxxx - ROM (1Kb)
-    51:                    
-    52:                                               ._mmu_map_segment    _vmk_kernal_pid, _SBC6502_ram, _SBC6502_eram
-    53:                    
-    54:                                               ._mmu_map_segment    _vmk_kernal_pid, _SBC6502_IO, _SBC6502_eio
-    55:                    
-    56:                                               ._mmu_map_segment    _vmk_kernal_pid, _SBC6502_rom, _SBC6502_erom
-    57:                    
-    58: (0009)                     curTaskSegment     .equ     9
-    59:                    
-    60:                    ; Initialize quantum time interrupt (IRQ) ...
-    61:                    
-    62:  E064 20 16 E0                                 JSR _mmu_timer_initialize
-    63:                    
-    64:                    ;
-    65:                    ; VMK Kernal
-    66:                    ;
-    67:                                           .segment     "_MPU65XX_ZP"
-    68:  0005                      task           .word
-    69:  0005                      tasks          .word
-    70:  0005                      curTask        .word
-    71:  0005                      curTaskRegY    .byte
-    72:                    
-    73:                    ;
-    74:                    ; Routine for BRK or IRQ event; BRK instruction will set Break bit.
-    75:                    ;
-    76:                    
-    77:                                           .segment     "_SBC6502_CODE"
-    78:  E067              _MPU65XX_IRQ
-    79:  E067              _MPU65XX_BRK
-    80:                    
-    81:                            ; Save current task state.
-    82:                    
-    83:  E067 84 05                                    STY     curTaskRegY
-    84:  E069 A0 00                                    LDY     #0x00
-    85:  E06B 91 05                                    STA     [curTask], Y    ; Save A
-    86:  E06D A5 05                                    LDA     curTaskRegY
-    87:  E06F C8                                       INY
-    88:  E070 91 05                                    STA     [curTask], Y    ; Save Y
-    89:  E072 8A                                       TXA
-    90:  E073 C8                                       INY
-    91:  E074 91 05                                    STA     [curTask], Y    ; Save X
-    92:  E076 BA                                       TSX
-    93:  E077 8A                                       TXA
-    94:  E078 C8                                       INY
-    95:  E079 91 05                                    STA     [curTask], Y    ; Save S
-    96:                    
-    97:  E07B AA                                       TAX
-    98:  E07C CA                                       DEX
-    99:  E07D BD 00 25                                 LDA     (curTaskSegment <<  bitsSegmentSize) + 0x0100, X    ; Use X as stack pointer into current task's stack
-   100:  E080 C8                                       INY
-   101:  E081 91 05                                    STA     [curTask], Y    ; Save P
-   102:  E083 CA                                       DEX
-   103:  E084 BD 00 25                                 LDA     (curTaskSegment <<  bitsSegmentSize) + 0x0100, X
-   104:  E087 C8                                       INY
-   105:  E088 91 05                                    STA     [curTask], Y    ; Save PCL
-   106:  E08A CA                                       DEX
-   107:  E08B BD 00 25                                 LDA     (curTaskSegment <<  bitsSegmentSize) + 0x0100, X
-   108:  E08E C8                                       INY
-   109:  E08F 91 05                                    STA     [curTask], Y    ; Save PCH
-   110:                    
-   111:                    
-   112:                            ; Find next task to execute.
-   113:                    
-   114:  E091 A5 05                                    LDA     tasks
-   115:  E093 F0 1C                                    BEQ     Error       ; Error is tasks list structure
-   116:  E095 85 05                                    STA     task
-   117:  E097 A5 06                                    LDA     tasks +1
-   118:  E099 85 06                                    STA     task +1
-   119:                    
-   120:  E09B                      CheckNextTaskStatus
-   121:  E09B A0 00                                    LDY     #0x00
-   122:  E09D B1 05                                    LDA     [task], Y   ; Fetch status byte of next task
-   123:  E09F 29 01                                    AND     #0x01
-   124:  E0A1 D0 0E                                    BNE     ExecuteNextTask     ; Found next task to execute
-   125:                    
-   126:  E0A3 B1 05                                    LDA     [task], Y   ; Fetch pointer to next tasks in list
-   127:  E0A5 F0 0A                                    BEQ     Error       ; Error is tasks list structure
-   128:  E0A7 85 05                                    STA     task
-   129:  E0A9 C8                                       INY
-   130:  E0AA B1 05                                    LDA     [task], Y   ; Fetch pointer to next tasks in list
-   131:  E0AC 85 06                                    STA     task +1
-   132:                    
-   133:  E0AE 4C 9B E0                                 JMP     CheckNextTaskStatus
-   134:                    
-   135:                    
-   136:                    
-   137:  E0B1                      ExecuteNextTask
-   138:  E0B1                      Error
-   139:                    
-   140:  E0B1 40                                       RTI
-   141:                    
-   142:  E0B2              _MPU65XX_NMI
-   143:  E0B2 40                                       RTI
-   144:                    
-   145:                    
-   146:                                           .include "../CPUs/MOS6502_Vectors.lib.a65", list=.list
- Q   1:                    ;
- Q   2:                    ; MOS6502 Interupt Vectors
- Q   3:                    ;
- Q   4:                                           .segment "_MPU65XX_VECTORS"
- Q   5:                    
- Q   6:  FFFA              _MPU65XX_INTERRUPT_VECTORS
- Q   7:                    
- Q   8:  FFFA B2 E0        _MPU65XX_NMI_VECTOR        .word    _MPU65XX_NMI
- Q   9:  FFFC 18 E0        _MPU65XX_RESET_VECTOR      .word    _MPU65XX_RESET
- Q  10:  FFFE              _MPU65XX_IRQ_VECTOR
- Q  11:  FFFE              _MPU65XX_BRK_VECTOR
- Q  12:  FFFE 67 E0                                   .word    _MPU65XX_IRQ
- Q  13:                    
- Q  14: (FFFF)             _MPU65XX_INTERRUPT_VECTORS_    .equ    * -1
- Q  15:                    
-   147:                    
-   148:                                           .end
-   149:                    
+          1:                    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+          2:                    ;                                                                           ;
+          3:                    ;                     Virtual Memory Kernal (VMK) v0.0.1                    ;
+          4:                    ;                                                                           ;
+          5:                    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+          6:                    
+          7:                                           .include    "VMK.def.a65"
+          8:                                           .include    "../CPUs/_CPU.def.a65"
+          9:                                           .include    "../archs/_ARCH.def.a65"
+         10:                                           .include    "../devices/MMUs/_MMU.def.a65"
+         11:                    
+         12:                                               ._vmk_declare_type  VMK_v1
+         13:                                               ._cpu_declare_type  MOS6502
+         14:                                               ._arch_declare_type SBC6502v1_4K
+         15:                                               ._mmu_declare_type  MMUv1
+         16:                    
+         17:                    
+         18:                    ;
+         19:                    ; Memory Management Unit (MMU) Configutation
+         20:                    ;
+         21:                    
+         22:                            ; 2 PID Bits, 20 Effective Address Bits, 10 Segment Offset Bits
+         23:                    
+         24: (0010)                     bitsPhysicalAddr   .equ     16          ; MPU65XX with 16 bit address bus (65536)
+         25: (0014)                     bitsEffectiveAddr  .equ     20          ; SBC6502 with 20 bit effective address bus (1,048,576)
+         26: (000A)                     bitsSegmentSize    .equ     10          ; SBC6502 with 10 bit segment size (1024)
+         27: (0002)                     bitsPID            .equ     2           ; Kernal = 0x0, User = 0x1 thru 0x2
+         28:                    
+         29:                                               ._mmu_instantiate    bitsPhysicalAddr, bitsEffectiveAddr, bitsSegmentSize, bitsPID, list=.list
+ L.133   30:                    
+ L.134   31: (0010)             _mmu_bitsPhysicalAddr      .equ     16
+ L.135   32: (0014)             _mmu_bitsEffectiveAddr     .equ     20
+ L.136   33: (000A)             _mmu_bitsSegmentSize       .equ     10
+ L.137   34: (0002)             _mmu_bitsPID               .equ     2
+ L.138   35:                    
+ L.139   36: (0006)             _mmu_bitsSegmentAddr       .equ     _mmu_bitsPhysicalAddr - _mmu_bitsSegmentSize
+ L.140   37: (0100)             _mmu_numVectors            .equ     1 << _mmu_bitsSegmentAddr + 2
+ L.141   38: (0080)             _mmu_configValue           .equ     (_mmu_bitsPID << 6) ! ((_mmu_bitsEffectiveAddr - _mmu_bitsPhysicalAddr) << 3) ! ((_mmu_bitsSegmentSize -8) << 0)
+ L.142   39:                    
+ L.143   40:                    
+ L.144   41:                                           .segment     "_SBC6502_IO"
+ L.145   42:  A000              _mmu
+ L.146   43:                    
+ L.147   44:                    ;
+ L.148   45:                    ;   R0 - Mode Register
+ L.149   46:                    ;
+ L.150   47:                    ;   ┌─┬─┬───────────┐
+ L.151   48:                    ;   │7 6 5 4 3 2 1 0│
+ L.152   49:                    ;   └┬┴┬┴─────┬─────┘
+ L.153   50:                    ;    │ │      └───────┤ PID (1-6 bits)
+ L.154   51:                    ;    │ │
+ L.155   52:                    ;    │ └──────────────┤ ~Kernal Mode (0 is enabled) / User Mode (1 is enabled)
+ L.156   53:                    ;    │
+ L.157   54:                    ;    └────────────────┤ ~Boot Mode (0 is enabled) / Address Translate Mode (1 is enanled)
+ L.158   55:                    
+ L.159   56:  A000 00           _mmu_R0                    .byte    0x00         ; Mode Register
+ L.160   57:                    
+ L.161   58:                    ;
+ L.162   59:                    ;   R1 - Status Register
+ L.163   60:                    ;
+ L.164   61:                    ;   ┌─┬─┬─┬─┬─┬─┬─┬─┐
+ L.165   62:                    ;   │7 6 5 4 3 2 1 0│
+ L.166   63:                    ;   └┬┴┬┴┬┴┬┴┬┴┬┴┬┴┬┘
+ L.167   64:                    ;    │ │ │ │ │ │ │ └──┤ Boot Address Error
+ L.168   65:                    
+ L.169   66:  A001 00           _mmu_R1                    .byte    0x00         ; Status Register
+ L.170   67:                    
+ L.171   68:                    ;
+ L.172   69:                    ;   CR0 - Config Register 0
+ L.173   70:                    ;
+ L.174   71:                    ;   ┌───────┬───────┐
+ L.175   72:                    ;   │7 6 5 4 3 2 1 0│
+ L.176   73:                    ;   └───┬───┴───┬───┘
+ L.177   74:                    ;       │       └─────┤ # Page Offset Bits (0-15 bits)
+ L.178   75:                    ;       │
+ L.179   76:                    ;       └─────────────┤ # Page Segment Bits (0-15 bits)
+ L.180   77:                    
+ L.181   78:  A002 00           _mmu_CR0                   .byte    0x00         ; Config Register 0
+ L.182   79:                    
+ L.183   80:                    ;
+ L.184   81:                    ;   CR1 - Config Register 1
+ L.185   82:                    ;
+ L.186   83:                    ;   ┌───────────────┐
+ L.187   84:                    ;   │7 6 5 4 3 2 1 0│
+ L.188   85:                    ;   └──┬──┴────┬────┘
+ L.189   86:                    ;      │       └──────┤ # Effective Address Bits (0-31 bits)
+ L.190   87:                    ;      │
+ L.191   88:                    ;      └──────────────┤ # PID Bits (0-6 bits)
+ L.192   89:                    
+ L.193   90:  A003 00           _mmu_CR1                   .byte    0x00         ; Config Register 1
+ L.194   91:                    
+ L.195   92:                    ;
+ L.196   93:                    ;   MVR(s) - Memory Vector Register(s)
+ L.197   94:                    ;
+ L.198   95:                    ;                   ┌───────────────┐
+ L.199   96:                    ;                   │7 6 5 4 3 2 1 0│─┤ MVR low
+ L.200   97:                    ;                   └───────────────┘
+ L.201   98:                    ;                   .               .
+ L.202   99:                    ;   ┌───────────────┐               .
+ L.203  100:                    ;   │7 6 5 4 3 2 1 0│─────────────────┤ MVR high
+ L.204  101:                    ;   └───────────────┘               .
+ L.205  102:                    ;   .               .               .
+ L.206  103:                    ;   ┌─┬─┬─┬─────────────────────────┐
+ L.207  104:                    ;   │5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0│
+ L.208  105:                    ;   └┬┴┬┴┬┴────────────┬────────────┘
+ L.209  106:                    ;    │ │ │             └──────────────┤ Upper Effective Address Bits (0-13 bits)
+ L.210  107:                    ;    │ │ │
+ L.211  108:                    ;    │ │ └────────────────────────────┤ Page Dirty
+ L.212  109:                    ;    │ │
+ L.213  110:                    ;    │ └──────────────────────────────┤ Write Enable
+ L.214  111:                    ;    │
+ L.215  112:                    ;    └────────────────────────────────┤ Vector Enable
+ L.216  113:                    
+ L.217  114:                                           .align       0x10
+ L.218  115:  A010              _mmu_vectors
+ L.219  116:                                           .org         * + (_mmu_numVectors << 1)    ; Allocate 2 bytes for each vector.
+ L.220  117:  A210              _mmu_vectors_
+ L.221  118:  A210              _mmu_
+ L.222  119:                    
+ L.223  120:                    
+ L.224  121:                                           .segment     "_MPU65XX_ZP"
+ L.225  122:  0000              _mmu_parms
+ L.226  123:  0000 00           _mmu_parms_pid             .byte    0x00
+ L.227  124:  0001 00 00        _mmu_parms_addr            .word    0x0000
+ L.228  125:  0003 00 00        _mmu_parms_effect_addr     .word    0x0000
+ L.229  126:  0005              _mmu_parms_
+ L.230  127:                    
+ L.231  128:                    
+ L.232  129:                                           .segment     "_SBC6502_CODE"
+ L.233  130:                    
+ L.234  131:  E000              _mmu_initialize
+ L.235  132:  E000 A9 00                                    LDA     #0x00               ; Set boot mode (should already be in boot mode after hardware reset.)
+ L.236  133:  E002 8D 00 A0                                 STA     _mmu_R0
+ L.237  134:                    
+ L.238  135:  E005 A9 80                                    LDA     #_mmu_configValue
+ L.239  136:                    
+ L.240  137:  E007 8D 01 A0                                 STA     _mmu_R1
+ L.241  138:                    
+ L.242  139:                                                ; Reset segment vectors ...
+ L.243  140:                    
+ L.244  141:  E00A A9 00                                    LDA     #0x00
+ L.245  142:  E00C A2 00                                    LDX     #_mmu_numVectors
+ L.246  143:  E00E                      loop
+ L.247  144:  E00E 9D 10 A0                                 STA     _mmu_vectors, X     ; Only need to clear 2 highest bits of a segment vector.
+ L.248  145:  E011 CA                                       DEX
+ L.249  146:  E012 CA                                       DEX
+ L.250  147:  E013 D0 F9                                    BNE     loop
+ L.251  148:                    
+ L.252  149:  E015 60                                       RTS
+ L.253  150:                    
+ L.254  151:                    
+ L.255  152:  E016              _mmu_timer_initialize
+ L.256  153:  E016 60                                       RTS
+ L.257  154:                    
+ L.258  155:                    
+ L.259  156:  E017              _mmu_map_segment
+ L.260  157:  E017 60                                       RTS
+        158:                    
+        159:                    ;
+        160:                    ; SBC6500 Initialization (Power-Up and uP Reset (RST))
+        161:                    ;
+        162:                                           .segment     "_SBC6502_CODE"
+        163:                    
+        164:  E018              _MPU65XX_RESET
+        165:  E018 78                                       SEI                 ; Disable interrupts when entering via code
+        166:  E019 A2 FF                                    LDX     #0xFF       ; Initialize stack pointer
+        167:  E01B 9A                                       TXS
+        168:                    
+        169:  E01C 20 00 E0                                 JSR     _mmu_initialize
+        170:                    
+        171:                    
+        172:                    ; Allowcate SBC6502 segment vectors for kernal ...
+        173:                    
+        174:                    ;      Tag        Physical Address         Effective Address
+        175:                    ;    xx00.0000 - 0000.00xx.xxxx.xxxx -> 0000.0000.00xx.xxxx.xxxx - RAM (ZP & Stack & RAM) (1Kb)
+        176:                    ;    xx00.0001 - 0000.01xx.xxxx.xxxx -> 1110.1111.10xx.xxxx.xxxx - IO (1Kb)
+        177:                    ;    xx00.0010 - 0000.10xx.xxxx.xxxx -> 1111.1111.00xx.xxxx.xxxx - ROM (1Kb)
+        178:                    
+        179:                                               ._mmu_map_segment    _vmk_kernal_pid, _SBC6502_ram, _SBC6502_eram
+        180:                    
+        181:                                               ._mmu_map_segment    _vmk_kernal_pid, _SBC6502_IO, _SBC6502_eio
+        182:                    
+        183:                                               ._mmu_map_segment    _vmk_kernal_pid, _SBC6502_rom, _SBC6502_erom
+        184:                    
+        185: (0009)                     curTaskSegment     .equ     9
+        186:                    
+        187:                    ; Initialize quantum time interrupt (IRQ) ...
+        188:                    
+        189:  E064 20 16 E0                                 JSR _mmu_timer_initialize
+        190:                    
+        191:                    ;
+        192:                    ; VMK Kernal
+        193:                    ;
+        194:                                           .segment     "_MPU65XX_ZP"
+        195:  0005                      task               .word
+        196:  0005                      tasks              .word
+        197:  0005                      curTask            .word
+        198:  0005                      curTaskRegY        .byte
+        199:                    
+        200:                    ;
+        201:                    ; Routine for BRK or IRQ event; BRK instruction will set Break bit.
+        202:                    ;
+        203:                    
+        204:                                           .segment     "_SBC6502_CODE"
+        205:  E067              _MPU65XX_IRQ
+        206:  E067              _MPU65XX_BRK
+        207:                    
+        208:                            ; Save current task state.
+        209:                    
+        210:  E067 84 05                                    STY     curTaskRegY
+        211:  E069 A0 00                                    LDY     #0x00
+        212:  E06B 91 05                                    STA     [curTask], Y    ; Save A
+        213:  E06D A5 05                                    LDA     curTaskRegY
+        214:  E06F C8                                       INY
+        215:  E070 91 05                                    STA     [curTask], Y    ; Save Y
+        216:  E072 8A                                       TXA
+        217:  E073 C8                                       INY
+        218:  E074 91 05                                    STA     [curTask], Y    ; Save X
+        219:  E076 BA                                       TSX
+        220:  E077 8A                                       TXA
+        221:  E078 C8                                       INY
+        222:  E079 91 05                                    STA     [curTask], Y    ; Save S
+        223:                    
+        224:  E07B AA                                       TAX
+        225:  E07C CA                                       DEX
+        226:  E07D BD 00 25                                 LDA     (curTaskSegment <<  bitsSegmentSize) + 0x0100, X    ; Use X as stack pointer into current task's stack
+        227:  E080 C8                                       INY
+        228:  E081 91 05                                    STA     [curTask], Y    ; Save P
+        229:  E083 CA                                       DEX
+        230:  E084 BD 00 25                                 LDA     (curTaskSegment <<  bitsSegmentSize) + 0x0100, X
+        231:  E087 C8                                       INY
+        232:  E088 91 05                                    STA     [curTask], Y    ; Save PCL
+        233:  E08A CA                                       DEX
+        234:  E08B BD 00 25                                 LDA     (curTaskSegment <<  bitsSegmentSize) + 0x0100, X
+        235:  E08E C8                                       INY
+        236:  E08F 91 05                                    STA     [curTask], Y    ; Save PCH
+        237:                    
+        238:                    
+        239:                            ; Find next task to execute.
+        240:                    
+        241:  E091 A5 05                                    LDA     tasks
+        242:  E093 F0 1C                                    BEQ     Error       ; Error is tasks list structure
+        243:  E095 85 05                                    STA     task
+        244:  E097 A5 06                                    LDA     tasks +1
+        245:  E099 85 06                                    STA     task +1
+        246:                    
+        247:  E09B                      CheckNextTaskStatus
+        248:  E09B A0 00                                    LDY     #0x00
+        249:  E09D B1 05                                    LDA     [task], Y   ; Fetch status byte of next task
+        250:  E09F 29 01                                    AND     #0x01
+        251:  E0A1 D0 0E                                    BNE     ExecuteNextTask     ; Found next task to execute
+        252:                    
+        253:  E0A3 B1 05                                    LDA     [task], Y   ; Fetch pointer to next tasks in list
+        254:  E0A5 F0 0A                                    BEQ     Error       ; Error is tasks list structure
+        255:  E0A7 85 05                                    STA     task
+        256:  E0A9 C8                                       INY
+        257:  E0AA B1 05                                    LDA     [task], Y   ; Fetch pointer to next tasks in list
+        258:  E0AC 85 06                                    STA     task +1
+        259:                    
+        260:  E0AE 4C 9B E0                                 JMP     CheckNextTaskStatus
+        261:                    
+        262:                    
+        263:                    
+        264:  E0B1                      ExecuteNextTask
+        265:  E0B1                      Error
+        266:                    
+        267:  E0B1 40                                       RTI
+        268:                    
+        269:  E0B2              _MPU65XX_NMI
+        270:  E0B2 40                                       RTI
+        271:                    
+        272:                    
+        273:                                           .include "../CPUs/MOS6502_Vectors.lib.a65", list=.list
+  Q.01  274:                    ;
+  Q.02  275:                    ; MOS6502 Interupt Vectors
+  Q.03  276:                    ;
+  Q.04  277:                                           .segment "_MPU65XX_VECTORS"
+  Q.05  278:                    
+  Q.06  279:  FFFA              _MPU65XX_INTERRUPT_VECTORS
+  Q.07  280:                    
+  Q.08  281:  FFFA B2 E0        _MPU65XX_NMI_VECTOR        .word    _MPU65XX_NMI
+  Q.09  282:  FFFC 18 E0        _MPU65XX_RESET_VECTOR      .word    _MPU65XX_RESET
+  Q.10  283:  FFFE              _MPU65XX_IRQ_VECTOR
+  Q.11  284:  FFFE              _MPU65XX_BRK_VECTOR
+  Q.12  285:  FFFE 67 E0                                   .word    _MPU65XX_IRQ
+  Q.13  286:                    
+  Q.14  287: (FFFF)             _MPU65XX_INTERRUPT_VECTORS_    .equ    * -1
+  Q.15  288:                    
+        289:                    
+        290:                                           .end
+        291:                    

@@ -25,7 +25,7 @@ public class SEGMENT implements iDirective {
 	@Override
 	public void parse(final ParserRuleContext pctx) {
 
-		final String value = (String) actx.statement().operands().get(0).assignment().eval(actx.symbols()).getValue() ;
+		final String value = (String) actx.statement().operands().get(0).assignment().eval(actx.identifiers()).getValue() ;
 
 		if ( !actx.segments().containsKey(value) )
 			actx.segments().put(value, new Segment(value)) ;

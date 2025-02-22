@@ -29,6 +29,6 @@ public class IF implements iDirective {
 	@Log
 	@Override
 	public void parse(final ParserRuleContext pctx) {
-		actx.ifBlocks().push(actx.ifBlocks().peek() && (int) actx.statement().operands().get(0).assignment().eval(actx.symbols()).getValue() != 0) ;
+		actx.ifBlocks().push(actx.ifBlocks().peek() && ((int) actx.statement().operands().get(0).assignment().eval(actx.identifiers()).getValue() != 0)) ;
 	}
 }

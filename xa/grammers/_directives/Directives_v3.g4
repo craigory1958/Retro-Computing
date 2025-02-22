@@ -12,7 +12,7 @@ import Expressions ;
 directive:  assembler | macro | struct | invocation ;
 
 assembler:  '.' Directives argumentList? ;
-macro: '.' symbol '.macro' optionList? ;
+macro: '.' symbol  '.macro' optionList? ;
 struct: '.' symbol '.struct' optionList? ;
 invocation:  '.' symbol parameterList? ;
 
@@ -34,10 +34,13 @@ symbol:  Directives | Identifier ;
 ideogram:  '.' symbol ;
 
 
+label:  Identifier ;
+
+
 Directives:  
 	'align' | 
 	'byte' | 
-	'end' | 'endif' | 'endmacro' | 'equ' | 
+	'end' | 'endif' | 'endmacro' | 'endstruct' | 'equ' | 
 	'if' |'ifdef' | 'ifndef' | 'include' | 
 	'list' |
 	'nolist' |

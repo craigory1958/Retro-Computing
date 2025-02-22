@@ -10,9 +10,11 @@ public interface iSource {
 	
 	boolean list() ;
 
-	int ln() ;
-
 	String next() throws IOException ;
 
-	int sn() ;
+	int sourceID() ;
+
+	int sourceLN() ;
+	
+	String fSpec() ;
 }

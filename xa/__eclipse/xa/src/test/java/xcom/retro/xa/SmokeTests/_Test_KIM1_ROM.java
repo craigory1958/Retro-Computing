@@ -22,10 +22,10 @@ public class _Test_KIM1_ROM {
 
 	private static final Logger Logger = LoggerFactory.getLogger(_Test_KIM1_ROM.class) ;
 
-	
+
 	@Test
 	public void assemblerTest() throws Exception {
-		
+
 		final String srcFSpec = "KIM-1 ROM.a65" ;
 
 		final String _dSpec = FilenameUtils.getFullPath(this.getClass().getResource(srcFSpec).toURI().getPath()) ;

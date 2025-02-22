@@ -9,6 +9,7 @@ import static xcom.retro.xa.XA.AssemblyPhases.Generate ;
 import static xcom.retro.xa.XA.AssemblyPhases.Init ;
 import static xcom.retro.xa.XA.AssemblyPhases.List ;
 import static xcom.retro.xa.XA.AssemblyPhases.Parse ;
+import static xcom.retro.xa.XA.AssemblyPhases.XRef ;
 import static xcom.utils4j.logging.Loggers.ConsoleLoggerName ;
 
 import java.io.File ;
@@ -59,6 +60,9 @@ import xcom.retro.xa.api.interfaces.iProcessor ;
 import xcom.retro.xa.api.interfaces.iSource ;
 import xcom.retro.xa.directives.dir.MACRO ;
 import xcom.retro.xa.directives.dir.STRUCT ;
+import xcom.retro.xa.extruders.AssemblyLister ;
+import xcom.retro.xa.extruders.XRefLister ;
+import xcom.utils4j.Lists ;
 import xcom.utils4j.logging.aspects.api.annotations.Log ;
 import xcom.utils4j.resources.Props ;
 
@@ -66,7 +70,7 @@ import xcom.utils4j.resources.Props ;
 public class XA {
 
 	public enum AssemblyPhases {
-		Init, Parse, Assemble, Generate, Extrude, List;
+		Init, Parse, Assemble, Generate, Extrude, List, XRef;
 	}
 
 
@@ -81,7 +85,17 @@ public class XA {
 
 		Map<String, iDirective> directives ;
 		public Map<String, iDirective> directives() { return directives ; }
-		
+
+		Identifier identifier ;
+		public Identifier identifier() { return identifier ; }
+		public AssemblyContext identifier(final Identifier identifier) {
+			this.identifier = identifier ;
+			return this ;
+		}
+
+		Map<String, Identifier> identifiers = new HashMap<>() ;
+		public Map<String, Identifier> identifiers() { return identifiers ; }
+
 		Stack<Boolean> ifBlocks ;
 		public Stack<Boolean> ifBlocks() { return ifBlocks ; }
 
@@ -91,6 +105,9 @@ public class XA {
 			this.list = list ;
 			return this ;
 		}
+
+		int ln ;
+		public int ln() { return ln ; }
 
 		Map<String, MACRO> macros = new HashMap<>() ;
 		public Map<String, MACRO> macros() { return macros ; }
@@ -127,16 +144,6 @@ public class XA {
 		Map<String, STRUCT> structs = new HashMap<>() ;
 		public Map<String, STRUCT> structs() { return structs ; }
 
-		Symbol symbol ;
-		public Symbol symbol() { return symbol ; }
-		public AssemblyContext symbol(final Symbol symbol) {
-			this.symbol = symbol ;
-			return this ;
-		}
-
-		Map<String, Symbol> symbols = new HashMap<>() ;
-		public Map<String, Symbol> symbols() { return symbols ; }
-
 		//@formatter:on
 
 
@@ -145,6 +152,8 @@ public class XA {
 			list = true ;
 			ifBlocks = new Stack<>() ;
 			ifBlocks.push(true) ;
+
+			ln = 0 ;
 		}
 
 
@@ -170,6 +179,7 @@ public class XA {
 	static final String CommandLineOption_Bin = "b" ;
 	static final String CommandLineOption_Format = "f" ;
 	static final String CommandLineOption_List = "l" ;
+	static final String CommandLineOption_XRef = "x" ;
 	static final String CommandLineOption_Processor = "p" ;
 	static final String CommandLineOptionLong_Processor = "processor" ;
 
@@ -185,6 +195,8 @@ public class XA {
 		CommandLineOptions.addOption(Option.builder(CommandLineOption_Format).argName("format").hasArg().optionalArg(true).desc("binray format").build()) ;
 		CommandLineOptions
 				.addOption(Option.builder(CommandLineOption_List).argName("file").hasArg().optionalArg(true).desc("generate assembly listing").build()) ;
+		CommandLineOptions
+				.addOption(Option.builder(CommandLineOption_XRef).argName("file").hasArg().optionalArg(true).desc("generate cross reference listing").build()) ;
 		CommandLineOptions.addOption(
 				Option.builder(CommandLineOption_Processor).longOpt(CommandLineOptionLong_Processor).argName("processor").hasArg().desc("processor").build()) ;
 	}
@@ -195,9 +207,7 @@ public class XA {
 
 	Lexer lexer ;
 	Parser parser ;
-	iExtruder extruder ;
 	Map<String, Class<Class<? extends iExtruder>>> extruders ;
-	iExtruder lister ;
 	ParseTreeListener processor ;
 	Map<String, Class<Class<? extends iProcessor>>> processors ;
 
@@ -228,19 +238,6 @@ public class XA {
 			this.processor = Reflection.constructor().withParameterTypes(AssemblyContext.class).in(listenerClass).newInstance(actx) ;
 		}
 
-		{
-			final String extruderClassname = extruders.get(actx.cmdArgs.get(CommandLineOption_Format)).getName() ;
-			final Class<? extends iExtruder> extruderClass = Reflection.type(extruderClassname).loadAs(iExtruder.class) ;
-			extruder = Reflection.constructor().in(extruderClass).newInstance() ;
-		}
-
-		{
-			final String extruderClassname = extruders.get("Lister").getName() ;
-			final Class<? extends iExtruder> extruderClass = Reflection.type(extruderClassname).loadAs(iExtruder.class) ;
-			lister = Reflection.constructor().in(extruderClass).newInstance() ;
-		}
-
-		
 		return this ;
 	}
 
@@ -251,31 +248,34 @@ public class XA {
 		actx.phase = Parse ;
 
 		actx.sources.add(new FileSource(actx.sources.size(), actx.cmdArgs.get("source"), actx.list())) ;
-		actx.source.push(actx.sources.get(actx.sources.size() - 1)) ;
+		actx.source.push(Lists.last(actx.sources)) ;
 
 		actx.segments.put("<default>", new Segment("<default>")) ;
 		actx.segment = actx.segments.get("<default>") ;
 		final ParseTreeWalker walker = new ParseTreeWalker() ;
 
 		while ( !actx.source.isEmpty() ) {
-			
+
 			actx.list(actx.source.peek().list()) ;
-//			System.err.println(actx.list()) ;
-			
+
 			for ( String line; (line = actx.source.peek().next()) != null; ) {
 
 				line = line.stripTrailing() ;
 
+				if ( actx.list() )
+					actx.ln += 1 ;
+
 				actx.statements.add( //
 						new Statement( //
-								actx.source.peek().sn(), //
-								actx.source.peek().ln(), //
-								line, actx.segment.lc, //
+								actx.source.peek().sourceID(), //
+								actx.source.peek().sourceLN(), //
+								line, actx.segment.loc, //
 								actx.list(), //
 								actx.assembleEnable() //
 						)) ;
 
-				actx.statement = actx.statements.get(actx.statements.size() - 1) ;
+				actx.statement = Lists.last(actx.statements) ;
+				actx.statement.ln(actx.ln) ;
 
 				lexer.setInputStream(CharStreams.fromString(line)) ;
 				parser.setTokenStream(new CommonTokenStream(lexer)) ;
@@ -285,9 +285,8 @@ public class XA {
 
 				walker.walk(processor, actx.statement.pctx) ;
 
-				if ( actx.statement.assembleEnable() ) {
-					actx.statement.block = actx.segment.blocks.get(actx.segment.blocks.size() - 1) ;
-				}
+				if ( actx.statement.assembleEnable() )
+					actx.statement.block = Lists.last(actx.segment.blocks) ;
 			}
 
 			actx.source.pop() ;
@@ -322,7 +321,7 @@ public class XA {
 			actx.statement = statement ;
 
 			if ( actx.statement.assembleEnable() && (actx.statement.block != null) && (actx.statement.bytes != null) && (actx.statement.bytes.length > 0) )
-				actx.statement.block.fillBytes(actx.statement.lc, actx.statement.bytes) ;
+				actx.statement.block.fillBytes(actx.statement.loc, actx.statement.bytes) ;
 		}
 
 		return this ;
@@ -334,10 +333,16 @@ public class XA {
 
 		actx.phase = Extrude ;
 
-		if ( actx.cmd.hasOption(CommandLineOption_Bin) )
+		if ( actx.cmd.hasOption(CommandLineOption_Bin) ) {
+
+			final String extruderClassname = extruders.get(actx.cmdArgs.get(CommandLineOption_Format)).getName() ;
+			final Class<? extends iExtruder> extruderClass = Reflection.type(extruderClassname).loadAs(iExtruder.class) ;
+			final iExtruder extruder = Reflection.constructor().in(extruderClass).newInstance() ;
+
 			try ( FileWriter fileWriter = new FileWriter(actx.cmdArgs.get(CommandLineOption_Bin)); PrintWriter out = new PrintWriter(fileWriter); ) {
 				extruder.extrude(out, actx) ;
 			}
+		}
 
 		Console.info("") ;
 		Console.info(actx.cmdArgs.get(CommandLineOption_Bin)) ;
@@ -354,6 +359,10 @@ public class XA {
 
 		if ( actx.cmd.hasOption(CommandLineOption_List) ) {
 
+			final String extruderClassname = extruders.get(AssemblyLister.class.getSimpleName()).getName() ;
+			final Class<? extends iExtruder> extruderClass = Reflection.type(extruderClassname).loadAs(iExtruder.class) ;
+			final iExtruder lister = Reflection.constructor().in(extruderClass).newInstance() ;
+
 			try ( FileWriter fileWriter = new FileWriter(actx.cmdArgs.get(CommandLineOption_List)); PrintWriter out = new PrintWriter(fileWriter); ) {
 				lister.extrude(out, actx) ;
 			}
@@ -361,6 +370,30 @@ public class XA {
 			Console.info("") ;
 			Console.info(actx.cmdArgs.get(CommandLineOption_List)) ;
 			Console.info(FileUtils.readFileToString(new File(actx.cmdArgs.get(CommandLineOption_List)), Charset.defaultCharset())) ;
+		}
+
+		return this ;
+	}
+
+
+	@Log
+	XA xref() throws IOException {
+
+		actx.phase = XRef ;
+
+		if ( actx.cmd.hasOption(CommandLineOption_XRef) ) {
+
+			final String extruderClassname = extruders.get(XRefLister.class.getSimpleName()).getName() ;
+			final Class<? extends iExtruder> extruderClass = Reflection.type(extruderClassname).loadAs(iExtruder.class) ;
+			final iExtruder lister = Reflection.constructor().in(extruderClass).newInstance() ;
+
+			try ( FileWriter fileWriter = new FileWriter(actx.cmdArgs.get(CommandLineOption_XRef)); PrintWriter out = new PrintWriter(fileWriter); ) {
+				lister.extrude(out, actx) ;
+			}
+
+			Console.info("") ;
+			Console.info(actx.cmdArgs.get(CommandLineOption_XRef)) ;
+			Console.info(FileUtils.readFileToString(new File(actx.cmdArgs.get(CommandLineOption_XRef)), Charset.defaultCharset())) ;
 		}
 
 		return this ;
@@ -421,7 +454,7 @@ public class XA {
 
 			//
 
-			$.init().parse().assemble().generate().extrude().list() ;
+			$.init().parse().assemble().generate().extrude().list().xref() ;
 
 			Console.info("Done.") ;
 		}
@@ -582,6 +615,24 @@ public class XA {
 				}
 				else
 					args.put(CommandLineOption_List, list) ;
+			}
+		}
+
+		// Decode cross reference file specification ....
+		{
+			if ( cmd.hasOption(CommandLineOption_XRef) ) {
+				final String list = StringUtils.trimToEmpty(cmd.getOptionValue(CommandLineOption_XRef)) ;
+
+				if ( list.isEmpty() ) {
+					final String srcFSpec = args.get("source") ;
+					final String srcDSpec = FilenameUtils.getFullPath(srcFSpec) ;
+					final String srcFNSpec = FilenameUtils.getName(srcFSpec) ;
+					final String[] srcFNParts = srcFNSpec.split("\\.") ;
+
+					args.put(CommandLineOption_XRef, srcDSpec + srcFNParts[0] + ".xref") ;
+				}
+				else
+					args.put(CommandLineOption_XRef, list) ;
 			}
 		}
 

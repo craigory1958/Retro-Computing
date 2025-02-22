@@ -3,6 +3,9 @@
 package xcom.retro.xa.expressions.value ;
 
 
+import xcom.utils4j.format.Strings ;
+
+
 public class StringLiteral extends _ValueNode {
 
 	public StringLiteral(final byte[] value) {
@@ -11,11 +14,6 @@ public class StringLiteral extends _ValueNode {
 
 
 	public StringLiteral(final String value) {
-		super(value.substring(1, value.length() - 1).getBytes()) ;
-	}
-
-
-	public StringLiteral(final String value, final boolean quoted) {
-		super(value.getBytes()) ;
+		super(Strings.trimQuotedEnds(value).getBytes()) ;
 	}
 }

@@ -29,6 +29,9 @@ public class IFDEF implements iDirective {
 	@Log
 	@Override
 	public void parse(final ParserRuleContext pctx) {
-		actx.ifBlocks().push(actx.ifBlocks().peek() && actx.symbols().containsKey(pctx.getChild(0).getChild(2).getChild(0).getChild(0).getChild(0).getChild(0).getText())) ;
+
+		final String id = pctx.getChild(0).getChild(2).getChild(0).getChild(0).getChild(0).getChild(0).getText() ;
+
+		actx.ifBlocks().push(actx.ifBlocks().peek() && (actx.identifiers().get(id).value() != null)) ;
 	}
 }

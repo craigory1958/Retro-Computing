@@ -6,21 +6,23 @@ package xcom.retro.xa ;
 import java.util.ArrayList ;
 import java.util.List ;
 
+import xcom.utils4j.Lists ;
+
 
 public class Segment {
 
-	String name ;
-	int lc ;
+	//@formatter:off
 
-	public int lc() {
-		return lc ;
-	}
+	String name ;
+
+	int loc ;
+	public int loc() { return loc ; }
 
 	List<ByteBlock> blocks ;
 
-	public List<ByteBlock> getBlocks() {
-		return blocks ;
-	}
+	public List<ByteBlock> getBlocks() { return blocks ; }
+
+	//@formatter:on
 
 
 	public Segment(final String name) {
@@ -31,21 +33,21 @@ public class Segment {
 	}
 
 	public void allocateBytes(final byte[] bytes) {
-		lc = blocks.get(blocks.size() - 1).allocateBytes(bytes) ;
+		loc = Lists.last(blocks).allocateBytes(bytes) ;
 	}
 
 
 //	public void fillBytes(byte[] bytes) {
-//		lc = blocks.get(blocks.size() - 1).fillBytes(bytes) ;
+//		org = Lists.last(blocks).fillBytes(bytes) ;
 //	}
 
 
 	public void setOrg(final int value) {
 
-		if ( !blocks.get(blocks.size() - 1).hasOrg() )
+		if ( !Lists.last(blocks).hasOrg() )
 			blocks.add(new ByteBlock()) ;
 
-		lc = blocks.get(blocks.size() - 1).setOrg(value) ;
-		blocks.get(blocks.size() - 1).lc(value) ;
+		loc = Lists.last(blocks).setOrg(value) ;
+		Lists.last(blocks).loc(value) ;
 	}
 }

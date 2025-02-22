@@ -12,6 +12,7 @@ import xcom.retro.xa.FileSource ;
 import xcom.retro.xa.XA.AssemblyContext ;
 import xcom.retro.xa.api.annotations.aDirective ;
 import xcom.retro.xa.api.interfaces.iDirective ;
+import xcom.utils4j.Lists ;
 import xcom.utils4j.logging.aspects.api.annotations.Log ;
 
 
@@ -31,16 +32,16 @@ public class INCLUDE implements iDirective {
 	public void parse(final ParserRuleContext pctx) {
 
 		try {
-			final String fSpec =
-					FilenameUtils.getFullPath(actx.cmdArgs().get("source")) + actx.statement().operands().get(0).assignment().eval(actx.symbols()).getValue() ;
+			final String fSpec = FilenameUtils.getFullPath(actx.cmdArgs().get("source"))
+					+ actx.statement().operands().get(0).assignment().eval(actx.identifiers()).getValue() ;
 
-			boolean list = (actx.statement().operands().size() == 2 //
-					? actx.statement().operands().get(1).assignment().eval(actx.symbols()).getValue().equals(".list") //
+			final boolean list = (actx.statement().operands().size() == 2 //
+					? actx.statement().operands().get(1).assignment().eval(actx.identifiers()).getValue().equals(".list") //
 					: false) ;
 			actx.list(list) ;
-			
+
 			actx.sources().add(new FileSource(actx.sources().size(), fSpec, list)) ;
-			actx.source().push(actx.sources().get(actx.sources().size() - 1)) ;
+			actx.source().push(Lists.last(actx.sources())) ;
 		}
 		catch ( final FileNotFoundException e ) {}
 	}

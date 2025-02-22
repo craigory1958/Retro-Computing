@@ -25,7 +25,7 @@ public class ALIGN implements iDirective {
 	@Override
 	public void parse(final ParserRuleContext pctx) {
 
-		final _ValueNode value = actx.statement().operands().get(0).assignment().eval(actx.symbols()) ;
-		actx.segment().setOrg(actx.statement().lc() + ((int) value.getValue()) - (actx.statement().lc() % ((int) value.getValue()))) ;
+		final _ValueNode value = actx.statement().operands().get(0).assignment().eval(actx.identifiers()) ;
+		actx.segment().setOrg((actx.statement().loc() + ((int) value.getValue())) - (actx.statement().loc() % ((int) value.getValue()))) ;
 	}
 }

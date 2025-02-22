@@ -14,6 +14,7 @@ import org.fest.reflect.exception.ReflectionError ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+import xcom.retro.xa.Identifier ;
 import xcom.retro.xa.XA.AssemblyContext ;
 import xcom.retro.xa.antlr.ExpressionsBaseListener ;
 import xcom.retro.xa.expressions.op._OpNode ;
@@ -21,7 +22,7 @@ import xcom.retro.xa.expressions.op.binary._BinaryOpNode ;
 import xcom.retro.xa.expressions.op.unary._UnaryOpNode ;
 import xcom.retro.xa.expressions.value.DecimalLiteral ;
 import xcom.retro.xa.expressions.value.ExprMarker ;
-import xcom.retro.xa.expressions.value.Identifier ;
+import xcom.retro.xa.expressions.value.IdentifierValue ;
 import xcom.retro.xa.expressions.value._ValueNode ;
 import xcom.utils4j.Enums ;
 import xcom.utils4j.logging.aspects.api.annotations.Log ;
@@ -68,6 +69,8 @@ public class ExpressionListener extends ExpressionsBaseListener {
 
 
 	private static final Logger Logger = LoggerFactory.getLogger(ExpressionListener.class) ;
+
+	final static Identifier $Identifier = new Identifier(null) ;
 
 
 	AssemblyContext actx ;
@@ -128,21 +131,24 @@ public class ExpressionListener extends ExpressionsBaseListener {
 	}
 
 
-//	@Log
-//	public void exitDottedIdentifier(final ParserRuleContext pctx) {
-//		stack.push(new StringLiteral('"' + pctx.getText() + '"')) ;
-//	}
-
-
 	@Log
 	public void exitIdentifier(final ParserRuleContext pctx) {
-		stack.push(new Identifier(pctx.getText())) ;
+
+		final String id = pctx.getText() ;
+
+		stack.push(new IdentifierValue(id)) ;
+
+		if ( !actx.identifiers().containsKey(pctx.getText()) )
+			actx.identifiers().put(id, new Identifier(id)) ;
+
+		actx.identifiers().get(id).references()
+				.add($Identifier.new Reference(actx.ln(), actx.source().peek().sourceID(), actx.source().peek().sourceLN())) ;
 	}
 
 
 	@Log
 	public void exitOrg(final ParserRuleContext pctx) {
-		stack.push(new DecimalLiteral(ExpressionUtils.asBytes(actx.segment().lc()))) ;
+		stack.push(new DecimalLiteral(ExpressionUtils.asBytes(actx.segment().loc()))) ;
 	}
 
 

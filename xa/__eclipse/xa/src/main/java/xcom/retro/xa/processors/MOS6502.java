@@ -7,10 +7,10 @@ import java.util.Arrays ;
 import java.util.List ;
 
 import xcom.retro.xa.Argument ;
+import xcom.retro.xa.Identifier ;
 import xcom.retro.xa.Operand ;
 import xcom.retro.xa.Option ;
 import xcom.retro.xa.Parameter ;
-import xcom.retro.xa.Symbol ;
 import xcom.retro.xa.XA.AssemblyContext ;
 import xcom.retro.xa.antlr.processors.MOS6502.MOS6502_BaseListener ;
 import xcom.retro.xa.antlr.processors.MOS6502.MOS6502_Lexer ;
@@ -24,6 +24,7 @@ import xcom.retro.xa.expressions._ExprNode ;
 import xcom.retro.xa.expressions.value.StringLiteral ;
 import xcom.retro.xa.expressions.value._ValueNode ;
 import xcom.utils4j.Enums ;
+import xcom.utils4j.Lists ;
 import xcom.utils4j.logging.aspects.api.annotations.Log ;
 
 
@@ -211,7 +212,7 @@ public class MOS6502 extends MOS6502_BaseListener implements iProcessor {
 		final _ExprNode argument = ExpressionUtils.buildArgumentExpressionTree(actx, pctx) ;
 		final List<Operand> operands = actx.statement().operands() ;
 
-		final Operand operand = (operands.isEmpty() ? null : operands.get(operands.size() - 1)) ;
+		final Operand operand = (operands.isEmpty() ? null : Lists.last(operands)) ;
 
 		if ( operands.isEmpty() || (!(operand instanceof Option) && !(operand instanceof Parameter)) )
 			actx.statement().operands().add(new Argument(argument)) ;
@@ -232,10 +233,10 @@ public class MOS6502 extends MOS6502_BaseListener implements iProcessor {
 	@Override
 	public void exitIdeogram(final MOS6502_Parser.IdeogramContext pctx) {
 
-		final _ExprNode argument = new StringLiteral('.' + pctx.getChild(1).getText(), true) ;
+		final _ExprNode argument = new StringLiteral('.' + pctx.getChild(1).getText()) ;
 		final List<Operand> operands = actx.statement().operands() ;
 
-		final Operand operand = (operands.isEmpty() ? null : operands.get(operands.size() - 1)) ;
+		final Operand operand = (operands.isEmpty() ? null : Lists.last(operands)) ;
 
 		if ( operands.isEmpty() || (!(operand instanceof Option) && !(operand instanceof Parameter)) )
 			actx.statement().operands().add(new Argument(argument)) ;
@@ -302,14 +303,14 @@ public class MOS6502 extends MOS6502_BaseListener implements iProcessor {
 	public void exitInstruction(final MOS6502_Parser.InstructionContext pctx) {
 
 		if ( actx.statement().assembleEnable() ) {
-			
+
 			final String opcode = pctx.getChild(0).getText() ;
 			final String mode = pctx.getChild(1).getChild(0).getClass().getSimpleName() ;
 			Opcodes opc = Enums.valueOfIgnoreCase(Opcodes.class, opcode + "_" + mode.substring(0, mode.length() - 7)) ;
 
 			if ( opc.zpOption != null )
 				try {
-					final _ValueNode value = actx.statement().operands().get(0).assignment().eval(actx.symbols()) ;
+					final _ValueNode value = actx.statement().operands().get(0).assignment().eval(actx.identifiers()) ;
 
 					if ( (value != null) && ((int) value.getValue() <= 255) )
 						opc = opc.zpOption ;
@@ -331,9 +332,17 @@ public class MOS6502 extends MOS6502_BaseListener implements iProcessor {
 	public void exitLabel(final MOS6502_Parser.LabelContext pctx) {
 
 		if ( actx.statement().assembleEnable() ) {
-			actx.symbol(new Symbol(pctx.getText(), actx.segment().lc())) ;
-			actx.symbols().put(actx.symbol().name(), actx.symbol()) ;
-			actx.statement().label(actx.symbol()) ;
+
+			final String id = pctx.getText() ;
+
+			if ( !actx.identifiers().containsKey(id) )
+				actx.identifiers().put(id, new Identifier(id)) ;
+
+			actx.identifier(actx.identifiers().get(id)) ;
+			actx.identifier().value(actx.segment().loc()) ;
+			actx.identifier().origin(actx.identifier().new Reference(actx.ln(), actx.source().peek().sourceID(), actx.source().peek().sourceLN())) ;
+
+			actx.statement().label(actx.identifier()) ;
 		}
 	}
 
@@ -353,7 +362,7 @@ public class MOS6502 extends MOS6502_BaseListener implements iProcessor {
 	void set2ByteInstruction() {
 
 		final byte[] bytes = actx.statement().bytes() ;
-		bytes[1] = ExpressionUtils.lsb(actx.statement().operands().get(0).assignment().eval(actx.symbols()).value()) ;
+		bytes[1] = ExpressionUtils.lsb(actx.statement().operands().get(0).assignment().eval(actx.identifiers()).value()) ;
 		actx.statement().bytes(bytes) ;
 	}
 
@@ -361,8 +370,8 @@ public class MOS6502 extends MOS6502_BaseListener implements iProcessor {
 	void set2ByteRelativeInstruction() {
 
 		final byte[] bytes = actx.statement().bytes() ;
-		final int x = (Integer) actx.statement().operands().get(0).assignment().eval(actx.symbols()).getValue() ;
-		final int y = actx.statement().lc() ;
+		final int x = (Integer) actx.statement().operands().get(0).assignment().eval(actx.identifiers()).getValue() ;
+		final int y = actx.statement().loc() ;
 		bytes[1] = (byte) ((x - y - 2) & 0xFF) ;
 		actx.statement().bytes(bytes) ;
 	}
@@ -371,7 +380,7 @@ public class MOS6502 extends MOS6502_BaseListener implements iProcessor {
 	void set3ByteInstruction() {
 
 		final byte[] bytes = actx.statement().bytes() ;
-		final byte[] value = actx.statement().operands().get(0).assignment().eval(actx.symbols()).value() ;
+		final byte[] value = actx.statement().operands().get(0).assignment().eval(actx.identifiers()).value() ;
 		bytes[1] = ExpressionUtils.lsb(value) ;
 		bytes[2] = ExpressionUtils.msb(value) ;
 		actx.statement().bytes(bytes) ;

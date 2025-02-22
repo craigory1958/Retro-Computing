@@ -14,10 +14,10 @@ NXTEL    LDA    [$30],Y     ; FETCH ELEMENT
          PHA                ; BY SAVING LOW BYTE ON STACK.
          LDA    [$30],Y     ; THEN GET HIGH BYTE AND
          DEY                ; STORE IT AT LOW ADDRESS
-         STA  	[$30],Y
+         STA    [$30],Y
          PLA                ; PULL LOW BYTE FROM STACK
          INY                ; AND STORE IT AT HIGH ADDRESS
-         STA  	[$30],Y
+         STA    [$30],Y
          LDA    #$FF        ; TURN EXCHANGE FLAG ON (= -1)
          STA    $32
 		 

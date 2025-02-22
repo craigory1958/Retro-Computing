@@ -11,7 +11,7 @@ IF NOT "%3"=="" SET uPver=%3
 SET dirVer=v3
 IF NOT "%4"=="" SET dirVer=%4
 
-SET exprVer=v1
+SET exprVer=v2
 IF NOT "%5"=="" SET exprVer=%5
 
 SET sourceDir="H:\_cwg-base__Home\Computer Archtecture\Retro Computing\xa\grammers"

@@ -27,7 +27,7 @@ public class ORG implements iDirective {
 	@Override
 	public void parse(final ParserRuleContext pctx) {
 
-		final _ValueNode value = actx.statement().operands().get(0).assignment().eval(actx.symbols()) ;
+		final _ValueNode value = actx.statement().operands().get(0).assignment().eval(actx.identifiers()) ;
 		actx.segment().setOrg((int) value.getValue()) ;
 	}
 }

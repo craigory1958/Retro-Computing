@@ -10,8 +10,6 @@ options {
 assembly:  ( statement eol )* EOF ;
 statement:  ( label | instruction | ( label instruction ) | directive | ( label directive ) )?  ;
 
-label:  Identifier ;
-
 
 //
 // Instructions
@@ -66,7 +64,7 @@ Opcodes:
 directive:  assembler | macro | struct | invocation ;
 
 assembler:  '.' Directives argumentList? ;
-macro: '.' symbol '.macro' optionList? ;
+macro: '.' symbol  '.macro' optionList? ;
 struct: '.' symbol '.struct' optionList? ;
 invocation:  '.' symbol parameterList? ;
 
@@ -88,6 +86,9 @@ symbol:  Directives | Identifier ;
 ideogram:  '.' symbol ;
 
 
+label:  Identifier ;
+
+
 Directives:  
 	'align' | 
 	'byte' | 
@@ -107,10 +108,11 @@ Directives:
 
 expr:  term ( ( binary | comparison ) term )* ;
 
-term:  org | identifier | literal | '(' expr ')' | unary term ;
+term:  org | ( '.'? identifier extendedIdentifier? ) | literal | '(' expr ')' | unary term ;
 org: '*' ;
 
 identifier:  Identifier ;
+extendedIdentifier:  ExtendedIdentifier ;
 
 
 binary: integerAdd | integerSubtract | integerMultiply | integerDivide | bitwiseShiftLeft | bitwiseShiftRight | bitwiseAnd | bitwiseOr | logicalAnd |  logicalOr ;
@@ -168,6 +170,7 @@ CharacterLiteral:  '\'' ~["] ;
 StringLiteral:  '"' ~["]* '"' ;
 
 Identifier:  [A-Z_] [A-Z0-9_]* ;
+ExtendedIdentifier:  ( ':' [A-Z_] [A-Z0-9_]* )+ ;
 
 
 //

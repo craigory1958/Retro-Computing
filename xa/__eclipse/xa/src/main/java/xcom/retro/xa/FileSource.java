@@ -16,40 +16,43 @@ import xcom.retro.xa.api.interfaces.iSource ;
 
 public class FileSource implements iSource {
 
-	String fSpec ;
+	//@formatter:off
 
-	BufferedReader br ;
+	String fSpec ;
+	@Override
+	public String fSpec() { return fSpec ; }
 
 	boolean list ;
+	@Override
 	public boolean list() { return list ; }
 	public FileSource list(final boolean list) {
 		this.list = list ;
 		return this ;
 	}
 
-	int ln = 0 ;
+	int sourceLN ;
 	@Override
-	public int ln() {
-		return ln ;
-	}
+	public int sourceLN() { return sourceLN ; }
 
-	int sn ;
-
+	int sourceID ;
 	@Override
-	public int sn() {
-		return sn ;
-	}
+	public int sourceID() { return sourceID ; }
 
+	//@formatter:on
+
+
+	BufferedReader br ;
 	boolean wasNull = false ;
 	boolean wasEmpty = false ;
 
 
-	public FileSource(final int sn, final String fSpec, boolean list) throws FileNotFoundException {
+	public FileSource(final int sourceID, final String fSpec, final boolean list) throws FileNotFoundException {
 
-		this.sn = sn ;
+		this.sourceID = sourceID ;
 		this.fSpec = fSpec ;
-		this.list=list;
+		this.list = list ;
 
+		sourceLN = 0 ;
 		br = new BufferedReader(new InputStreamReader(new FileInputStream(fSpec))) ;
 	}
 
@@ -60,13 +63,13 @@ public class FileSource implements iSource {
 		String line = null ;
 
 		if ( !wasNull ) {
-			ln++ ;
+			sourceLN++ ;
 			line = br.readLine() ;
 		}
 
 		if ( line != null )
 			wasEmpty = StringUtils.trimToEmpty(line).isEmpty() ;
-		
+
 		else if ( wasNull )
 			line = null ;
 

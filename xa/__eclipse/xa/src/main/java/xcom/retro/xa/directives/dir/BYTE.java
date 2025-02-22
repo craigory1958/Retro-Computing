@@ -6,7 +6,6 @@ package xcom.retro.xa.directives.dir ;
 import org.antlr.v4.runtime.ParserRuleContext ;
 
 import xcom.retro.xa.Operand ;
-import xcom.retro.xa.Symbol ;
 import xcom.retro.xa.XA.AssemblyContext ;
 import xcom.retro.xa.api.annotations.aDirective ;
 import xcom.retro.xa.api.interfaces.iDirective ;
@@ -30,11 +29,6 @@ public class BYTE implements iDirective {
 	@Override
 	public void parse(final ParserRuleContext pctx) {
 
-		if ( !pctx.getParent().getChild(0).getChild(0).getText().isEmpty() ) {
-			actx.symbol(new Symbol(pctx.getParent().getChild(0).getChild(0).getText(), actx.statement().lc())) ;
-			actx.symbols().put(pctx.getParent().getChild(0).getChild(0).getText(), actx.symbol()) ;
-		}
-
 		int size = 0 ;
 		for ( final Operand element : actx.statement().operands() )
 			size = size + (element.assignment() instanceof StringLiteral ? ((StringLiteral) element.assignment()).value().length : 1) ;
@@ -55,7 +49,7 @@ public class BYTE implements iDirective {
 
 		int b = 0 ;
 		for ( final Operand element : actx.statement().operands() ) {
-			final byte[] value = element.assignment().eval(actx.symbols()).value() ;
+			final byte[] value = element.assignment().eval(actx.identifiers()).value() ;
 
 			if ( element.assignment() instanceof StringLiteral )
 				for ( final byte _byte : value )

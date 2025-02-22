@@ -22,6 +22,7 @@ import xcom.retro.xa.XA.AssemblyContext ;
 import xcom.retro.xa.api.annotations.aDirective ;
 import xcom.retro.xa.api.interfaces.iDirective ;
 import xcom.retro.xa.expressions.value.StringLiteral ;
+import xcom.utils4j.Lists ;
 import xcom.utils4j.format.Templator ;
 import xcom.utils4j.logging.aspects.api.annotations.Log ;
 
@@ -40,10 +41,10 @@ public class STRUCT implements iDirective {
 	public List<Operand> options() { return options ; }
 
 	List<String> lines ;
-	
-	int sn ;
-	
-	int ln ;
+
+	int sourceID ;
+
+	int sourceLN ;
 
 	//@formatter:on
 
@@ -60,8 +61,8 @@ public class STRUCT implements iDirective {
 		options = optioms ;
 		this.lines = lines ;
 
-		sn = actx.sources().size() - 1 ;
-		ln = actx.source().peek().ln() - 1 ;
+		sourceID = actx.sources().size() - 1 ;
+		sourceLN = actx.source().peek().sourceLN() - 1 ;
 	}
 
 
@@ -80,13 +81,13 @@ public class STRUCT implements iDirective {
 				ordinalMode = false ;
 
 			if ( ordinalMode && (operand != null) && (operand.name() == null) )
-				parms.put(option.name(), operand.assignment().eval(actx.symbols()).getValue()) ;
+				parms.put(option.name(), operand.assignment().eval(actx.identifiers()).getValue()) ;
 
 			if ( !ordinalMode && (option != null) && (option.assignment() != null) )
-				parms.put(option.name(), option.assignment().eval(actx.symbols()).getValue()) ;
+				parms.put(option.name(), option.assignment().eval(actx.identifiers()).getValue()) ;
 
 			if ( !ordinalMode && (operand != null) && (operand.name() != null) )
-				parms.put(operand.name(), operand.assignment().eval(actx.symbols()).getValue()) ;
+				parms.put(operand.name(), operand.assignment().eval(actx.identifiers()).getValue()) ;
 		}
 
 
@@ -95,12 +96,12 @@ public class STRUCT implements iDirective {
 			lines.add(Templator.delimiters(UnixDelimiters).template(line).inject(parms)) ;
 
 
-		boolean list = (parms.containsKey("list") ? parms.get("list").equals(".list") : false) ;
+		final boolean list = (parms.containsKey("list") ? parms.get("list").equals(".list") : false) ;
 //		list = true ;
 		actx.list(list) ;
 
-		actx.sources().add(new BlockSource(sn, ln, lines, list)) ;
-		actx.source().push(actx.sources().get(actx.sources().size() - 1)) ;
+		actx.sources().add(new BlockSource(sourceID, sourceLN, lines, list)) ;
+		actx.source().push(Lists.last(actx.sources())) ;
 	}
 
 
@@ -116,7 +117,7 @@ public class STRUCT implements iDirective {
 	@Log
 	public static STRUCT buildStruct(final AssemblyContext actx, final ParserRuleContext pctx) {
 
-		actx.statement().operands().add(new Option("list").assignment(new StringLiteral(".nolist", true))) ;
+		actx.statement().operands().add(new Option("list").assignment(new StringLiteral(".nolist"))) ;
 		final Statement _statement = actx.statement() ;
 		final String name = pctx.getChild(0).getChild(1).getText() ;
 
@@ -125,14 +126,14 @@ public class STRUCT implements iDirective {
 			String line ;
 			while ( !StringUtils.trimToEmpty(line = actx.source().peek().next()).equalsIgnoreCase('.' + ENDSTRUCT.class.getSimpleName()) ) {
 				lines.add(line) ;
-				actx.statements().add(
-						new Statement(actx.source().peek().sn(), actx.source().peek().ln(), line, actx.segment().lc(), actx.list(), actx.assembleEnable())) ;
-				actx.statement(actx.statements().get(actx.statements().size() - 1)) ;
+				actx.statements().add(new Statement(actx.source().peek().sourceID(), actx.source().peek().sourceLN(), line, actx.segment().loc(), actx.list(),
+						actx.assembleEnable())) ;
+				actx.statement(Lists.last(actx.statements())) ;
 			}
 
-			actx.statements()
-					.add(new Statement(actx.source().peek().sn(), actx.source().peek().ln(), line, actx.segment().lc(), actx.list(), actx.assembleEnable())) ;
-			actx.statement(actx.statements().get(actx.statements().size() - 1)) ;
+			actx.statements().add(new Statement(actx.source().peek().sourceID(), actx.source().peek().sourceLN(), line, actx.segment().loc(), actx.list(),
+					actx.assembleEnable())) ;
+			actx.statement(Lists.last(actx.statements())) ;
 		}
 		catch ( final IOException e ) {}
 

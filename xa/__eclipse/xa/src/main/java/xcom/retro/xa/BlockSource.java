@@ -13,48 +13,48 @@ public class BlockSource implements iSource {
 
 	//@formatter:off
 
+	String fSpec ;
+	@Override
+	public String fSpec() { return fSpec ; }
+
 	boolean list ;
+	@Override
 	public boolean list() { return list ; }
 	public BlockSource list(final boolean list) {
 		this.list = list ;
 		return this ;
 	}
 
-	int ln ;
-
+	int sourceLN ;
 	@Override
-	public int ln() {
-		return ln ;
-	}
+	public int sourceLN() { return sourceLN ; }
 
-	int sn ;
-
+	int sourceID ;
 	@Override
-	public int sn() {
-		return sn ;
-	}
+	public int sourceID() { return sourceID ; }
 
 	List<String> lines ;
-	
-	int x ;
 
 	//@formatter:on
 
 
-	public BlockSource(final int sn, final int ln, final List<String> lines, boolean list) {
+	int curLN ;
 
-		this.sn = sn ;
-		this.ln = ln - 1 ;
+
+	public BlockSource(final int sourceID, final int ln, final List<String> lines, final boolean list) {
+
+		this.sourceID = sourceID ;
+		sourceLN = ln - 1 ;
 		this.lines = lines ;
 		this.list = list ;
 
-		x = 0 ;
+		curLN = 0 ;
 	}
 
 
 	@Override
 	public String next() throws IOException {
-		ln++ ;
-		return (x < lines.size() ? lines.get(x++) : null) ;
+		sourceLN++ ;
+		return (curLN < lines.size() ? lines.get(curLN++) : null) ;
 	}
 }

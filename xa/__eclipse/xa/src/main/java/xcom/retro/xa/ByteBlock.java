@@ -8,34 +8,28 @@ import java.util.Arrays ;
 
 public class ByteBlock {
 
+	//@formatter:off
+
 	Integer org ;
+	public Integer org() { return org ; }
 
-	public Integer org() {
-		return org ;
-	}
-
-	int lc ;
-
-	public ByteBlock lc(final int lc) {
-		this.lc = lc ;
+	int loc ;
+	public ByteBlock loc(final int loc) {
+		this.loc = loc ;
 		return this ;
 	}
 
 	int numBytes ;
-
-	public int numBytes() {
-		return numBytes ;
-	}
+	public int numBytes() { return numBytes ; }
 
 	byte[] bytes ;
+	public byte[] bytes() { return bytes ; }
 
-	public byte[] bytes() {
-		return bytes ;
-	}
+	//@formatter:on
 
 
 	public ByteBlock() {
-		lc = 0 ;
+		loc = 0 ;
 		numBytes = 0 ;
 		bytes = new byte[0] ;
 	}
@@ -44,22 +38,18 @@ public class ByteBlock {
 	public int allocateBytes(final byte[] bytes) {
 
 		if ( org == null )
-			org = lc ;
+			org = loc ;
 
 		this.bytes = ((numBytes + bytes.length) > this.bytes.length) ? Arrays.copyOf(this.bytes, this.bytes.length + 16) : this.bytes ;
 
 		System.arraycopy(bytes, 0, this.bytes, numBytes, bytes.length) ;
 		numBytes += bytes.length ;
 
-		return (lc += bytes.length) ;
+		return (loc += bytes.length) ;
 	}
 
 
 	public void fillBytes(final int address, final byte[] bytes) {
-
-//		for ( final byte b : this.bytes )
-//			System.out.print(String.format("%02X", b)) ;
-//		System.out.println() ;
 
 		try {
 			for ( int b = 0; b < bytes.length; b++ )
@@ -74,11 +64,11 @@ public class ByteBlock {
 
 
 	public int setOrg(final int value) {
-		return lc = org = value ;
+		return loc = org = value ;
 	}
 
 
 	public boolean hasOrg() {
-		return org == null ;
+		return (org == null) ;
 	}
 }

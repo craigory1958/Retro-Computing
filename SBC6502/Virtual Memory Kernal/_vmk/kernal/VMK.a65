@@ -1,14 +1,13 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;                                                                           ;       
 ;                     Virtual Memory Kernal (VMK) v0.0.1                    ;       
 ;                                                                           ;       
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
                        .include    "VMK.def.a65"
                        .include    "../CPUs/_CPU.def.a65"
                        .include    "../archs/_ARCH.def.a65"
                        .include    "../devices/MMUs/_MMU.def.a65"
-
 
                            ._vmk_declare_type  VMK_v1
                            ._cpu_declare_type  MOS6502
@@ -65,10 +64,10 @@ _MPU65XX_RESET
 ; VMK Kernal 
 ;
                        .segment     "_MPU65XX_ZP"
-        task           .word
-        tasks          .word
-        curTask        .word
-        curTaskRegY    .byte
+        task               .word
+        tasks              .word
+        curTask            .word
+        curTaskRegY        .byte
 
 ;
 ; Routine for BRK or IRQ event; BRK instruction will set Break bit.

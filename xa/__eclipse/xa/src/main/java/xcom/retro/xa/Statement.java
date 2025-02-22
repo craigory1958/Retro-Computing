@@ -44,9 +44,9 @@ public class Statement {
 		return this ;
 	}
 
-	Symbol label ;
-	public Symbol label() { return label ; }
-	public Statement label(final Symbol label) {
+	Identifier label ;
+	public Identifier label() { return label ; }
+	public Statement label(final Identifier label) {
 		this.label = label ;
 		return this ;
 	}
@@ -63,9 +63,20 @@ public class Statement {
 
 	int ln ;
 	public int ln() { return ln ; }
+	public Statement ln(final int ln) {
+		this.ln = ln ;
+		return this ;
+	}
 
-	int lc ;
-	public int lc() { return lc ; }
+	int sourceLN ;
+	public int sourceLN() { return sourceLN ; }
+	public Statement sourceLN(final int sourceLN) {
+		this.sourceLN = sourceLN ;
+		return this ;
+	}
+
+	int loc ;
+	public int loc() { return loc ; }
 
 	Map<String, Parameter> parameters ;
 	public Map<String, Parameter> parameters() { return parameters ; }
@@ -73,21 +84,21 @@ public class Statement {
 	ParserRuleContext pctx ;
 	public ParserRuleContext pctx() { return pctx ; }
 
-	int sn ;
-	public int sn() { return sn ; }
+	Integer sourceID ;
+	public Integer sourceID() { return sourceID ; }
 
 	//@formatter:on
 
 
 	@Log
-	public Statement(final int sn, final int ln, final String line, final int lc, final boolean list, final boolean assembleEnable) {
+	public Statement(final int sourceID, final int sourceLN, final String line, final int lc, final boolean list, final boolean assembleEnable) {
 
 		this.assembleEnable = assembleEnable ;
-		this.lc = lc ;
+		loc = lc ;
 		this.line = line ;
 		this.list = list ;
-		this.ln = ln ;
-		this.sn = sn ;
+		this.sourceLN = sourceLN ;
+		this.sourceID = sourceID ;
 
 		operands = new ArrayList<>() ;
 		parameters = new HashMap<>() ;

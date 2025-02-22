@@ -6,5 +6,5 @@ next    .word   0x0000
 		
 def     .xyz    status=0xFFFF, list=.list
 
-         LDY    #.xyz.pid
+         LDY    #.xyz:pid
          LDA	[def], Y
