@@ -28,7 +28,7 @@
 
 	<!-- Class Loggers -->
 
-	<logger name="xcom.retro.xa.processors.MOS6502" additivity="false">
+<!-- 	<logger name="xcom.retro.xa.processors.MOS6502" additivity="false">
 		<level value="warn" />
 		<appender-ref ref="stdout-appender" />
 	</logger>
@@ -52,13 +52,13 @@
 		<level value="warn" />
 		<appender-ref ref="stdout-appender" />
 	</logger>
-
+ -->
 
 
 	<!-- Application Loggers -->
 
 	<logger name="Console" additivity="false">
-		<level value="debug" />
+		<level value="info" />
 		<appender-ref ref="console-appender" />
 	</logger>
 

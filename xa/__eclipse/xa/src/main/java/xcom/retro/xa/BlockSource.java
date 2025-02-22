@@ -5,6 +5,7 @@ package xcom.retro.xa ;
 
 import java.io.IOException ;
 import java.util.List ;
+import java.util.UUID ;
 
 import xcom.retro.xa.api.interfaces.iSource ;
 
@@ -25,20 +26,23 @@ public class BlockSource implements iSource {
 		return this ;
 	}
 
-	int sourceLN ;
+	String scopeID ;
 	@Override
-	public int sourceLN() { return sourceLN ; }
+	public String scopeID() { return scopeID ; }
 
 	int sourceID ;
 	@Override
 	public int sourceID() { return sourceID ; }
 
-	List<String> lines ;
+	int sourceLN ;
+	@Override
+	public int sourceLN() { return sourceLN ; }
 
 	//@formatter:on
 
 
 	int curLN ;
+	List<String> lines ;
 
 
 	public BlockSource(final int sourceID, final int ln, final List<String> lines, final boolean list) {
@@ -48,6 +52,7 @@ public class BlockSource implements iSource {
 		this.lines = lines ;
 		this.list = list ;
 
+		this.scopeID = UUID.randomUUID().toString().replaceAll("[-]", "") ;
 		curLN = 0 ;
 	}
 

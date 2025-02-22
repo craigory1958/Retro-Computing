@@ -1,73 +1,73 @@
-  CheckNextTaskStatus             247              260            
-  Error                           265              242              254            
-  ExecuteNextTask                 264              251            
-  MMUv1                           10 (D.5)         15               15 (D.18)      
-  MOS6502                         8 (B.5)          13               13 (B.23)      
-  SBC6502v1_4K                    9 (C.5)          14               14 (C.18)      
-  VMK_v1                          7                12               12             
-  W65C02                          8 (B.6)          13 (B.27)      
-  _MPU65XX_BRK                    206            
-  _MPU65XX_BRK_VECTOR             284 (Q.11)     
-  _MPU65XX_INTERRUPT_VECTORS      279 (Q.6)      
-  _MPU65XX_INTERRUPT_VECTORS_     287 (Q.14)     
-  _MPU65XX_IRQ                    205              285 (Q.12)     
-  _MPU65XX_IRQ_VECTOR             283 (Q.10)     
-  _MPU65XX_NMI                    269              281 (Q.8)      
-  _MPU65XX_NMI_VECTOR             281 (Q.8)      
-  _MPU65XX_RESET                  164              282 (Q.9)      
-  _MPU65XX_RESET_VECTOR           282 (Q.9)      
-  _MPU65XX_STACK                  13 (H.10)      
-  _MPU65XX_STACK_                 13 (H.11)      
-  _MPU65XX_VECTORS                13 (H.14)      
-  _MPU65XX_VECTORS_               13 (H.15)      
-  _MPU65XX_ZP                     13 (H.6)       
-  _MPU65XX_ZP_                    13 (H.7)       
-  _SBC6502_IO                     14 (J.11)        181            
-  _SBC6502_IO_                    14 (J.12)        14 (J.16)      
-  _SBC6502_eio                    14 (J.13)        181            
-  _SBC6502_eram                   14 (J.8)         179            
-  _SBC6502_erom                   14 (J.17)        183            
-  _SBC6502_ram                    14 (J.6)         179            
-  _SBC6502_ram_                   14 (J.7)         14 (J.11)      
-  _SBC6502_rom                    14 (J.16)        183            
-  _arch_declared                  14 (C.16)        14 (C.15)      
-  _cpu_declared                   13 (B.21)        13 (B.20)      
-  _mmu                            42 (L.145)     
-  _mmu_                           118 (L.221)    
-  _mmu_CR0                        78 (L.181)     
-  _mmu_CR1                        90 (L.193)     
-  _mmu_R0                         56 (L.159)       133 (L.236)    
-  _mmu_R1                         66 (L.169)       137 (L.240)    
-  _mmu_bitsEffectiveAddr          32 (L.135)     
-  _mmu_bitsPID                    34 (L.137)       38 (L.141)     
-  _mmu_bitsPhysicalAddr           31 (L.134)       36 (L.139)     
-  _mmu_bitsSegmentAddr            36 (L.139)       37 (L.140)     
-  _mmu_bitsSegmentSize            33 (L.136)       36 (L.139)     
-  _mmu_configValue                38 (L.141)       135 (L.238)    
-  _mmu_declared                   15 (D.16)        15 (D.15)      
-  _mmu_initialize                 131 (L.234)      169            
-  _mmu_map_segment                156 (L.259)      179 (L.171)      181 (L.171)      183 (L.171)    
-  _mmu_numVectors                 37 (L.140)       116 (L.219)      142 (L.245)    
-  _mmu_parms                      122 (L.225)    
-  _mmu_parms_                     126 (L.229)    
-  _mmu_parms_addr                 124 (L.227)      179 (L.162)      179 (L.164)      181 (L.162)      181 (L.164)      183 (L.162)      183 (L.164)    
-  _mmu_parms_effect_addr          125 (L.228)      179 (L.167)      179 (L.169)      181 (L.167)      181 (L.169)      183 (L.167)      183 (L.169)    
-  _mmu_parms_pid                  123 (L.226)      179 (L.159)      181 (L.159)      183 (L.159)    
-  _mmu_timer_initialize           152 (L.255)      189            
-  _mmu_vectors                    115 (L.218)      144 (L.247)    
-  _mmu_vectors_                   117 (L.220)    
-  _syscall_terminate              12 (F.1)       
-  _vmk_declared                   12               12             
-  _vmk_kernal_pid                 7                179              181              183            
-  bitsEffectiveAddr               25               29             
-  bitsPID                         27               29             
-  bitsPhysicalAddr                24               29             
-  bitsSegmentSize                 26               29               226              230              234            
-  curTask                         197              212              215              218              222              228              232              236            
-  curTaskRegY                     198              210              213            
-  curTaskSegment                  185              226              230              234            
-  false                           7              
-  loop                            143 (L.246)      147 (L.250)    
-  task                            195              243              245              249              253              255              257              258            
-  tasks                           196              241              244            
-  true                            7              
+  @loop_43aed3b8df934b0dbe23d0203c580d27      0xE00E  143 (L.246)      147 (L.250)    
+  CheckNextTaskStatus                         0xE09B  247              260            
+  Error                                       0xE0B1  265              242              254            
+  ExecuteNextTask                             0xE0B1  264              251            
+  MMUv1                                         0x01  10 (D.5)         15               15 (D.18)      
+  MOS6502                                       0x01  8 (B.5)          13               13 (B.23)      
+  SBC6502v1_4K                                  0x01  9 (C.5)          14               14 (C.18)      
+  VMK_v1                                        0x01  7                12               12             
+  W65C02                                        0x02  8 (B.6)          13 (B.27)      
+  _MPU65XX_BRK                                0xE067  206            
+  _MPU65XX_BRK_VECTOR                         0xFFFE  284 (Q.11)     
+  _MPU65XX_INTERRUPT_VECTORS                  0xFFFA  279 (Q.6)      
+  _MPU65XX_INTERRUPT_VECTORS_                 0xFFFF  287 (Q.14)     
+  _MPU65XX_IRQ                                0xE067  205              285 (Q.12)     
+  _MPU65XX_IRQ_VECTOR                         0xFFFE  283 (Q.10)     
+  _MPU65XX_NMI                                0xE0B2  269              281 (Q.8)      
+  _MPU65XX_NMI_VECTOR                         0xFFFA  281 (Q.8)      
+  _MPU65XX_RESET                              0xE018  164              282 (Q.9)      
+  _MPU65XX_RESET_VECTOR                       0xFFFC  282 (Q.9)      
+  _MPU65XX_STACK                                0x00  13 (H.10)      
+  _MPU65XX_STACK_                             0x01FF  13 (H.11)      
+  _MPU65XX_VECTORS                              0x00  13 (H.14)      
+  _MPU65XX_VECTORS_                           0xFFFF  13 (H.15)      
+  _MPU65XX_ZP                                   0x00  13 (H.6)       
+  _MPU65XX_ZP_                                  0xFF  13 (H.7)       
+  _SBC6502_IO                                   0x00  14 (J.11)        181            
+  _SBC6502_IO_                                0xE000  14 (J.12)        14 (J.16)      
+  _SBC6502_eio                                  0x00  14 (J.13)        181            
+  _SBC6502_eram                                 0x00  14 (J.8)         179            
+  _SBC6502_erom                                 0x00  14 (J.17)        183            
+  _SBC6502_ram                                  0x00  14 (J.6)         179            
+  _SBC6502_ram_                               0xA000  14 (J.7)         14 (J.11)      
+  _SBC6502_rom                                  0x00  14 (J.16)        183            
+  _arch_declared                                0x01  14 (C.16)        14 (C.15)      
+  _cpu_declared                                 0x01  13 (B.21)        13 (B.20)      
+  _mmu                                        0xA000  42 (L.145)     
+  _mmu_                                       0xA210  118 (L.221)    
+  _mmu_CR0                                    0xA002  78 (L.181)     
+  _mmu_CR1                                    0xA003  90 (L.193)     
+  _mmu_R0                                     0xA000  56 (L.159)       133 (L.236)    
+  _mmu_R1                                     0xA001  66 (L.169)       137 (L.240)    
+  _mmu_bitsEffectiveAddr                        0x14  32 (L.135)     
+  _mmu_bitsPID                                  0x02  34 (L.137)       38 (L.141)     
+  _mmu_bitsPhysicalAddr                         0x10  31 (L.134)       36 (L.139)     
+  _mmu_bitsSegmentAddr                          0x06  36 (L.139)       37 (L.140)     
+  _mmu_bitsSegmentSize                          0x0A  33 (L.136)       36 (L.139)     
+  _mmu_configValue                              0x80  38 (L.141)       135 (L.238)    
+  _mmu_declared                                 0x01  15 (D.16)        15 (D.15)      
+  _mmu_initialize                             0xE000  131 (L.234)      169            
+  _mmu_map_segment                            0xE017  156 (L.259)      179 (L.171)      181 (L.171)      183 (L.171)    
+  _mmu_numVectors                             0x0100  37 (L.140)       116 (L.219)      142 (L.245)    
+  _mmu_parms                                    0x00  122 (L.225)    
+  _mmu_parms_                                   0x05  126 (L.229)    
+  _mmu_parms_addr                               0x01  124 (L.227)      179 (L.162)      179 (L.164)      181 (L.162)      181 (L.164)      183 (L.162)      183 (L.164)    
+  _mmu_parms_effect_addr                        0x03  125 (L.228)      179 (L.167)      179 (L.169)      181 (L.167)      181 (L.169)      183 (L.167)      183 (L.169)    
+  _mmu_parms_pid                                0x00  123 (L.226)      179 (L.159)      181 (L.159)      183 (L.159)    
+  _mmu_timer_initialize                       0xE016  152 (L.255)      189            
+  _mmu_vectors                                0xA010  115 (L.218)      144 (L.247)    
+  _mmu_vectors_                               0xA210  117 (L.220)    
+  _syscall_terminate                            0x00  12 (F.1)       
+  _vmk_declared                                 0x01  12               12             
+  _vmk_kernal_pid                               0x00  7                179              181              183            
+  bitsEffectiveAddr                             0x14  25               29             
+  bitsPID                                       0x02  27               29             
+  bitsPhysicalAddr                              0x10  24               29             
+  bitsSegmentSize                               0x0A  26               29               226              230              234            
+  curTask                                       0x05  197              212              215              218              222              228              232              236            
+  curTaskRegY                                   0x05  198              210              213            
+  curTaskSegment                                0x09  185              226              230              234            
+  false                                         0x00  7              
+  task                                          0x05  195              243              245              249              253              255              257              258            
+  tasks                                         0x05  196              241              244            
+  true                                          0x01  7              

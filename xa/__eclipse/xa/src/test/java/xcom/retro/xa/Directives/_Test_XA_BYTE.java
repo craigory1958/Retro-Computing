@@ -33,8 +33,8 @@ public class _Test_XA_BYTE {
 
                 // { String desc, String srcFSpec }
 
-                { "Single Operand", "BYTE_SingleOperand.a65", },
                 { "Multiple Operands", "BYTE_MultipleOperands.a65", },
+                { "Single Operand", "BYTE_SingleOperand.a65", },
         } ;
 
         //@formatter:on

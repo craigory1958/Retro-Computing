@@ -8,6 +8,7 @@ import java.io.FileInputStream ;
 import java.io.FileNotFoundException ;
 import java.io.IOException ;
 import java.io.InputStreamReader ;
+import java.util.UUID ;
 
 import org.apache.commons.lang3.StringUtils ;
 
@@ -30,13 +31,17 @@ public class FileSource implements iSource {
 		return this ;
 	}
 
-	int sourceLN ;
+	String scopeID ;
 	@Override
-	public int sourceLN() { return sourceLN ; }
+	public String scopeID() { return scopeID ; }
 
 	int sourceID ;
 	@Override
 	public int sourceID() { return sourceID ; }
+
+	int sourceLN ;
+	@Override
+	public int sourceLN() { return sourceLN ; }
 
 	//@formatter:on
 
@@ -52,8 +57,9 @@ public class FileSource implements iSource {
 		this.fSpec = fSpec ;
 		this.list = list ;
 
-		sourceLN = 0 ;
+		this.scopeID = UUID.randomUUID().toString().replaceAll("[-]", "") ;
 		br = new BufferedReader(new InputStreamReader(new FileInputStream(fSpec))) ;
+		sourceLN = 0 ;
 	}
 
 

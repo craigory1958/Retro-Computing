@@ -132,7 +132,7 @@ public class ExpressionListener extends ExpressionsBaseListener {
 
 
 	@Log
-	public void exitIdentifier(final ParserRuleContext pctx) {
+	public void exitGlobalLabel(final ParserRuleContext pctx) {
 
 		final String id = pctx.getText() ;
 
@@ -141,8 +141,36 @@ public class ExpressionListener extends ExpressionsBaseListener {
 		if ( !actx.identifiers().containsKey(pctx.getText()) )
 			actx.identifiers().put(id, new Identifier(id)) ;
 
-		actx.identifiers().get(id).references()
-				.add($Identifier.new Reference(actx.ln(), actx.source().peek().sourceID(), actx.source().peek().sourceLN())) ;
+		actx.identifiers().get(id).references().add($Identifier.new Reference(actx.ln(), actx.source().peek().sourceID(), actx.source().peek().sourceLN())) ;
+	}
+
+
+	@Log
+	public void exitIdentifier(final ParserRuleContext pctx) {
+
+		final String scopedMoniker = pctx.getText() ;
+
+		stack.push(new IdentifierValue(scopedMoniker)) ;
+
+		if ( !actx.identifiers().containsKey(scopedMoniker) )
+			actx.identifiers().put(scopedMoniker, new Identifier(scopedMoniker)) ;
+
+		actx.identifiers().get(scopedMoniker).references().add($Identifier.new Reference(actx.ln(), actx.source().peek().sourceID(), actx.source().peek().sourceLN())) ;
+	}
+
+
+	@Log
+	public void exitScopedIdentifier(final ParserRuleContext pctx) {
+
+		final String moniker = pctx.getText() ;
+		final String scopedMoniker = moniker + "_" + actx.source().peek().scopeID() ;
+
+		stack.push(new IdentifierValue(scopedMoniker)) ;
+
+		if ( !actx.identifiers().containsKey(scopedMoniker) )
+			actx.identifiers().put(scopedMoniker, new Identifier(scopedMoniker, moniker)) ;
+
+		actx.identifiers().get(scopedMoniker).references().add($Identifier.new Reference(actx.ln(), actx.source().peek().sourceID(), actx.source().peek().sourceLN())) ;
 	}
 
 

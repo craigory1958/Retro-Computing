@@ -3,9 +3,11 @@ T__1=2
 T__2=3
 T__3=4
 T__4=5
-Directives=6
+T__5=6
+Directives=7
 '.'=1
 '.macro'=2
 '.struct'=3
 ','=4
 '='=5
+'@'=6

@@ -33,7 +33,8 @@ public class _Test_XA_MACRO {
 
                 // { String desc, String srcFSpec }
 
-                { "Bsic Macro", "MACRO_Basic.a65", },
+                { "Basic Macro", "MACRO_Basic.a65", },
+                { "Scoped Labels", "MACRO_Scoped.a65", },
         } ;
 
         //@formatter:on

@@ -10,6 +10,7 @@ import xcom.retro.xa.Identifier.Reference ;
 import xcom.retro.xa.XA.AssemblyContext ;
 import xcom.retro.xa.api.annotations.aExtruder ;
 import xcom.retro.xa.api.interfaces.iExtruder ;
+import xcom.retro.xa.expressions.ExpressionUtils ;
 import xcom.utils4j.data.structured.map.Maps ;
 
 
@@ -21,7 +22,9 @@ public class XRefLister implements iExtruder {
 
 		for ( final Identifier identifier : Maps.sortByKey(actx.identifiers()).values() ) {
 
-			out.print(String.format("  %-30s", identifier.name())) ;
+			out.print(String.format("  %-40s", identifier.scopedMoniker())) ;
+
+			out.print(String.format("  %8s", ExpressionUtils.formatAsHexLiterial(ExpressionUtils.asInteger(identifier.value())))) ;
 
 			out.print(String.format("  %-15s", formatReference(identifier.origin()))) ;
 

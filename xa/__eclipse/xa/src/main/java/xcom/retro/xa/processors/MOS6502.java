@@ -217,15 +217,70 @@ public class MOS6502 extends MOS6502_BaseListener implements iProcessor {
 		if ( operands.isEmpty() || (!(operand instanceof Option) && !(operand instanceof Parameter)) )
 			actx.statement().operands().add(new Argument(argument)) ;
 
-		else
+		else if ( (operand instanceof Option) || (operand instanceof Parameter) )
 			operand.assignment(argument) ;
 
 //		actx.statement().operands().forEach(o -> { //
-//			System.out.print("opt>>> " + o.name() + ": " + o.getClass().getSimpleName()) ; //
+//			System.err.print("opt>>> " + o.name() + ": " + o.getClass().getSimpleName()) ; //
 //			if ( o.assignment() != null )
-//				System.out.print(" - " + o.assignment().getClass().getSimpleName() + ": " + o.assignment()) ; //
-//			System.out.println() ; //
+//				System.err.print(" - " + o.assignment().getClass().getSimpleName() + ": " + ExpressionUtils.asString(((IdentifierValue)o.assignment()).value())) ; //
+//			System.err.println() ; //
 //		}) ;
+	}
+
+
+	@Log
+	@Override
+	public void exitDirective(final MOS6502_Parser.DirectiveContext pctx) {
+		DirectiveUtils.parseDirective(actx) ;
+
+//		System.err.println(actx.identifier().name() + ": "
+//				+ ExpressionUtils.formatAsHexLiterial(ExpressionUtils.asInteger(actx.identifiers().get(actx.identifier().name()).value()))) ;
+	}
+
+
+	@Log
+	@Override
+	public void exitLabel(final MOS6502_Parser.LabelContext pctx) {
+
+		if ( actx.statement().assembleEnable() ) {
+
+			final String scopedMoniker = pctx.getText() ;
+
+			if ( !actx.identifiers().containsKey(scopedMoniker) )
+				actx.identifiers().put(scopedMoniker, new Identifier(scopedMoniker)) ;
+
+			actx.identifier(actx.identifiers().get(scopedMoniker)) ;
+			actx.identifier().value(actx.segment().loc()) ;
+			actx.identifier().origin(actx.identifier().new Reference(actx.ln(), actx.source().peek().sourceID(), actx.source().peek().sourceLN())) ;
+
+			actx.statement().label(actx.identifier()) ;
+			
+//			System.err.println(actx.statement().label().scopedMoniker() + ": " + ExpressionUtils.asInteger(actx.identifier().value())) ;
+		}
+	}
+
+
+	@Log
+	@Override
+	public void exitScopedLabel(final MOS6502_Parser.ScopedLabelContext pctx) {
+
+		if ( actx.statement().assembleEnable() ) {
+
+			final String moniker = pctx.getText() ;
+			final String scopedMoniker = moniker + "_" + actx.source().peek().scopeID() ;
+
+			if ( !actx.identifiers().containsKey(scopedMoniker) )
+				actx.identifiers().put(scopedMoniker, new Identifier(scopedMoniker, moniker)) ;
+
+			actx.identifier(actx.identifiers().get(scopedMoniker)) ;
+			actx.identifier().value(actx.segment().loc()) ;
+			actx.identifier().origin(actx.identifier().new Reference(actx.ln(), actx.source().peek().sourceID(), actx.source().peek().sourceLN())) ;
+
+			actx.statement().label(actx.identifier()) ;
+			
+//			System.err.println(actx.statement().label().scopedMoniker() + ": " + ExpressionUtils.asInteger(actx.identifier().value())) ;
+		}
 	}
 
 
@@ -250,51 +305,6 @@ public class MOS6502 extends MOS6502_BaseListener implements iProcessor {
 //				System.out.print(" - " + o.assignment().getClass().getSimpleName() + ": " + o.assignment()) ; //
 //			System.out.println() ; //
 //		}) ;
-	}
-
-
-	@Log
-	@Override
-	public void enterOption(final MOS6502_Parser.OptionContext pctx) {
-
-		actx.statement().operands().add(new Option(pctx.getChild(0).getChild(0).getText())) ;
-
-//		actx.statement().operands().forEach(o -> { //
-//			System.out.print("opt>>> " + o.name() + ": " + o.getClass().getSimpleName()) ; //
-//			if ( o.assignment() != null )
-//				System.out.print(" - " + o.assignment().getClass().getSimpleName() + ": " + o.assignment()) ; //
-//			System.out.println() ; //
-//		}) ;
-	}
-
-
-	@Log
-	@Override
-	public void enterParameter(final MOS6502_Parser.ParameterContext pctx) {
-
-		if ( pctx.getChild(0) instanceof SymbolContext )
-			actx.statement().operands().add(new Parameter(pctx.getChild(0).getChild(0).getText())) ;
-		else
-			actx.statement().operands().add(new Parameter(null)) ;
-
-//		actx.statement().operands().forEach(o -> { //
-//			System.out.print("param>>> " + o.name() + ": " + o.getClass().getSimpleName()) ; //
-//			if ( o.assignment() != null )
-//				System.out.print(" - " + o.assignment().getClass().getSimpleName() + ": " + o.assignment()) ; //
-//			System.out.println() ; //
-//		}) ;
-	}
-
-
-//	@Log
-//	@Override
-//	public void exitParameter(final MOS6502_Parser.ParameterContext pctx) {}
-
-
-	@Log
-	@Override
-	public void exitDirective(final MOS6502_Parser.DirectiveContext pctx) {
-		DirectiveUtils.parseDirective(actx) ;
 	}
 
 
@@ -329,21 +339,34 @@ public class MOS6502 extends MOS6502_BaseListener implements iProcessor {
 
 	@Log
 	@Override
-	public void exitLabel(final MOS6502_Parser.LabelContext pctx) {
+	public void enterOption(final MOS6502_Parser.OptionContext pctx) {
 
-		if ( actx.statement().assembleEnable() ) {
+		actx.statement().operands().add(new Option(pctx.getChild(0).getChild(0).getText())) ;
 
-			final String id = pctx.getText() ;
+//		actx.statement().operands().forEach(o -> { //
+//			System.out.print("opt>>> " + o.name() + ": " + o.getClass().getSimpleName()) ; //
+//			if ( o.assignment() != null )
+//				System.out.print(" - " + o.assignment().getClass().getSimpleName() + ": " + o.assignment()) ; //
+//			System.out.println() ; //
+//		}) ;
+	}
 
-			if ( !actx.identifiers().containsKey(id) )
-				actx.identifiers().put(id, new Identifier(id)) ;
 
-			actx.identifier(actx.identifiers().get(id)) ;
-			actx.identifier().value(actx.segment().loc()) ;
-			actx.identifier().origin(actx.identifier().new Reference(actx.ln(), actx.source().peek().sourceID(), actx.source().peek().sourceLN())) ;
+	@Log
+	@Override
+	public void enterParameter(final MOS6502_Parser.ParameterContext pctx) {
 
-			actx.statement().label(actx.identifier()) ;
-		}
+		if ( pctx.getChild(0) instanceof SymbolContext )
+			actx.statement().operands().add(new Parameter(pctx.getChild(0).getChild(0).getText())) ;
+		else
+			actx.statement().operands().add(new Parameter(null)) ;
+
+//		actx.statement().operands().forEach(o -> { //
+//			System.out.print("param>>> " + o.name() + ": " + o.getClass().getSimpleName()) ; //
+//			if ( o.assignment() != null )
+//				System.out.print(" - " + o.assignment().getClass().getSimpleName() + ": " + o.assignment()) ; //
+//			System.out.println() ; //
+//		}) ;
 	}
 
 

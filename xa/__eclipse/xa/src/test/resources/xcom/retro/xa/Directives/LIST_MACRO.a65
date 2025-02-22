@@ -28,7 +28,7 @@ CHKEND   DEX                ; END OF LIST?
 		 
          RTS                ; YES. LIST IS NOW ORDERED
         
-        .staiy	0
+        .staiy  0
         
-        .staiy	1, list=.list
+        .staiy  1, list=.list
         

@@ -55,11 +55,11 @@ public class Identifier {
 
 	//@formatter:off
 
-	String name ;
-	public String name() { return name ; }
+	String scopedMoniker ;
+	public String scopedMoniker() { return scopedMoniker ; }
 
-	String canonicalName ;
-	public String canonicalName() { return canonicalName ; }
+	String moniker ;
+	public String moniker() { return moniker ; }
 
 	Reference origin ;
 	public Reference origin() { return origin ; }
@@ -71,8 +71,8 @@ public class Identifier {
 	List<Reference> references ;
 	public List<Reference> references() { return references ; }
 
-	String rootName ;
-	public String rootName() { return rootName ; }
+//	String rootName ;
+//	public String rootName() { return rootName ; }
 
 //	int ln ;
 //	public int ln() { return ln ; }
@@ -112,9 +112,18 @@ public class Identifier {
 	//@formatter:on
 
 
-	public Identifier(final String name) {
+	public Identifier(final String scopedMoniker) {
 
-		this.name = name ;
+		this.scopedMoniker = scopedMoniker ;
+
+		references = new ArrayList<>() ;
+	}
+	
+	
+	public Identifier(String scopedMoniker, String moniker) {
+
+		this.scopedMoniker = scopedMoniker ;
+		this.moniker = moniker ;
 
 		references = new ArrayList<>() ;
 	}

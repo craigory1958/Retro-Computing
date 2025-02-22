@@ -28,8 +28,8 @@
         26:                    
         27:  001E 60                    RTS                ; YES. LIST IS NOW ORDERED
         28:                    
-        29:                            .staiy	0
+        29:                            .staiy  0
         30:                    
-        31:                            .staiy	1, list=.list
-        32:  0021 91 01                 STA    [1],Y
+        31:                            .staiy  1, list=.list
+        32:  0021 91 01                 STA    [0x01],Y
         33:                    

@@ -10,6 +10,7 @@ import java.util.ArrayList ;
 import java.util.HashMap ;
 import java.util.List ;
 import java.util.Map ;
+import java.util.UUID ;
 
 import org.antlr.v4.runtime.ParserRuleContext ;
 import org.apache.commons.lang3.StringUtils ;
@@ -21,6 +22,7 @@ import xcom.retro.xa.Statement ;
 import xcom.retro.xa.XA.AssemblyContext ;
 import xcom.retro.xa.api.annotations.aDirective ;
 import xcom.retro.xa.api.interfaces.iDirective ;
+import xcom.retro.xa.expressions.ExpressionUtils ;
 import xcom.retro.xa.expressions.value.StringLiteral ;
 import xcom.utils4j.Lists ;
 import xcom.utils4j.format.Templator ;
@@ -81,13 +83,13 @@ public class MACRO implements iDirective {
 				ordinalMode = false ;
 
 			if ( ordinalMode && (operand != null) && (operand.name() == null) )
-				parms.put(option.name(), operand.assignment().eval(actx.identifiers()).getValue()) ;
+				parms.put(option.name(), ExpressionUtils.formatAsHexLiterial(operand.assignment().eval(actx.identifiers()).getValue())) ;
 
 			if ( !ordinalMode && (option != null) && (option.assignment() != null) )
-				parms.put(option.name(), option.assignment().eval(actx.identifiers()).getValue()) ;
+				parms.put(option.name(), ExpressionUtils.formatAsHexLiterial(option.assignment().eval(actx.identifiers()).getValue())) ;
 
 			if ( !ordinalMode && (operand != null) && (operand.name() != null) )
-				parms.put(operand.name(), operand.assignment().eval(actx.identifiers()).getValue()) ;
+				parms.put(operand.name(), ExpressionUtils.formatAsHexLiterial(operand.assignment().eval(actx.identifiers()).getValue())) ;
 		}
 
 

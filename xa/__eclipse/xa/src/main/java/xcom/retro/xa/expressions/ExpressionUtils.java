@@ -25,23 +25,23 @@ public class ExpressionUtils {
 	}
 
 
-	public static Integer asInteger(final byte[] value) {
-		return ByteBuffer.wrap(value).getInt() ;
-	}
-
-
 	public static byte[] asBytes(final int value) {
 		return ByteBuffer.allocate(4).putInt(value).array() ;
 	}
 
 
-	public static String asString(final byte[] value) {
-		return new String(value) ;
+	public static byte[] asBytes(final String value) {
+		return value.getBytes() ;
 	}
 
 
-	public static byte[] asBytes(final String value) {
-		return value.getBytes() ;
+	public static Integer asInteger(final byte[] value) {
+		return ByteBuffer.wrap(value).getInt() ;
+	}
+
+
+	public static String asString(final byte[] value) {
+		return new String(value) ;
 	}
 
 
@@ -52,5 +52,14 @@ public class ExpressionUtils {
 
 	public static byte msb(final byte[] bytes) {
 		return bytes[bytes.length - 2] ;
+	}
+
+
+	public static Object formatAsHexLiterial(Object value) {
+
+		if ( value instanceof String )
+			return value ;
+
+		return String.format("0x%0" + ((int) value > 255 ? 4 : 2) + "X", value) ;
 	}
 }

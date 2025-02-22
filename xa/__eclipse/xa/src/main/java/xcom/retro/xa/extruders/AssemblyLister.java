@@ -63,7 +63,7 @@ public class AssemblyLister implements iExtruder {
 
 				out.print( //
 						((_statement.line().isEmpty() || (_statement.bytes() == null) || (_statement.bytes().length == 0)) //
-								&& ((_statement.label() == null) || StringUtils.trimToEmpty(_statement.label().name()).isEmpty()) //
+								&& ((_statement.label() == null) || StringUtils.trimToEmpty(_statement.label().scopedMoniker()).isEmpty()) //
 						) || ((_statement.pctx() != null) && (_statement.pctx().getChild(1) != null //
 						) && (_statement.pctx().getChild(1).getChild(0) != null //
 						) && _statement.pctx().getChild(1).getChild(0).getClass().getSimpleName().equals("MacroContext")) //
@@ -78,7 +78,7 @@ public class AssemblyLister implements iExtruder {
 												) && _statement.pctx().getChild(1).getChild(0).getChild(1).getText().equalsIgnoreCase("EQU") //
 														&& (_statement.label() != null)  //
 																? String.format(" (%04X)",
-																		new BigInteger(actx.identifiers().get(_statement.label().name()).value()).intValue()) //
+																		new BigInteger(actx.identifiers().get(_statement.label().scopedMoniker()).value()).intValue()) //
 																: "       ")
 												: String.format("  %04X ", _statement.loc()) //
 				) ;
@@ -99,7 +99,7 @@ public class AssemblyLister implements iExtruder {
 							out.println() ;
 
 						if ( (b % 4) == 0 )
-							out.print(String.format("         %04X", _statement.loc() + b)) ;
+							out.print(String.format("               %04X", _statement.loc() + b)) ;
 
 						out.print(String.format(" %02X", _statement.bytes()[b])) ;
 					}

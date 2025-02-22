@@ -8,7 +8,7 @@ options {
 
 
 assembly:  ( statement eol )* EOF ;
-statement:  ( label | instruction | ( label instruction ) | directive | ( label directive ) )?  ;
+statement:  ( ( label | scopedLabel ) | instruction | ( ( label | scopedLabel ) instruction ) | directive | ( ( label | scopedLabel ) directive ) )?  ;
 
 
 //
@@ -86,7 +86,8 @@ symbol:  Directives | Identifier ;
 ideogram:  '.' symbol ;
 
 
-label:  Identifier ;
+label: Identifier ;
+scopedLabel: '@'? Identifier ;
 
 
 Directives:  
@@ -108,11 +109,11 @@ Directives:
 
 expr:  term ( ( binary | comparison ) term )* ;
 
-term:  org | ( '.'? identifier extendedIdentifier? ) | literal | '(' expr ')' | unary term ;
+term:  org | ( identifier | scopedIdentifier )  | literal | '(' expr ')' | unary term ;
 org: '*' ;
 
-identifier:  Identifier ;
-extendedIdentifier:  ExtendedIdentifier ;
+identifier:  '.'? Identifier IdentifierExtensiom* ;
+scopedIdentifier:  '@' Identifier ;
 
 
 binary: integerAdd | integerSubtract | integerMultiply | integerDivide | bitwiseShiftLeft | bitwiseShiftRight | bitwiseAnd | bitwiseOr | logicalAnd |  logicalOr ;
@@ -170,7 +171,7 @@ CharacterLiteral:  '\'' ~["] ;
 StringLiteral:  '"' ~["]* '"' ;
 
 Identifier:  [A-Z_] [A-Z0-9_]* ;
-ExtendedIdentifier:  ( ':' [A-Z_] [A-Z0-9_]* )+ ;
+IdentifierExtensiom:  ':' [A-Z_] [A-Z0-9_]* ;
 
 
 //

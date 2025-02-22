@@ -116,11 +116,11 @@ _mmu_initialize
 
                             LDA     #0x00
                             LDX     #_mmu_numVectors
-        loop
+    @loop
                             STA     _mmu_vectors, X     ; Only need to clear 2 highest bits of a segment vector.
                             DEX
                             DEX
-                            BNE     loop
+                            BNE     @loop
 
                             RTS        
 

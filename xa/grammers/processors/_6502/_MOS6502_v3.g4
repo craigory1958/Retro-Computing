@@ -9,8 +9,8 @@ options {
 import Directives ;
 
 
-aassembly:  ( statement eol )* EOF ;
-statement:  ( label | instruction | ( label instruction ) | directive | ( label directive ) )?  ;
+assembly:  ( statement eol )* EOF ;
+statement:  ( ( label | scopedLabel ) | instruction | ( ( label | scopedLabel ) instruction ) | directive | ( ( label | scopedLabel ) directive ) )?  ;
 
 
 //

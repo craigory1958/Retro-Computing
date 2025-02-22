@@ -34,7 +34,8 @@ symbol:  Directives | Identifier ;
 ideogram:  '.' symbol ;
 
 
-label:  Identifier ;
+label: Identifier ;
+scopedLabel: '@'? Identifier ;
 
 
 Directives:  

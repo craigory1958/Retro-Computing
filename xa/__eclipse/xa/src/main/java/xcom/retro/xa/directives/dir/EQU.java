@@ -38,5 +38,8 @@ public class EQU implements iDirective {
 		actx.identifier(actx.identifiers().get(id)) ;
 		actx.identifier().value(value.value()) ;
 		actx.identifier().origin(actx.identifier().new Reference(actx.ln(), actx.source().peek().sourceID(), actx.source().peek().sourceLN())) ;
+
+//		System.err.println(actx.identifier().scopedMoniker() + ": "
+//				+ ExpressionUtils.formatAsHexLiterial(ExpressionUtils.asInteger(actx.identifiers().get(actx.identifier().scopedMoniker()).value()))) ;
 	}
 }
