@@ -118,9 +118,9 @@ public class Identifier {
 
 		references = new ArrayList<>() ;
 	}
-	
-	
-	public Identifier(String scopedMoniker, String moniker) {
+
+
+	public Identifier(final String scopedMoniker, final String moniker) {
 
 		this.scopedMoniker = scopedMoniker ;
 		this.moniker = moniker ;

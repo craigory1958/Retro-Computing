@@ -52,7 +52,7 @@ public class BlockSource implements iSource {
 		this.lines = lines ;
 		this.list = list ;
 
-		this.scopeID = UUID.randomUUID().toString().replaceAll("[-]", "") ;
+		scopeID = UUID.randomUUID().toString().replaceAll("[-]", "") ;
 		curLN = 0 ;
 	}
 

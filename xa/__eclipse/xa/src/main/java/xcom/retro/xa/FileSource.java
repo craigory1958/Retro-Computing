@@ -57,7 +57,7 @@ public class FileSource implements iSource {
 		this.fSpec = fSpec ;
 		this.list = list ;
 
-		this.scopeID = UUID.randomUUID().toString().replaceAll("[-]", "") ;
+		scopeID = UUID.randomUUID().toString().replaceAll("[-]", "") ;
 		br = new BufferedReader(new InputStreamReader(new FileInputStream(fSpec))) ;
 		sourceLN = 0 ;
 	}

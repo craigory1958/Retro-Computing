@@ -155,7 +155,8 @@ public class ExpressionListener extends ExpressionsBaseListener {
 		if ( !actx.identifiers().containsKey(scopedMoniker) )
 			actx.identifiers().put(scopedMoniker, new Identifier(scopedMoniker)) ;
 
-		actx.identifiers().get(scopedMoniker).references().add($Identifier.new Reference(actx.ln(), actx.source().peek().sourceID(), actx.source().peek().sourceLN())) ;
+		actx.identifiers().get(scopedMoniker).references()
+				.add($Identifier.new Reference(actx.ln(), actx.source().peek().sourceID(), actx.source().peek().sourceLN())) ;
 	}
 
 
@@ -170,7 +171,8 @@ public class ExpressionListener extends ExpressionsBaseListener {
 		if ( !actx.identifiers().containsKey(scopedMoniker) )
 			actx.identifiers().put(scopedMoniker, new Identifier(scopedMoniker, moniker)) ;
 
-		actx.identifiers().get(scopedMoniker).references().add($Identifier.new Reference(actx.ln(), actx.source().peek().sourceID(), actx.source().peek().sourceLN())) ;
+		actx.identifiers().get(scopedMoniker).references()
+				.add($Identifier.new Reference(actx.ln(), actx.source().peek().sourceID(), actx.source().peek().sourceLN())) ;
 	}
 
 

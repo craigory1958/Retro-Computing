@@ -30,6 +30,7 @@ parameterList:  ( parameter ( ',' parameterList )? ) | ( ',' parameterList? ) ;
 parameter: ( symbol assignment ) | ideogram | argument ;
 assignment:  '=' ( argument | ideogram ) ;
 
+symbol:  Directives | Identifier IdentifierExtensiom* ;
 symbol:  Directives | Identifier ;
 ideogram:  '.' symbol ;
 

@@ -1,3 +1,2 @@
 
-	LDA	#$FF
-	
+a1	.equ	0x$f0

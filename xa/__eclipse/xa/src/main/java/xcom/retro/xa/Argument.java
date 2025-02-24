@@ -10,13 +10,15 @@ public class Argument extends Operand {
 
 	//@formatter:off
 
-	String name ;
+	String moniker ;
 	@Override
-	public String name() { return null ; }
+	public String moniker() { return moniker ; }
 
 	//@formatter:on
 
-	public Argument(final _ExprNode assignment) {
+	public Argument(final String moniker, final _ExprNode assignment) {
 		super(assignment) ;
+
+		this.moniker = moniker ;
 	}
 }

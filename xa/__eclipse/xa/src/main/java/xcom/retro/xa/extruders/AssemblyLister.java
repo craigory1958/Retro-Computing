@@ -99,7 +99,7 @@ public class AssemblyLister implements iExtruder {
 							out.println() ;
 
 						if ( (b % 4) == 0 )
-							out.print(String.format("               %04X", _statement.loc() + b)) ;
+							out.print(String.format(Strings.fillStringWithSpaces(canonicalDigits)+"           %04X", _statement.loc() + b)) ;
 
 						out.print(String.format(" %02X", _statement.bytes()[b])) ;
 					}

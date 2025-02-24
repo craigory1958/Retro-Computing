@@ -3,9 +3,7 @@
 package xcom.retro.xa ;
 
 
-import java.util.ArrayList ;
-import java.util.HashMap ;
-import java.util.List ;
+import java.util.LinkedHashMap ;
 import java.util.Map ;
 
 import org.antlr.v4.runtime.ParserRuleContext ;
@@ -20,8 +18,8 @@ public class Statement {
 	boolean assembleEnable ;
 	public boolean assembleEnable() { return assembleEnable ; }
 
-	List<Operand> operands ;
-	public List<Operand> operands() { return operands ; }
+	Map<String, Operand> operands ;
+	public Map<String, Operand> operands() { return operands ; }
 
 	String assemblyCallbackMethod ;
 	public Statement assemblyCallbackMethod(final String assemblyCallbackMethod) {
@@ -100,7 +98,7 @@ public class Statement {
 		this.sourceLN = sourceLN ;
 		this.sourceID = sourceID ;
 
-		operands = new ArrayList<>() ;
-		parameters = new HashMap<>() ;
+		operands = new LinkedHashMap<>() ;
+		parameters = new LinkedHashMap<>() ;
 	}
 }

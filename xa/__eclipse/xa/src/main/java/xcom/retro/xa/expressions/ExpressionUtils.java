@@ -4,10 +4,12 @@ package xcom.retro.xa.expressions ;
 
 
 import java.nio.ByteBuffer ;
+import java.util.Map ;
 
 import org.antlr.v4.runtime.ParserRuleContext ;
 import org.antlr.v4.runtime.tree.ParseTreeWalker ;
 
+import xcom.retro.xa.Operand ;
 import xcom.retro.xa.XA.AssemblyContext ;
 import xcom.utils4j.logging.aspects.api.annotations.Log ;
 
@@ -22,6 +24,11 @@ public class ExpressionUtils {
 		walker.walk(listener, pctx) ;
 
 		return listener.expr ;
+	}
+
+	@Log
+	public static String generateMoniker(final Map<String, Operand> operands) {
+		return "{generated}." + Integer.valueOf(operands.size() + 1).toString() ;
 	}
 
 
@@ -55,7 +62,7 @@ public class ExpressionUtils {
 	}
 
 
-	public static Object formatAsHexLiterial(Object value) {
+	public static Object formatAsHexLiterial(final Object value) {
 
 		if ( value instanceof String )
 			return value ;

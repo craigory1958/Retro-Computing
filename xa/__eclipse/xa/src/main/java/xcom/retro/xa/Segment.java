@@ -6,7 +6,7 @@ package xcom.retro.xa ;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import xcom.utils4j.Lists ;
+import xcom.utils4j.data.structured.list.Lists ;
 
 
 public class Segment {

@@ -82,7 +82,7 @@ parameterList:  ( parameter ( ',' parameterList )? ) | ( ',' parameterList? ) ;
 parameter: ( symbol assignment ) | ideogram | argument ;
 assignment:  '=' ( argument | ideogram ) ;
 
-symbol:  Directives | Identifier ;
+symbol:  Directives | Identifier IdentifierExtensiom* ;
 ideogram:  '.' symbol ;
 
 

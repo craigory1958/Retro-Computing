@@ -1,10 +1,13 @@
-_syscall_terminate         .equ         0x00    ; terminate process w/status
 
 .syscall               .macro       syscall, status
                             BRK         #${syscall}
                        .endmacro
 
+_syscall_terminate         .equ         0x00    ; terminate process w/status
 
+
+._vmk_task_control_block   .struct
+                           .endstruck
 
 
 ;     addr   opc

@@ -5,6 +5,7 @@ package xcom.retro.xa.directives.dir ;
 
 import org.antlr.v4.runtime.ParserRuleContext ;
 
+import xcom.retro.xa.Operand ;
 import xcom.retro.xa.XA.AssemblyContext ;
 import xcom.retro.xa.api.annotations.aDirective ;
 import xcom.retro.xa.api.interfaces.iDirective ;
@@ -40,10 +41,11 @@ public class WORD implements iDirective {
 	public void assemble() {
 
 		final byte[] bytes = actx.statement().bytes() ;
+		final Operand operand1 = actx.statement().operands().values().iterator().next() ;
 
 		for ( int b = 0; b < bytes.length; b = b + 2 ) {
-			bytes[b] = ExpressionUtils.lsb(actx.statement().operands().get(0).assignment().eval(actx.identifiers()).value()) ;
-			bytes[b + 1] = ExpressionUtils.msb(actx.statement().operands().get(0).assignment().eval(actx.identifiers()).value()) ;
+			bytes[b] = ExpressionUtils.lsb(operand1.assignment().eval(actx.identifiers()).value()) ;
+			bytes[b + 1] = ExpressionUtils.msb(operand1.assignment().eval(actx.identifiers()).value()) ;
 		}
 
 		actx.statement().bytes(bytes) ;

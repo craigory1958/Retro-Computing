@@ -30,7 +30,7 @@ public class BYTE implements iDirective {
 	public void parse(final ParserRuleContext pctx) {
 
 		int size = 0 ;
-		for ( final Operand element : actx.statement().operands() )
+		for ( final Operand element : actx.statement().operands().values() )
 			size = size + (element.assignment() instanceof StringLiteral ? ((StringLiteral) element.assignment()).value().length : 1) ;
 
 		final byte[] bytes = new byte[size] ;
@@ -48,7 +48,7 @@ public class BYTE implements iDirective {
 		final byte[] bytes = actx.statement().bytes() ;
 
 		int b = 0 ;
-		for ( final Operand element : actx.statement().operands() ) {
+		for ( final Operand element : actx.statement().operands().values() ) {
 			final byte[] value = element.assignment().eval(actx.identifiers()).value() ;
 
 			if ( element.assignment() instanceof StringLiteral )

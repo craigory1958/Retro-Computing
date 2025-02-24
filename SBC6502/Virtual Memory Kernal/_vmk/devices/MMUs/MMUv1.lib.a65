@@ -1,6 +1,13 @@
 ;
 ; Memory Managment Unit (MMU) Definitions
 ;
+
+._mmu_map_segment_args .struct
+    pid                    .byte    0x00
+    addr                   .word    0x0000
+    effect_addr            .word    0x0000
+                       .endstruct
+
                 
 ._mmu_instantiate      .macro       bitsPhysicalAddr, bitsEffectiveAddr, bitsSegmentSize, bitsPID
  
@@ -92,14 +99,6 @@ _mmu_vectors
                        .org         * + (_mmu_numVectors << 1)    ; Allocate 2 bytes for each vector.
 _mmu_vectors_ 
 _mmu_
- 
- 
-                       .segment     "_MPU65XX_ZP"
-_mmu_parms
-_mmu_parms_pid             .byte    0x00
-_mmu_parms_addr            .word    0x0000
-_mmu_parms_effect_addr     .word    0x0000
-_mmu_parms_
                     
 
                        .segment     "_SBC6502_CODE"
@@ -131,8 +130,13 @@ _mmu_timer_initialize
 
 _mmu_map_segment
                             RTS
+
                        .endmacro
 
+ 
+                       .segment     "_MPU65XX_ZP"
+
+_mmu_map_segment_args      ._mmu_map_segment_args
 
                         
 ._mmu_map_segment      .macro  pid, physicalAddress, effectiveAddress
@@ -140,17 +144,18 @@ _mmu_map_segment
                        .segment "_SBC6502_CODE"
 
                             LDA     #${pid}
-                            STA     _mmu_parms_pid
+                            STA     _mmu_map_segment_args:pid
                         
                             LDA     #<${physicalAddress}
-                            STA     _mmu_parms_addr
+                            STA     _mmu_map_segment_args:addr
                             LDA     #>${physicalAddress}
-                            STA     _mmu_parms_addr +1
+                            STA     _mmu_map_segment_args:addr +1
                         
                             LDA     #<${effectiveAddress}     
-                            STA     _mmu_parms_effect_addr
+                            STA     map_segment_args:effect_addr
                             LDA     #>${effectiveAddress}
-                            STA     _mmu_parms_effect_addr +1
+                            STA     _mmu_map_segment_args:effect_addr +1
                          
                             JSR     _mmu_map_segment
+
                        .endmacro

@@ -10,8 +10,8 @@ public class Operand {
 
 	//@formatter:off
 
-	String name ;
-	public String name() { return name ; }
+	String moniker ;
+	public String moniker() { return moniker ; }
 
 	_ExprNode assignment ;
 	public _ExprNode assignment() { return assignment ; }
@@ -23,13 +23,13 @@ public class Operand {
 	//@formatter:on
 
 
-	public Operand(final String name, final _ExprNode assignment) {
-		this.name = name ;
+	public Operand(final String moniker, final _ExprNode assignment) {
+		this.moniker = moniker ;
 		this.assignment = assignment ;
 	}
 
-	public Operand(final String name) {
-		this.name = name ;
+	public Operand(final String moniker) {
+		this.moniker = moniker ;
 	}
 
 	public Operand(final _ExprNode assignment) {

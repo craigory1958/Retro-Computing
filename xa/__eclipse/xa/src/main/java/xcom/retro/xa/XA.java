@@ -62,7 +62,7 @@ import xcom.retro.xa.directives.dir.MACRO ;
 import xcom.retro.xa.directives.dir.STRUCT ;
 import xcom.retro.xa.extruders.AssemblyLister ;
 import xcom.retro.xa.extruders.XRefLister ;
-import xcom.utils4j.Lists ;
+import xcom.utils4j.data.structured.list.Lists ;
 import xcom.utils4j.logging.aspects.api.annotations.Log ;
 import xcom.utils4j.resources.Props ;
 

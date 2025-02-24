@@ -8,6 +8,7 @@ import static xcom.utils4j.format.Templator.UnixDelimiters ;
 import java.io.IOException ;
 import java.util.ArrayList ;
 import java.util.HashMap ;
+import java.util.Iterator ;
 import java.util.List ;
 import java.util.Map ;
 
@@ -22,7 +23,7 @@ import xcom.retro.xa.XA.AssemblyContext ;
 import xcom.retro.xa.api.annotations.aDirective ;
 import xcom.retro.xa.api.interfaces.iDirective ;
 import xcom.retro.xa.expressions.value.StringLiteral ;
-import xcom.utils4j.Lists ;
+import xcom.utils4j.data.structured.list.Lists ;
 import xcom.utils4j.format.Templator ;
 import xcom.utils4j.logging.aspects.api.annotations.Log ;
 
@@ -37,8 +38,8 @@ public class STRUCT implements iDirective {
 	String name ;
 	public String name() { return name ; }
 
-	List<Operand> options ;
-	public List<Operand> options() { return options ; }
+	Map<String, Operand> options ;
+	public Map<String, Operand> options() { return options ; }
 
 	List<String> lines ;
 
@@ -54,7 +55,7 @@ public class STRUCT implements iDirective {
 	}
 
 
-	public STRUCT(final AssemblyContext actx, final String name, final List<Operand> optioms, final List<String> lines) {
+	public STRUCT(final AssemblyContext actx, final String name, final Map<String, Operand> optioms, final List<String> lines) {
 
 		this.actx = actx ;
 		this.name = name ;
@@ -70,24 +71,26 @@ public class STRUCT implements iDirective {
 	public void expand(final ParserRuleContext pctx) {
 
 		boolean ordinalMode = true ;
+		final Iterator<Operand> _operands = actx.statement().operands().values().iterator() ;
+		final Iterator<Operand> _options = options.values().iterator() ;
 		final Map<String, Object> parms = new HashMap<>() ;
 
-		for ( int i = 0; (i < actx.statement().operands().size()) || (i < options.size()); i++ ) {
+		for ( /* no loop var */ ; _options.hasNext() || _operands.hasNext(); /* no increment */ ) {
 
-			final Operand option = (i < options.size() ? options.get(i) : null) ;
-			final Operand operand = (i < actx.statement().operands().size() ? actx.statement().operands().get(i) : null) ;
+			final Operand option = (_options.hasNext() ? _options.next() : null) ;
+			final Operand operand = (_operands.hasNext() ? _operands.next() : null) ;
 
-			if ( ordinalMode && ((operand == null) || (operand.name() != null)) )
+			if ( ordinalMode && ((operand == null) || (operand.moniker() != null)) )
 				ordinalMode = false ;
 
-			if ( ordinalMode && (operand != null) && (operand.name() == null) )
-				parms.put(option.name(), operand.assignment().eval(actx.identifiers()).getValue()) ;
+			if ( ordinalMode && (operand != null) && (operand.moniker() == null) )
+				parms.put(option.moniker(), operand.assignment().eval(actx.identifiers()).getValue()) ;
 
 			if ( !ordinalMode && (option != null) && (option.assignment() != null) )
-				parms.put(option.name(), option.assignment().eval(actx.identifiers()).getValue()) ;
+				parms.put(option.moniker(), option.assignment().eval(actx.identifiers()).getValue()) ;
 
-			if ( !ordinalMode && (operand != null) && (operand.name() != null) )
-				parms.put(operand.name(), operand.assignment().eval(actx.identifiers()).getValue()) ;
+			if ( !ordinalMode && (operand != null) && (operand.moniker() != null) )
+				parms.put(operand.moniker(), operand.assignment().eval(actx.identifiers()).getValue()) ;
 		}
 
 
@@ -117,7 +120,7 @@ public class STRUCT implements iDirective {
 	@Log
 	public static STRUCT buildStruct(final AssemblyContext actx, final ParserRuleContext pctx) {
 
-		actx.statement().operands().add(new Option("list").assignment(new StringLiteral(".nolist"))) ;
+		actx.statement().operands().put("list", new Option("list").assignment(new StringLiteral(".nolist"))) ;
 		final Statement _statement = actx.statement() ;
 		final String name = pctx.getChild(0).getChild(1).getText() ;
 
