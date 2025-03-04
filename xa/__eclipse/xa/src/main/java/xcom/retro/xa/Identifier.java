@@ -3,10 +3,10 @@
 package xcom.retro.xa ;
 
 
+import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_asBytes ;
+
 import java.util.ArrayList ;
 import java.util.List ;
-
-import xcom.retro.xa.expressions.ExpressionUtils ;
 
 
 public class Identifier {
@@ -105,7 +105,7 @@ public class Identifier {
 		return this;
 	}
 	public Identifier value(final int value) {
-		this.value = ExpressionUtils.asBytes(value) ;
+		this.value = EXPR_asBytes(value) ;
 		return this;
 	}
 
@@ -129,19 +129,19 @@ public class Identifier {
 	}
 
 
-//	public Identifier(final String name, final byte[] value) {
-//
-//		this.name = name ;
-//		this.value = value.clone() ;
-//
-//		this.references = new ArrayList<>();
-//	}
+	public Identifier(final String moniker, final byte[] value) {
+
+		this.moniker = moniker ;
+		this.value = value.clone() ;
+
+		references = new ArrayList<>() ;
+	}
 
 
 //	public Identifier(final String name, final int value) {
 //
 //		this.name = name ;
-//		this.value = ExpressionUtils.asBytes(value) ;
+//		this.value = asBytes(value) ;
 //
 //		this.references = new ArrayList<>();
 //	}

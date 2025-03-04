@@ -3,6 +3,8 @@
 package xcom.retro.xa.expressions.op.binary ;
 
 
+import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_asInteger ;
+
 import java.util.Map ;
 
 import xcom.retro.xa.Identifier ;
@@ -20,7 +22,7 @@ public class Equal extends _BinaryOpNode {
 
 	@Override
 	public _ValueNode eval(final Map<String, Identifier> identifiers) {
-		return new DecimalLiteral(ExpressionUtils
-				.asBytes(ExpressionUtils.asInteger(lNode.eval(identifiers).value()) == ExpressionUtils.asInteger(rNode.eval(identifiers).value()) ? 1 : 0)) ;
+		return new DecimalLiteral(
+				ExpressionUtils.EXPR_asBytes(EXPR_asInteger(lNode.eval(identifiers).value()) == EXPR_asInteger(rNode.eval(identifiers).value()) ? 1 : 0)) ;
 	}
 }

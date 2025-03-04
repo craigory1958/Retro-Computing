@@ -2,14 +2,14 @@
 ;  Memory Managment Unit (MMU) Definitions
 ;
 
-MMUv1                  .equ    1
+v1                  .equ    1
                         
                         
-._mmu_declare_type     .macro  type
-                           .ifndef _mmu_declared
-_mmu_declared                  .equ    ${type}
+declare_type     .macro  type
+                           .ifndef declared
+declared                  .equ    ${type}
 
-                               .if ${type} == MMUv1
+                               .if ${type} == v1
                                    .include "../devices/MMUs/MMUv1.lib.a65"
                                .endif
                            .endif

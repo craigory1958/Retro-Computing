@@ -3,7 +3,7 @@
 package xcom.retro.xa.expressions.value ;
 
 
-import xcom.retro.xa.expressions.ExpressionUtils ;
+import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_asBytes ;
 
 
 public class DecimalLiteral extends _ValueNode {
@@ -19,11 +19,11 @@ public class DecimalLiteral extends _ValueNode {
 
 
 	public DecimalLiteral(final int value) {
-		super(ExpressionUtils.asBytes(value)) ;
+		super(EXPR_asBytes(value)) ;
 	}
 
 
 	public DecimalLiteral(final String value) {
-		super(ExpressionUtils.asBytes(Integer.valueOf(value))) ;
+		super(EXPR_asBytes(Integer.valueOf(value))) ;
 	}
 }

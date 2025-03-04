@@ -28,13 +28,13 @@
 
 	<!-- Class Loggers -->
 
-<!-- 	<logger name="xcom.retro.xa.processors.MOS6502" additivity="false">
-		<level value="warn" />
+ 	<logger name="xcom.retro.xa.processors.MOS6502" additivity="false">
+		<level value="debug" />
 		<appender-ref ref="stdout-appender" />
 	</logger>
 
 	<logger name="xcom.retro.xa.expressions" additivity="false">
-		<level value="warn" />
+		<level value="debug" />
 		<appender-ref ref="stdout-appender" />
 	</logger>
 
@@ -44,7 +44,7 @@
 	</logger>
 
 	<logger name="xcom.retro.xa.directives.dir" additivity="false">
-		<level value="warn" />
+		<level value="debug" />
 		<appender-ref ref="stdout-appender" />
 	</logger>
 
@@ -52,7 +52,7 @@
 		<level value="warn" />
 		<appender-ref ref="stdout-appender" />
 	</logger>
- -->
+ 
 
 
 	<!-- Application Loggers -->

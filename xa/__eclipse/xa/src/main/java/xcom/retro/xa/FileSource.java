@@ -19,6 +19,10 @@ public class FileSource implements iSource {
 
 	//@formatter:off
 
+	String as ;
+	@Override
+	public String as() { return as ; }
+
 	String fSpec ;
 	@Override
 	public String fSpec() { return fSpec ; }
@@ -56,6 +60,19 @@ public class FileSource implements iSource {
 		this.sourceID = sourceID ;
 		this.fSpec = fSpec ;
 		this.list = list ;
+
+		scopeID = UUID.randomUUID().toString().replaceAll("[-]", "") ;
+		br = new BufferedReader(new InputStreamReader(new FileInputStream(fSpec))) ;
+		sourceLN = 0 ;
+	}
+
+
+	public FileSource(final int sourceID, final String fSpec, final boolean list, final String as) throws FileNotFoundException {
+
+		this.sourceID = sourceID ;
+		this.fSpec = fSpec ;
+		this.list = list ;
+		this.as = as ;
 
 		scopeID = UUID.randomUUID().toString().replaceAll("[-]", "") ;
 		br = new BufferedReader(new InputStreamReader(new FileInputStream(fSpec))) ;

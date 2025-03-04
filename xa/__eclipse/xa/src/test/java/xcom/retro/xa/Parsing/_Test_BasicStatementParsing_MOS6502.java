@@ -34,15 +34,15 @@ public class _Test_BasicStatementParsing_MOS6502 {
                 // { String src, String[] expectedContexts }
 
                 { "     NOP",  		"Statement, Instruction, Opcode, AddressingMode, Implied" },
-                { "     LDA #imm",  "Statement, Instruction, Opcode, AddressingMode, Immediate, Argument, Expr, Term, Identifier" },
-                { "abc  LDA #imm", 	"Statement, Label, Instruction, Opcode, AddressingMode, Immediate, Argument, Expr, Term, Identifier" },
+                { "     LDA #imm",  "Statement, Instruction, Opcode, AddressingMode, Immediate, Argument, Expr, Term, QualifiedIdentifier, Identifier" },
+                { "abc  LDA #imm", 	"Statement, Label, Instruction, Opcode, AddressingMode, Immediate, Argument, Expr, Term, QualifiedIdentifier, Identifier" },
                 { "abc  NOP",  		"Statement, Label, Instruction, Opcode, AddressingMode, Implied" },
 
                 { "",  							"Statement" },
                 { "; w/comment",  				"Statement" },
                 { "     NOP ; w/comment",  		"Statement, Instruction, Opcode, AddressingMode, Implied" },
-                { "     LDA #imm ; w/comment",	"Statement, Instruction, Opcode, AddressingMode, Immediate, Argument, Expr, Term, Identifier" },
-                { "abc  LDA #imm ; w/comment",  "Statement, Label, Instruction, Opcode, AddressingMode, Immediate, Argument, Expr, Term, Identifier" },
+                { "     LDA #imm ; w/comment",	"Statement, Instruction, Opcode, AddressingMode, Immediate, Argument, Expr, Term, QualifiedIdentifier, Identifier" },
+                { "abc  LDA #imm ; w/comment",  "Statement, Label, Instruction, Opcode, AddressingMode, Immediate, Argument, Expr, Term, QualifiedIdentifier, Identifier" },
                 { "abc  NOP ; w/comment",  		"Statement, Label, Instruction, Opcode, AddressingMode, Implied" },
         } ;
 

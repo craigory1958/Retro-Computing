@@ -13,6 +13,7 @@ import org.junit.runners.Suite ;
 	_Test_XA_BYTE.class,
 	_Test_XA_IFDEF.class,
 	_Test_XA_IFNDEF.class,
+	_Test_XA_INCLUDE.class,
 	_Test_XA_LIST.class,
 	_Test_XA_MACRO.class,
 	_Test_XA_ORG.class

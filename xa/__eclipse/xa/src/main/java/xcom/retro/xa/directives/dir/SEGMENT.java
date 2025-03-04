@@ -3,6 +3,8 @@
 package xcom.retro.xa.directives.dir ;
 
 
+import java.util.Map ;
+
 import org.antlr.v4.runtime.ParserRuleContext ;
 
 import xcom.retro.xa.Operand ;
@@ -27,7 +29,9 @@ public class SEGMENT implements iDirective {
 	@Override
 	public void parse(final ParserRuleContext pctx) {
 
-		final Operand operand1 = Maps.firstEntryValue(actx.statement().operands()) ;
+		final Map<String, Operand> _operands = actx.statement().operands() ;
+
+		final Operand operand1 = Maps.firstEntryValue(_operands) ;
 		final String value = (String) operand1.assignment().eval(actx.identifiers()).getValue() ;
 
 		if ( !actx.segments().containsKey(value) )

@@ -100,7 +100,8 @@ Directives:
 	'org' | 
 	'page' |
 	'segment' |
-	'word' ;
+	'word'
+	;
 
 
 //

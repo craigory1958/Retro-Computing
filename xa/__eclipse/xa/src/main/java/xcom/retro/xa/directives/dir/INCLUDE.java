@@ -4,8 +4,8 @@ package xcom.retro.xa.directives.dir ;
 
 
 import java.io.FileNotFoundException ;
+import java.nio.charset.StandardCharsets ;
 import java.util.Map ;
-import java.util.function.Consumer ;
 
 import org.antlr.v4.runtime.ParserRuleContext ;
 import org.apache.commons.io.FilenameUtils ;
@@ -15,6 +15,7 @@ import xcom.retro.xa.Operand ;
 import xcom.retro.xa.XA.AssemblyContext ;
 import xcom.retro.xa.api.annotations.aDirective ;
 import xcom.retro.xa.api.interfaces.iDirective ;
+import xcom.retro.xa.expressions.value._ValueNode ;
 import xcom.utils4j.data.structured.list.Lists ;
 import xcom.utils4j.data.structured.map.Maps ;
 import xcom.utils4j.logging.aspects.api.annotations.Log ;
@@ -45,26 +46,26 @@ public class INCLUDE implements iDirective {
 //			}
 //		}) ;
 
-//		actx.statement().operands().put("list", new Option("list").assignment(new StringLiteral(".nolist"))) ;
+		final Map<String, Operand> _operands = actx.statement().operands() ;
+		final Operand _operand1 = Maps.firstEntryValue(_operands) ;
+		final Operand _operandList = _operands.get("list") ;
+//		System.err.println("_operandList: " + _operandList.assignment().eval(actx.identifiers()).getValue()) ;
 
-		final Map<String, Operand> operands = actx.statement().operands() ;
+		final String fSpec = FilenameUtils.getFullPath(actx.cmdArgs().get("source")) + _operand1.assignment().eval(actx.identifiers()).getValue() ;
 
-		final Operand operand1 = Maps.firstEntryValue(operands) ;
-		final String fSpec = FilenameUtils.getFullPath(actx.cmdArgs().get("source")) + operand1.assignment().eval(actx.identifiers()).getValue() ;
-
-//		System.out.println(actx.statement().operands()) ;
-
-		final Operand operandList = operands.get("list") ;
-		final boolean list = (operandList != null ? operandList.assignment().eval(actx.identifiers()).getValue().equals(".list") : false) ;
+		final boolean list = (_operandList != null ? _operandList.assignment().eval(actx.identifiers()).getValue().equals(".list") : false) ;
 		actx.list(list) ;
 
-//		final Operand operandAs = operands.get("as") ;
-//		String as = (operandList != null ? (String) ((_ValueNode) operandAs.assignment()).getValue() : null) ;
+		final Operand operandAs = _operands.get("as") ;
+		final String as = (operandAs != null ? new String(((_ValueNode) operandAs.assignment()).value(), StandardCharsets.UTF_8) : null) ;
 //		System.err.println("as: " + as) ;
 
 		try {
-			actx.sources().add(new FileSource(actx.sources().size(), fSpec, list)) ;
+			actx.sources().add(new FileSource(actx.sources().size(), fSpec, actx.list(), as)) ;
 			actx.source().push(Lists.last(actx.sources())) ;
+
+//			System.err.println("sourceID: " + actx.source().peek().sourceID()) ;
+//			System.err.println("as: " + actx.source().peek().as()) ;
 		}
 		catch ( final FileNotFoundException e ) {}
 	}

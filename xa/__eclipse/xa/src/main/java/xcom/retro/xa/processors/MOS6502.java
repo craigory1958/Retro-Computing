@@ -3,9 +3,23 @@
 package xcom.retro.xa.processors ;
 
 
+import static xcom.retro.xa.directives.DirectiveUtils.DIR_parseDirective ;
+import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_buildArgumentExpressionTree ;
+import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_formatGeneratedID ;
+import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_formatQualifiedID ;
+import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_formatScopedID ;
+import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_lsb ;
+import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_msb ;
+import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_parsedContextName ;
+import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_parsedText ;
+import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_trimToContextName ;
+
 import java.util.Arrays ;
 import java.util.Map ;
-import java.util.function.Consumer ;
+
+import org.antlr.v4.runtime.ParserRuleContext ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 import xcom.retro.xa.Argument ;
 import xcom.retro.xa.Identifier ;
@@ -16,13 +30,12 @@ import xcom.retro.xa.XA.AssemblyContext ;
 import xcom.retro.xa.antlr.processors.MOS6502.MOS6502_BaseListener ;
 import xcom.retro.xa.antlr.processors.MOS6502.MOS6502_Lexer ;
 import xcom.retro.xa.antlr.processors.MOS6502.MOS6502_Parser ;
+import xcom.retro.xa.antlr.processors.MOS6502.MOS6502_Parser.IdentifierContext ;
 import xcom.retro.xa.antlr.processors.MOS6502.MOS6502_Parser.SymbolContext ;
 import xcom.retro.xa.api.annotations.aProcessor ;
 import xcom.retro.xa.api.interfaces.iProcessor ;
-import xcom.retro.xa.directives.DirectiveUtils ;
-import xcom.retro.xa.expressions.ExpressionUtils ;
+import xcom.retro.xa.api.interfaces.iSource ;
 import xcom.retro.xa.expressions._ExprNode ;
-import xcom.retro.xa.expressions.value.StringLiteral ;
 import xcom.retro.xa.expressions.value._ValueNode ;
 import xcom.utils4j.Enums ;
 import xcom.utils4j.data.structured.map.Maps ;
@@ -198,11 +211,29 @@ public class MOS6502 extends MOS6502_BaseListener implements iProcessor {
 	}
 
 
+	private static final Logger Logger = LoggerFactory.getLogger(MOS6502_BaseListener.class) ;
+
+
+	private static String IdentifierContextName = EXPR_trimToContextName(IdentifierContext.class) ;
+	private static String SymbolContextName = EXPR_trimToContextName(SymbolContext.class) ;
+
+
 	AssemblyContext actx ;
 
 
 	public MOS6502(final AssemblyContext actx) {
 		this.actx = actx ;
+	}
+
+
+	@Override
+	public void enterEveryRule(final ParserRuleContext pctx) {
+		Logger.debug("invoke: enter{}", EXPR_parsedContextName(pctx)) ;
+	}
+
+	@Override
+	public void exitEveryRule(final ParserRuleContext pctx) {
+		Logger.debug("invoke: exit{}", EXPR_parsedContextName(pctx)) ;
 	}
 
 
@@ -220,20 +251,20 @@ public class MOS6502 extends MOS6502_BaseListener implements iProcessor {
 //			}
 //		}) ;
 
-		final Map<String, Operand> operands = actx.statement().operands() ;
-		
-		final Operand operand99 = Maps.lastEntryValue(operands) ;
-		final String moniker = ((operand99 instanceof Option) || (operand99 instanceof Parameter) //
-				? Maps.lastEntryKey(operands) //
-				: ExpressionUtils.generateMoniker(operands)) ;
+		final Map<String, Operand> _operands = actx.statement().operands() ;
+		final Operand _operand99 = Maps.lastEntryValue(_operands) ;
 
-		final _ExprNode argument = ExpressionUtils.buildArgumentExpressionTree(actx, pctx) ;
+		final String identifier = ((_operand99 instanceof Option) || (_operand99 instanceof Parameter) //
+				? Maps.lastEntryKey(_operands) //
+				: EXPR_formatGeneratedID(_operands)) ;
 
-		if ( operands.isEmpty() || (!(operand99 instanceof Option) && !(operand99 instanceof Parameter)) )
-			operands.put(moniker, new Argument(moniker, argument)) ;
+		final _ExprNode argument = EXPR_buildArgumentExpressionTree(actx, pctx) ;
 
-		else if ( (operand99 instanceof Option) || (operand99 instanceof Parameter) )
-			operand99.assignment(argument) ;
+		if ( _operands.isEmpty() || (!(_operand99 instanceof Option) && !(_operand99 instanceof Parameter)) )
+			_operands.put(identifier, new Argument(identifier, argument)) ;
+
+		else if ( (_operand99 instanceof Option) || (_operand99 instanceof Parameter) )
+			_operand99.assignment(argument) ;
 
 //		actx.statement().operands().values().forEach(new Consumer<Operand>() {
 //			@Override
@@ -250,10 +281,7 @@ public class MOS6502 extends MOS6502_BaseListener implements iProcessor {
 	@Log
 	@Override
 	public void exitDirective(final MOS6502_Parser.DirectiveContext pctx) {
-		DirectiveUtils.parseDirective(actx) ;
-
-//		System.err.println(actx.identifier().name() + ": "
-//				+ ExpressionUtils.formatAsHexLiterial(ExpressionUtils.asInteger(actx.identifiers().get(actx.identifier().name()).value()))) ;
+		DIR_parseDirective(actx) ;
 	}
 
 
@@ -263,18 +291,18 @@ public class MOS6502 extends MOS6502_BaseListener implements iProcessor {
 
 		if ( actx.statement().assembleEnable() ) {
 
-			final String scopedMoniker = pctx.getText() ;
+			final iSource _source = actx.source().peek() ;
+			final String _label = EXPR_parsedText(pctx) ;
+			final String _qualifedLabel = EXPR_formatQualifiedID(_label, _source.as()) ;
 
-			if ( !actx.identifiers().containsKey(scopedMoniker) )
-				actx.identifiers().put(scopedMoniker, new Identifier(scopedMoniker)) ;
+			if ( !actx.identifiers().containsKey(_qualifedLabel) )
+				actx.identifiers().put(_qualifedLabel, new Identifier(_qualifedLabel)) ;
 
-			actx.identifier(actx.identifiers().get(scopedMoniker)) ;
+			actx.identifier(actx.identifiers().get(_qualifedLabel)) ;
 			actx.identifier().value(actx.segment().loc()) ;
-			actx.identifier().origin(actx.identifier().new Reference(actx.ln(), actx.source().peek().sourceID(), actx.source().peek().sourceLN())) ;
+			actx.identifier().origin(actx.identifier().new Reference(actx.ln(), _source.sourceID(), _source.sourceLN())) ;
 
 			actx.statement().label(actx.identifier()) ;
-
-//			System.err.println(actx.statement().label().scopedMoniker() + ": " + ExpressionUtils.asInteger(actx.identifier().value())) ;
 		}
 	}
 
@@ -285,48 +313,21 @@ public class MOS6502 extends MOS6502_BaseListener implements iProcessor {
 
 		if ( actx.statement().assembleEnable() ) {
 
-			final String moniker = pctx.getText() ;
-			final String scopedMoniker = moniker + "_" + actx.source().peek().scopeID() ;
+			final iSource _source = actx.source().peek() ;
+			final String _label = EXPR_parsedText(pctx) ;
+			final String _scopedLabel = EXPR_formatScopedID(_label, _source) ;
+//			System.err.println("label: " + _label) ;
+//			System.err.println("scopedLabel: " + _scopedLabel) ;
 
-			if ( !actx.identifiers().containsKey(scopedMoniker) )
-				actx.identifiers().put(scopedMoniker, new Identifier(scopedMoniker, moniker)) ;
+			if ( !actx.identifiers().containsKey(_scopedLabel) )
+				actx.identifiers().put(_scopedLabel, new Identifier(_scopedLabel, _label)) ;
 
-			actx.identifier(actx.identifiers().get(scopedMoniker)) ;
+			actx.identifier(actx.identifiers().get(_scopedLabel)) ;
 			actx.identifier().value(actx.segment().loc()) ;
-			actx.identifier().origin(actx.identifier().new Reference(actx.ln(), actx.source().peek().sourceID(), actx.source().peek().sourceLN())) ;
+			actx.identifier().origin(actx.identifier().new Reference(actx.ln(), _source.sourceID(), _source.sourceLN())) ;
 
 			actx.statement().label(actx.identifier()) ;
-
-//			System.err.println(actx.statement().label().scopedMoniker() + ": " + ExpressionUtils.asInteger(actx.identifier().value())) ;
 		}
-	}
-
-
-	@Log
-	@Override
-	public void exitIdeogram(final MOS6502_Parser.IdeogramContext pctx) {
-
-		final Map<String, Operand> operands = actx.statement().operands() ;
-		
-		final Operand operand99 = Maps.lastEntry(operands).getValue() ;
-		final String moniker = ((operand99 instanceof Option) || (operand99 instanceof Parameter) //
-				? operand99.moniker() //
-				: ExpressionUtils.generateMoniker(operands)) ;
-
-		final _ExprNode argument = new StringLiteral('.' + pctx.getChild(1).getText()) ;
-
-		if ( operands.isEmpty() || (!(operand99 instanceof Option) && !(operand99 instanceof Parameter)) )
-			operands.put(moniker, new Argument(moniker, argument)) ;
-
-		else
-			operand99.assignment(argument) ;
-
-//		actx.statement().operands().values().forEach(o -> { //
-//			System.err.print("operand (after) >>> " + o.moniker() + ": " + o.getClass().getSimpleName()) ; //
-//			if ( o.assignment() != null )
-//				System.err.print(" - " + o.assignment().getClass().getSimpleName() + ": " + o.assignment()) ; //
-//			System.err.println() ; //
-//		}) ;
 	}
 
 
@@ -336,25 +337,27 @@ public class MOS6502 extends MOS6502_BaseListener implements iProcessor {
 
 		if ( actx.statement().assembleEnable() ) {
 
-			final String opcode = pctx.getChild(0).getText() ;
-			final String mode = pctx.getChild(1).getChild(0).getClass().getSimpleName() ;
-			Opcodes opc = Enums.valueOfIgnoreCase(Opcodes.class, opcode + "_" + mode.substring(0, mode.length() - 7)) ;
+			final Map<String, Operand> _operands = actx.statement().operands() ;
+			final String _opcode = EXPR_parsedText(pctx.getChild(0)) ;
+			final String _opcodeModeContext = EXPR_parsedContextName(pctx.getChild(1).getChild(0)) ;
 
-			if ( opc.zpOption != null )
+			Opcodes opcode = Enums.valueOfIgnoreCase(Opcodes.class, _opcode + "_" + _opcodeModeContext) ;
+
+			if ( opcode.zpOption != null )
 				try {
-					final Operand operand1 = Maps.firstEntryValue(actx.statement().operands()) ;
+					final Operand operand1 = Maps.firstEntryValue(_operands) ;
 					final _ValueNode value = operand1.assignment().eval(actx.identifiers()) ;
 
 					if ( (value != null) && ((int) value.getValue() <= 255) )
-						opc = opc.zpOption ;
+						opcode = opcode.zpOption ;
 				}
 				catch ( final NullPointerException ex ) {}
 
-			final String callback = "set" + opc.bytes.length + "Byte" + (mode.equals("RelativeContext") ? "Relative" : "") + "Instruction" ;
+			final String callback = "set" + opcode.bytes.length + "Byte" + (_opcodeModeContext.equals("Relative") ? "Relative" : "") + "Instruction" ;
 
 			actx.statement().assemblyCallbackMethod(callback) ;
 			actx.statement().assemblyCallbackObject(this) ;
-			actx.statement().bytes(Arrays.copyOf(opc.bytes, opc.bytes.length)) ;
+			actx.statement().bytes(Arrays.copyOf(opcode.bytes, opcode.bytes.length)) ;
 			actx.segment().allocateBytes(actx.statement().bytes()) ;
 		}
 	}
@@ -374,8 +377,10 @@ public class MOS6502 extends MOS6502_BaseListener implements iProcessor {
 //			}
 //		}) ;
 
-		final String moniker = pctx.getChild(0).getChild(0).getText() ;
-		actx.statement().operands().put(moniker, new Option(moniker)) ;
+		final Map<String, Operand> _operands = actx.statement().operands() ;
+		final String _identifier = EXPR_parsedText(pctx.getChild(0)) ;
+
+		_operands.put(_identifier, new Option(_identifier)) ;
 
 //		actx.statement().operands().values().forEach(new Consumer<Operand>() {
 //			@Override
@@ -393,14 +398,16 @@ public class MOS6502 extends MOS6502_BaseListener implements iProcessor {
 	@Override
 	public void enterParameter(final MOS6502_Parser.ParameterContext pctx) {
 
-		final Map<String, Operand> operands = actx.statement().operands() ;
+		final Map<String, Operand> _operands = actx.statement().operands() ;
+		final String _parameter = EXPR_parsedText(pctx.getChild(0)) ;
+		final String _parameterContext = EXPR_parsedContextName(pctx.getChild(0)) ;
+//		System.err.println("_parameter: " + _parameter + ", _parameterContext: " + _parameterContext) ;
 
-		final String moniker = pctx.getChild(0).getChild(0).getText() ;
-
-		if ( pctx.getChild(0) instanceof SymbolContext )
-			operands.put(moniker, new Parameter(moniker)) ;
+		if ( _parameterContext.equals(IdentifierContextName) || _parameterContext.equals(SymbolContextName) )
+//		if ( !_parameterContext.equals(ArgumentContextName) )
+			_operands.put(_parameter, new Parameter(_parameter)) ;
 		else
-			operands.put(moniker, new Parameter(ExpressionUtils.generateMoniker(operands))) ;
+			_operands.put(EXPR_formatGeneratedID(_operands), new Parameter(EXPR_formatGeneratedID(_operands))) ;
 
 //		actx.statement().operands().values().forEach(new Consumer<Operand>() {
 //			@Override
@@ -428,20 +435,22 @@ public class MOS6502 extends MOS6502_BaseListener implements iProcessor {
 	@Log
 	void set2ByteInstruction() {
 
-		final Operand operand1 = Maps.firstEntryValue(actx.statement().operands()) ;
+		final Map<String, Operand> _operands = actx.statement().operands() ;
+		final Operand _operand1 = Maps.firstEntryValue(_operands) ;
 
 		final byte[] bytes = actx.statement().bytes() ;
-		bytes[1] = ExpressionUtils.lsb(operand1.assignment().eval(actx.identifiers()).value()) ;
+		bytes[1] = EXPR_lsb(_operand1.assignment().eval(actx.identifiers()).value()) ;
 		actx.statement().bytes(bytes) ;
 	}
 
 	@Log
 	void set2ByteRelativeInstruction() {
 
-		final Operand operand1 = Maps.firstEntryValue(actx.statement().operands()) ;
+		final Map<String, Operand> _operands = actx.statement().operands() ;
+		final Operand _operand1 = Maps.firstEntryValue(_operands) ;
 
 		final byte[] bytes = actx.statement().bytes() ;
-		final int x = (Integer) operand1.assignment().eval(actx.identifiers()).getValue() ;
+		final int x = (Integer) _operand1.assignment().eval(actx.identifiers()).getValue() ;
 		final int y = actx.statement().loc() ;
 		bytes[1] = (byte) ((x - y - 2) & 0xFF) ;
 		actx.statement().bytes(bytes) ;
@@ -450,12 +459,13 @@ public class MOS6502 extends MOS6502_BaseListener implements iProcessor {
 	@Log
 	void set3ByteInstruction() {
 
-		final Operand operand1 = Maps.firstEntryValue(actx.statement().operands()) ;
+		final Map<String, Operand> _operands = actx.statement().operands() ;
+		final Operand _operand1 = Maps.firstEntryValue(_operands) ;
 
 		final byte[] bytes = actx.statement().bytes() ;
-		final byte[] value = operand1.assignment().eval(actx.identifiers()).value() ;
-		bytes[1] = ExpressionUtils.lsb(value) ;
-		bytes[2] = ExpressionUtils.msb(value) ;
+		final byte[] value = _operand1.assignment().eval(actx.identifiers()).value() ;
+		bytes[1] = EXPR_lsb(value) ;
+		bytes[2] = EXPR_msb(value) ;
 		actx.statement().bytes(bytes) ;
 	}
 }

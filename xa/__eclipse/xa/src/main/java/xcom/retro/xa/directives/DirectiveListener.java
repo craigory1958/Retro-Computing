@@ -3,18 +3,25 @@
 package xcom.retro.xa.directives ;
 
 
+import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_parsedContextName ;
+import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_parsedText ;
+
 import org.antlr.v4.runtime.ParserRuleContext ;
 import org.fest.reflect.core.Reflection ;
 import org.fest.reflect.exception.ReflectionError ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 import xcom.retro.xa.XA.AssemblyContext ;
-import xcom.retro.xa.antlr.DirectivesBaseListener ;
+import xcom.retro.xa.antlr.AssemblyBaseListener ;
 import xcom.retro.xa.api.interfaces.iDirective ;
 import xcom.utils4j.logging.aspects.api.annotations.Log ;
-import xcom.utils4j.logging.aspects.api.annotations.NoLog ;
 
 
-public class DirectiveListener extends DirectivesBaseListener {
+public class DirectiveListener extends AssemblyBaseListener {
+
+	private static final Logger Logger = LoggerFactory.getLogger(DirectiveListener.class) ;
+
 
 	AssemblyContext actx ;
 
@@ -29,21 +36,24 @@ public class DirectiveListener extends DirectivesBaseListener {
 		invokeMethodFromContext("enter", pctx) ;
 	}
 
-
 	@Override
 	public void exitEveryRule(final ParserRuleContext pctx) {
 		invokeMethodFromContext("exit", pctx) ;
 	}
 
 
-	@NoLog
 	public void invokeMethodFromContext(final String prefix, final ParserRuleContext pctx) {
 
+		final String _methodContext = EXPR_parsedContextName(pctx) ;
+
 		try {
-			String method = pctx.getClass().getSimpleName() ;
-//			System.out.println(method) ;
-			method = prefix + method.substring(0, method.length() - 7) ;
-			Reflection.method(method).withParameterTypes(ParserRuleContext.class).in(this).invoke(pctx) ;
+			final String method = prefix + _methodContext ;
+			Logger.debug("invoke: {}", method) ;
+			Reflection //
+					.method(method) //
+					.withParameterTypes(ParserRuleContext.class) //
+					.in(this) //
+					.invoke(pctx) ;
 		}
 		catch ( final ReflectionError ex ) {}
 	}
@@ -53,77 +63,53 @@ public class DirectiveListener extends DirectivesBaseListener {
 	public void exitDirective(final ParserRuleContext pctx) {
 
 		try {
+			System.err.println("directives: " + actx.directives().keySet()) ;
+			System.err.println("macros (before): " + actx.macros().keySet()) ;
+			System.err.println("structs (before): " + actx.structs().keySet()) ;
+
+			final String _directiveContext = EXPR_parsedContextName(pctx.getChild(0)) ;
+			System.err.println("context: " + _directiveContext) ;
+
 			String phase = actx.phase().name().toLowerCase() ;
 
-//			for ( int x = 0; (x < pctx.getChildCount()); x++ ) {
-//				System.out.println("_" + pctx.getChild(x).getClass().getSimpleName()) ;
-//			}
 
-//			System.out.println("directives: " + actx.directives().keySet()) ;
-//			System.out.println("macros: " + actx.macros().keySet()) ;
-
-//			System.out.println("r: " + pctx.getClass().getSimpleName()) ;
-//			System.out.println("r: " + pctx.getChildCount()) ;
-//			System.out.println("r.1: " + pctx.getChild(0).getClass().getSimpleName()) ;
-//			System.out.println("r.1: " + pctx.getChild(0).getChildCount()) ;
-//			System.out.println("r.1.1: " + pctx.getChild(0).getChild(0).getClass().getSimpleName()) ;
-//			System.out.println("r.1.1: " + pctx.getChild(0).getChild(0).getChildCount()) ;
-//			System.out.println("r.1.2: " + pctx.getChild(0).getChild(1).getClass().getSimpleName()) ;
-//			System.out.println("r.1.2: " + pctx.getChild(0).getChild(1).getChildCount()) ;
-//			System.out.println("r.1.2.1: " + pctx.getChild(0).getChild(1).getChild(0).getClass().getSimpleName()) ;
-//			System.out.println("r.1.2.1: " + pctx.getChild(0).getChild(1).getChild(0).getChildCount()) ;
-//			System.out.println("r.1.2.1: " + pctx.getChild(0).getChild(1).getChild(0).getText()) ;
-//			System.out.println("r.1.3: " + pctx.getChild(0).getChild(2).getClass().getSimpleName()) ;
-//			System.out.println("r.1.3: " + pctx.getChild(0).getChild(2).getChildCount()) ;
-
-			String name = null ;
+			String directive = null ;
 			iDirective worker = null ;
-			switch ( pctx.getChild(0).getClass().getSimpleName() ) {
+			switch ( _directiveContext ) {
 
-				case "AssemblerContext":
-					name = pctx.getChild(0).getChild(1).getText().toUpperCase() ;
-					worker = actx.directives().get(name) ;
+				case "Assembler":
+					directive = EXPR_parsedText(pctx.getChild(0).getChild(1)).toUpperCase().toUpperCase() ;
+					worker = actx.directives().get(directive) ;
 					break ;
 
-				case "InvocationContext":
-					name = pctx.getChild(0).getChild(1).getText() ;
+				case "Invocation":
+					directive = EXPR_parsedText(pctx.getChild(0).getChild(0)).toUpperCase().toLowerCase() ;
 
-					worker = (actx.macros().containsKey(name) ? actx.macros().get(name) : actx.structs().get(name)) ;
+					worker = ((worker == null) && actx.macros().containsKey(directive) ? actx.macros().get(directive) : worker) ;
+					worker = ((worker == null) && actx.structs().containsKey(directive) ? actx.structs().get(directive) : worker) ;
 
 					phase = "expand" ;
 					break ;
 
-				case "MacroContext":
-					name = "MACRO" ;
-					worker = actx.directives().get(name) ;
+				case "Macro":
+					directive = "MACRO" ;
+					worker = actx.directives().get(directive) ;
 					break ;
 
-				case "StructContext":
-					name = "STRUCT" ;
-					worker = actx.directives().get(name) ;
+				case "Struct":
+					directive = "STRUCT" ;
+					worker = actx.directives().get(directive) ;
 					break ;
 			}
 
-//			System.out.println("exit directive: " + name + " @" + phase) ;
-//			System.out.println("worker: " + worker) ;
-//			System.out.println("macros: " + actx.macros().keySet()) ;
-//			System.out.println("structs: " + actx.structs().keySet()) ;
-
-//			if ( directive == null )
-//				directive = actx.macros().get(name) ;
-
-//			System.out.println("worker: " + worker) ;
-
+			System.err.println("exit directive: " + directive + " @" + phase) ;
+			System.err.println("worker: " + worker) ;
 
 			Reflection.method(phase).withParameterTypes(ParserRuleContext.class).in(worker).invoke(pctx) ;
-
-//			System.out.println(actx.getStatement()) ;
-//			System.out.println(actx.getDirectives().keySet()) ;
-//			System.out.println("macros_: " + actx.macros().keySet()) ;
-//			System.out.println("macros_: "+ actx.getMacros().size()) ;
+			System.err.println("macros (after): " + actx.macros().keySet()) ;
+			System.err.println("structs (after): " + actx.structs().keySet()) ;
 		}
 		catch ( final ReflectionError ex ) {
-//			catch ( final Throwable ex ) {
 			ex.printStackTrace() ;
 		}
 	}

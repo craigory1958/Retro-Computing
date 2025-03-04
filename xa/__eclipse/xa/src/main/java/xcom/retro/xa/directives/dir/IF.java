@@ -3,6 +3,8 @@
 package xcom.retro.xa.directives.dir ;
 
 
+import java.util.Map ;
+
 import org.antlr.v4.runtime.ParserRuleContext ;
 
 import xcom.retro.xa.Operand ;
@@ -32,7 +34,20 @@ public class IF implements iDirective {
 	@Override
 	public void parse(final ParserRuleContext pctx) {
 
-		final Operand operand1 = Maps.firstEntryValue(actx.statement().operands()) ;
+//		actx.statement().operands().values().forEach(new Consumer<Operand>() {
+//			@Override
+//			public void accept(final Operand o) { //
+//				System.err.print("operand (before) >>> " + o.moniker() + ": " + o.getClass().getSimpleName()) ; //
+//				if ( o.assignment() != null )
+//					System.err.print(" - " + o.assignment().getClass().getSimpleName() + ": " + o.assignment()) ; //
+//				System.err.println() ; //
+//			}
+//		}) ;
+
+		final Map<String, Operand> _operands = actx.statement().operands() ;
+
+		final Operand operand1 = Maps.firstEntryValue(_operands) ;
+//		System.err.println(operand1.moniker()) ;
 		actx.ifBlocks().push(actx.ifBlocks().peek() && ((int) operand1.assignment().eval(actx.identifiers()).getValue() != 0)) ;
 	}
 }

@@ -32,7 +32,7 @@ public class AssemblyLister implements iExtruder {
 
 			if ( _statement.list() ) {
 
-				if ( _statement.sourceID() > 1 ) {
+				if ( _statement.sourceID() > 0 ) {
 
 					if ( !_statement.sourceID().equals(pSid) ) {
 
@@ -40,7 +40,7 @@ public class AssemblyLister implements iExtruder {
 								.stream() //
 								.filter(new Predicate<Statement>() {
 									@Override
-									public boolean test(Statement s) {
+									public boolean test(final Statement s) {
 										return s.sourceID() == _statement.sourceID() ;
 									}
 								}) //
@@ -78,7 +78,8 @@ public class AssemblyLister implements iExtruder {
 												) && _statement.pctx().getChild(1).getChild(0).getChild(1).getText().equalsIgnoreCase("EQU") //
 														&& (_statement.label() != null)  //
 																? String.format(" (%04X)",
-																		new BigInteger(actx.identifiers().get(_statement.label().scopedMoniker()).value()).intValue()) //
+																		new BigInteger(actx.identifiers().get(_statement.label().scopedMoniker()).value())
+																				.intValue()) //
 																: "       ")
 												: String.format("  %04X ", _statement.loc()) //
 				) ;
@@ -99,7 +100,7 @@ public class AssemblyLister implements iExtruder {
 							out.println() ;
 
 						if ( (b % 4) == 0 )
-							out.print(String.format(Strings.fillStringWithSpaces(canonicalDigits)+"           %04X", _statement.loc() + b)) ;
+							out.print(String.format(Strings.fillStringWithSpaces(canonicalDigits) + "           %04X", _statement.loc() + b)) ;
 
 						out.print(String.format(" %02X", _statement.bytes()[b])) ;
 					}

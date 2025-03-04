@@ -1,9 +1,7 @@
         1:                    
-        2:                    
-        3:                    	.include "abc.a65", as=.XYZ, list=.list
-        4:                    
-        5: (0000)             a1	.equ	0x$f0
-        6:                    
-        7:                    
-        8:                    ;	LDA	#.XYZ:a1
-        9:                    
+        2:                    .abc    .macro  abc1, abc2=123, abc3
+        0:                             LDA    ${abc1} + ${abc2} + ${abc3}
+        0:                            .endmacro
+        3:                    
+        4:                            .abc    1, 234, abc3=567
+        5:                    

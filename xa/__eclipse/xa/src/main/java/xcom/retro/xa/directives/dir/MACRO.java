@@ -3,6 +3,8 @@
 package xcom.retro.xa.directives.dir ;
 
 
+import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_formatAsHexLiterial ;
+import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_formatQualifiedID ;
 import static xcom.utils4j.format.Templator.UnixDelimiters ;
 
 import java.io.IOException ;
@@ -11,7 +13,6 @@ import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.List ;
 import java.util.Map ;
-import java.util.function.Consumer ;
 
 import org.antlr.v4.runtime.ParserRuleContext ;
 import org.apache.commons.lang3.StringUtils ;
@@ -23,7 +24,6 @@ import xcom.retro.xa.Statement ;
 import xcom.retro.xa.XA.AssemblyContext ;
 import xcom.retro.xa.api.annotations.aDirective ;
 import xcom.retro.xa.api.interfaces.iDirective ;
-import xcom.retro.xa.expressions.ExpressionUtils ;
 import xcom.retro.xa.expressions.value.StringLiteral ;
 import xcom.utils4j.data.structured.list.Lists ;
 import xcom.utils4j.format.Templator ;
@@ -36,6 +36,8 @@ public class MACRO implements iDirective {
 	//@formatter:off
 
 	AssemblyContext actx ;
+
+	String as ;
 
 	String name ;
 	public String name() { return name ; }
@@ -66,6 +68,7 @@ public class MACRO implements iDirective {
 
 		sourceID = actx.sources().size() - 1 ;
 		sourceLN = actx.source().peek().sourceLN() - 1 ;
+		as = actx.source().peek().as() ;
 	}
 
 
@@ -106,13 +109,13 @@ public class MACRO implements iDirective {
 				ordinalMode = false ;
 
 			if ( ordinalMode && (operand != null) && operand.moniker().startsWith("{generated}.") )
-				parms.put(option.moniker(), ExpressionUtils.formatAsHexLiterial(operand.assignment().eval(actx.identifiers()).getValue())) ;
+				parms.put(option.moniker(), EXPR_formatAsHexLiterial(operand.assignment().eval(actx.identifiers()).getValue())) ;
 
 			if ( !ordinalMode && (option != null) && (option.assignment() != null) )
-				parms.put(option.moniker(), ExpressionUtils.formatAsHexLiterial(option.assignment().eval(actx.identifiers()).getValue())) ;
+				parms.put(option.moniker(), EXPR_formatAsHexLiterial(option.assignment().eval(actx.identifiers()).getValue())) ;
 
 			if ( !ordinalMode && (operand != null) && !operand.moniker().startsWith("{generated}.") )
-				parms.put(operand.moniker(), ExpressionUtils.formatAsHexLiterial(operand.assignment().eval(actx.identifiers()).getValue())) ;
+				parms.put(operand.moniker(), EXPR_formatAsHexLiterial(operand.assignment().eval(actx.identifiers()).getValue())) ;
 		}
 
 //		System.err.println(parms) ;
@@ -122,10 +125,12 @@ public class MACRO implements iDirective {
 			lines.add(Templator.delimiters(UnixDelimiters).template(line).inject(parms)) ;
 
 
+//		System.err.println("list: " + parms.get("list")) ;
+
 		final boolean list = (parms.containsKey("list") ? parms.get("list").equals(".list") : false) ;
 		actx.list(list) ;
 
-		actx.sources().add(new BlockSource(sourceID, sourceLN, lines, list)) ;
+		actx.sources().add(new BlockSource(sourceID, sourceLN, lines, list, as)) ;
 		actx.source().push(Lists.last(actx.sources())) ;
 	}
 
@@ -142,9 +147,13 @@ public class MACRO implements iDirective {
 	@Log
 	public static MACRO buildMacro(final AssemblyContext actx, final ParserRuleContext pctx) {
 
-		actx.statement().operands().put("list", new Option("list").assignment(new StringLiteral(".nolist"))) ;
-		final Statement _statement = actx.statement() ;
-		final String name = pctx.getChild(0).getChild(1).getText() ;
+		final String text = "." + pctx.getChild(0).getChild(1).getText() ;
+		final Map<String, Operand> _operands = actx.statement().operands() ;
+
+		_operands.put("list", new Option("list").assignment(new StringLiteral(".nolist"))) ;
+//		final Statement _statement = actx.statement() ;
+		final String name = EXPR_formatQualifiedID(text, actx.source().peek().as()) ;
+//		System.err.println("name: " + name) ;
 
 		final List<String> lines = new ArrayList<>() ;
 		try {
@@ -163,6 +172,6 @@ public class MACRO implements iDirective {
 		catch ( final IOException e ) {}
 
 
-		return new MACRO(actx, name, _statement.operands(), lines) ;
+		return new MACRO(actx, name, _operands, lines) ;
 	}
 }

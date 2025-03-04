@@ -33,18 +33,18 @@ public class _Test_AddressingModes_MOS6502 {
 
                 // { String mode,  String src, String[] expectedContexts }
 
-                { "Imm", 		" ADC #abc",    	"Statement, Instruction, Opcode, AddressingMode, Immediate, Argument, Expr, Term, Identifier" },
-                { "Abs", 		" ADC abs",     	"Statement, Instruction, Opcode, AddressingMode, Absolute, Argument, Expr, Term, Identifier" },
-                { "ZP", 		" ADC zp",      	"Statement, Instruction, Opcode, AddressingMode, Absolute, Argument, Expr, Term, Identifier" },
+                { "Imm", 		" ADC #abc",    	"Statement, Instruction, Opcode, AddressingMode, Immediate, Argument, Expr, Term, QualifiedIdentifier, Identifier" },
+                { "Abs", 		" ADC abs",     	"Statement, Instruction, Opcode, AddressingMode, Absolute, Argument, Expr, Term, QualifiedIdentifier, Identifier" },
+                { "ZP", 		" ADC zp",      	"Statement, Instruction, Opcode, AddressingMode, Absolute, Argument, Expr, Term, QualifiedIdentifier, Identifier" },
                 { "Acc", 		" ASL A",       	"Statement, Instruction, Opcode, AddressingMode, Accumulator" },
                 { "Imp", 		" BRK",         	"Statement, Instruction, Opcode, AddressingMode, Implied" },
-                { "[Ind,X]", 	" ADC [zp,X]",		"Statement, Instruction, Opcode, AddressingMode, ZpIndirectX, Argument, Expr, Term, Identifier" },
-                { "[Ind],Y", 	" ADC [zp],Y", 		"Statement, Instruction, Opcode, AddressingMode, ZpIndirectY, Argument, Expr, Term, Identifier" },
-                { "Abs,X", 		" ADC abs,X",   	"Statement, Instruction, Opcode, AddressingMode, IndexedX, Argument, Expr, Term, Identifier" },
-                { "Abs,Y", 		" ADC abs,Y",   	"Statement, Instruction, Opcode, AddressingMode, IndexedY, Argument, Expr, Term, Identifier" },
-                { "ZP,X", 		" ADC zp,X",   		"Statement, Instruction, Opcode, AddressingMode, IndexedX, Argument, Expr, Term, Identifier" },
-                { "ZP,Y", 		" LDX zp,Y",   	    "Statement, Instruction, Opcode, AddressingMode, IndexedY, Argument, Expr, Term, Identifier" },
-                { "Rel", 		" BCC rel",     	"Statement, Instruction, BranchOpcode, BranchAddressingMode, Relative, Argument, Expr, Term, Identifier" },
+                { "[Ind,X]", 	" ADC [zp,X]",		"Statement, Instruction, Opcode, AddressingMode, ZpIndirectX, Argument, Expr, Term, QualifiedIdentifier, Identifier" },
+                { "[Ind],Y", 	" ADC [zp],Y", 		"Statement, Instruction, Opcode, AddressingMode, ZpIndirectY, Argument, Expr, Term, QualifiedIdentifier, Identifier" },
+                { "Abs,X", 		" ADC abs,X",   	"Statement, Instruction, Opcode, AddressingMode, IndexedX, Argument, Expr, Term, QualifiedIdentifier, Identifier" },
+                { "Abs,Y", 		" ADC abs,Y",   	"Statement, Instruction, Opcode, AddressingMode, IndexedY, Argument, Expr, Term, QualifiedIdentifier, Identifier" },
+                { "ZP,X", 		" ADC zp,X",   		"Statement, Instruction, Opcode, AddressingMode, IndexedX, Argument, Expr, Term, QualifiedIdentifier, Identifier" },
+                { "ZP,Y", 		" LDX zp,Y",   	    "Statement, Instruction, Opcode, AddressingMode, IndexedY, Argument, Expr, Term, QualifiedIdentifier, Identifier" },
+                { "Rel", 		" BCC rel",     	"Statement, Instruction, BranchOpcode, BranchAddressingMode, Relative, Argument, Expr, Term, QualifiedIdentifier, Identifier" },
            } ;
 
         //@formatter:on

@@ -3,12 +3,12 @@
 package xcom.retro.xa.expressions.value ;
 
 
-import xcom.retro.xa.expressions.ExpressionUtils ;
+import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_asBytes ;
 
 
 public class BinaryLiteral extends _ValueNode {
 
 	public BinaryLiteral(final String value) {
-		super(ExpressionUtils.asBytes(Integer.valueOf(value.substring(2), 2))) ;
+		super(EXPR_asBytes(Integer.valueOf(value.substring(2), 2))) ;
 	}
 }

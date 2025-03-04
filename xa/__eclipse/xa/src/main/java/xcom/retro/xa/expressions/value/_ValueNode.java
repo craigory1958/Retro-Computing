@@ -3,12 +3,14 @@
 package xcom.retro.xa.expressions.value ;
 
 
+import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_asInteger ;
+import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_asString ;
+
 import java.util.Map ;
 
 import com.google.common.primitives.Bytes ;
 
 import xcom.retro.xa.Identifier ;
-import xcom.retro.xa.expressions.ExpressionUtils ;
 import xcom.retro.xa.expressions._ExprNode ;
 
 
@@ -36,9 +38,9 @@ public abstract class _ValueNode extends _ExprNode {
 	public Object getValue() {
 
 		if ( this instanceof StringLiteral )
-			return ExpressionUtils.asString(value) ;
+			return EXPR_asString(value) ;
 		else
-			return ExpressionUtils.asInteger(value) ;
+			return EXPR_asInteger(value) ;
 	}
 
 

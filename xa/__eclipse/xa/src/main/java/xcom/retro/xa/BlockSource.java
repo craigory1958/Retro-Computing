@@ -14,6 +14,10 @@ public class BlockSource implements iSource {
 
 	//@formatter:off
 
+	String as ;
+	@Override
+	public String as() { return as ; }
+
 	String fSpec ;
 	@Override
 	public String fSpec() { return fSpec ; }
@@ -45,12 +49,13 @@ public class BlockSource implements iSource {
 	List<String> lines ;
 
 
-	public BlockSource(final int sourceID, final int ln, final List<String> lines, final boolean list) {
+	public BlockSource(final int sourceID, final int ln, final List<String> lines, final boolean list, final String as) {
 
 		this.sourceID = sourceID ;
 		sourceLN = ln - 1 ;
 		this.lines = lines ;
 		this.list = list ;
+		this.as = as ;
 
 		scopeID = UUID.randomUUID().toString().replaceAll("[-]", "") ;
 		curLN = 0 ;

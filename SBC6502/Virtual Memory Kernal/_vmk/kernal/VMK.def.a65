@@ -1,18 +1,19 @@
 
-true                   .equ    1
-false                  .equ    0
+;   x   x   x   x   x   x   x   x   x   x   x   x   x   x
+        true                   .equ     1
+        false                  .equ     0
 
-VMK_v1                 .equ    1
+        v1                     .equ     1
 
-_vmk_kernal_pid        .equ    0
+        kernal_pid             .equ     0
 
 
-._vmk_declare_type    .macro  type
-                           .ifndef _vmk_declared
-_vmk_declared                  .equ     ${type}
+       .declare_type       .macro  type
+                               .ifndef declared
+        declared                   .equ     ${type}
 
-                               .if ${type} == VMK_v1
-                                   .include "VMK.lib.a65"
+                                   .if ${type} == v1
+                                       .include "VMK.lib.a65"
+                                   .endif
                                .endif
-                           .endif
-                       .endmacro
+                           .endmacro

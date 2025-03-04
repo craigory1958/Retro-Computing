@@ -33,11 +33,11 @@ public class _Test_DirectiveParsing {
 
                 // { String src, String[] expectedContexts }
 
-                { "    .byte abc",  	"Statement, Directive, Assembler, ArgumentList, Argument, Expr, Term, Identifier" },
-                { "abc .byte abc",  	"Statement, Label, Directive, Assembler, ArgumentList, Argument, Expr, Term, Identifier" },
-                { ".abc .macro abc",  	"Statement, Directive, Macro, Symbol, OptionList, Option, Symbol" },
-                { "abc .abc abc",  		"Statement, Label, Directive, Invocation, Symbol, ParameterList, Parameter, Argument, Expr, Term, Identifier" },
-                { "abc .abc abc=def", 	"Statement, Label, Directive, Invocation, Symbol, ParameterList, Parameter, Symbol, Assignment, Argument, Expr, Term, Identifier" },
+                { "    .byte abc",  	"Statement, Directive, Assembler, ParameterList, Parameter, Argument, Expr, Term, QualifiedIdentifier, Identifier" },
+                { "abc .byte abc",  	"Statement, Label, Directive, Assembler, ParameterList, Parameter, Argument, Expr, Term, QualifiedIdentifier, Identifier" },
+                { ".abc .macro abc",  	"Statement, Directive, Macro, Symbol, OptionList, Option" },
+                { "abc .abc abc",  		"Statement, Label, Directive, Invocation, QualifiedSymbol, Symbol, ParameterList, Parameter, Argument, Expr, Term, QualifiedIdentifier, Identifier" },
+                { "abc .abc abc=def", 	"Statement, Label, Directive, Invocation, QualifiedSymbol, Symbol, ParameterList, Parameter, Identifier, Assignment, Argument, Expr, Term, QualifiedIdentifier, Identifier" },
         } ;
 
         //@formatter:on

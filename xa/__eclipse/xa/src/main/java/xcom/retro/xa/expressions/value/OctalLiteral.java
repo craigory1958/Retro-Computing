@@ -3,12 +3,12 @@
 package xcom.retro.xa.expressions.value ;
 
 
-import xcom.retro.xa.expressions.ExpressionUtils ;
+import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_asBytes ;
 
 
 public class OctalLiteral extends _ValueNode {
 
 	public OctalLiteral(final String value) {
-		super(ExpressionUtils.asBytes(Integer.valueOf(value.substring(2), 8))) ;
+		super(EXPR_asBytes(Integer.valueOf(value.substring(2), 8))) ;
 	}
 }

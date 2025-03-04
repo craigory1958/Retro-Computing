@@ -4,15 +4,16 @@
 ;                                                                              ;       
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-                           .include    "VMK.def.a65", as=.VMK
-                           .include    "../CPUs/_CPU.def.a65", as=.CPU
-                           .include    "../archs/_ARCH.def.a65", as=.ARCH
-                           .include    "../devices/MMUs/_MMU.def.a65", as=.MMU
+;   x   x   x   x   x   x   x   x   x   x   x   x   x   x
+                           .include     "VMK.def.a65", as=.VMK, list=.list
+;                           .include     "../CPUs/_CPU.def.a65", as=.CPU
+;                           .include     "../archs/_ARCH.def.a65", as=.ARCH
+;                           .include     "../devices/MMUs/_MMU.def.a65", as=.MMU
 
-                               .VMK:declare_type   VMK:v1
-                               .CPU:declare_type   CPU:MOS6502
-                               .ARCH:declare_type  ARCH:SBC6502v1_4K
-                               .MMU:declare_type   MMU:v1
+                               .VMK:.declare_type   .VMK:v1
+;                               .CPU:.declare_type   .CPU:MOS6502
+;                               .ARCH:.declare_type  .ARCH:SBC6502v1_4K
+;                               .MMU:.declare_type   .MMU:v1
         
 
 ;
@@ -21,25 +22,27 @@
 
        ; 2 PID Bits, 20 Effective Address Bits, 10 Segment Offset Bits
 
-       bitsPhysicalAddr       .equ     16          ; MPU65XX with 16 bit address bus (65536)
-       bitsEffectiveAddr      .equ     20          ; SBC6502 with 20 bit effective address bus (1,048,576)
-       bitsSegmentSize        .equ     10          ; SBC6502 with 10 bit segment size (1024)
-       bitsPID                .equ     2           ; Kernal = 0x0, User = 0x1 thru 0x2
+;   x   x   x   x   x   x   x   x   x   x   x   x   x   x
+        bitsPhysicalAddr       .equ     16          ; MPU65XX with 16 bit address bus (65536)
+        bitsEffectiveAddr      .equ     20          ; SBC6502 with 20 bit effective address bus (1,048,576)
+        bitsSegmentSize        .equ     10          ; SBC6502 with 10 bit segment size (1024)
+        bitsPID                .equ     2           ; Kernal = 0x0, User = 0x1 thru 0x2
 
-                              .MMU:instantiate     bitsPhysicalAddr, bitsEffectiveAddr, bitsSegmentSize, bitsPID, list=.list
+                               .MMU:instantiate     bitsPhysicalAddr, bitsEffectiveAddr, bitsSegmentSize, bitsPID, list=.list
 
 ;
 ; SBC6502 Initialization (Power-Up and uP Reset (RST))
 ;
-                           .segment    "_SBC6502_CODE"
+;   x   x   x   x   x   x   x   x   x   x   x   x   x   x
+                           .segment     "_SBC6502_CODE"
                     
 _MPU65XX_RESET
-   x   x   x   x   x   x   x   x   x   x   x   x   x   x
-                               SEI                 ; Disable interrupts when entered via code 
-                               LDX     #0xFF       ; Initialize stack pointer
-                               TXS
+;   x   x   x   x   x   x   x   x   x   x   x   x   x   x
+                                SEI                 ; Disable interrupts when entered via code 
+                                LDX     #0xFF       ; Initialize stack pointer
+                                TXS
                         
-                               JSR     MMU:initialize
+                                JSR     MMU:initialize
                      
 
 ; Allowcate SBC6502 segment vectors for kernal ...
@@ -48,101 +51,109 @@ _MPU65XX_RESET
 ;    xx00.0000 - 0000.00xx.xxxx.xxxx -> 0000.0000.00xx.xxxx.xxxx - RAM (ZP & Stack & RAM) (1Kb)
 ;    xx00.0001 - 0000.01xx.xxxx.xxxx -> 1110.1111.10xx.xxxx.xxxx - IO (1Kb)
 ;    xx00.0010 - 0000.10xx.xxxx.xxxx -> 1111.1111.00xx.xxxx.xxxx - ROM (1Kb)
+;    xx00.0011 - 0000.10xx.xxxx.xxxx -> 1111.1111.00xx.xxxx.xxxx - ROM (1Kb)
+;    xx00.0100 - 0000.10xx.xxxx.xxxx -> 1111.1111.00xx.xxxx.xxxx - ROM (1Kb)
+;    xx00.0101 - 0000.10xx.xxxx.xxxx -> 1111.1111.00xx.xxxx.xxxx - ROM (1Kb)
                         
-                              .MMU:map_segment     _vmk_kernal_pid, _SBC6502_ram, _SBC6502_eram
+;   x   x   x   x   x   x   x   x   x   x   x   x   x   x
+                               .MMU:.map_segment     .VMK:kernal_pid, _SBC6502_ram, _SBC6502_eram
 
-                              .MMU:map_segment     _vmk_kernal_pid, _SBC6502_IO, _SBC6502_eio
+                               .MMU:.map_segment     .VMK:kernal_pid, _SBC6502_IO, _SBC6502_eio
 
-                              .MMU:map_segment     _vmk_kernal_pid, _SBC6502_rom, _SBC6502_erom
+                               .MMU:.map_segment     .VMK:kernal_pid, _SBC6502_rom + (1 << bitsSegmentSize) *0, _SBC6502_erom + (1 << bitsSegmentSize) *0
 
-        curTaskSegment        .equ     9
+                               .MMU:.map_segment     .VMK:kernal_pid, _SBC6502_rom + (1 << bitsSegmentSize) *1, _SBC6502_erom + (1 << bitsSegmentSize) *1
 
-; Initialize quantum time interrupt (IRQ) ...
+                               .MMU:.map_segment     .VMK:kernal_pid, _SBC6502_rom + (1 << bitsSegmentSize) *2, _SBC6502_erom + (1 << bitsSegmentSize) *2
 
-                            JSR 	_mmu_timer_initialize
+                               .MMU:.map_segment     .VMK:kernal_pid, _SBC6502_rom + (1 << bitsSegmentSize) *3, _SBC6502_erom + (1 << bitsSegmentSize) *3
+
+        curTaskSegment         .equ     0x07
 
 ;
 ; VMK Kernal 
 ;
-                       .segment     "_MPU65XX_ZP"
-        task               .word
-        tasks              .word
-        curTask            .word
-        curTaskRegY        .byte
+;   x   x   x   x   x   x   x   x   x   x   x   x   x   x
+                           .segment     "_MPU65XX_ZP"
+
+        task                   .word
+        tasks                  .word
+        curTask                .word
+        curTaskRegY            .byte
 
 ;
 ; Routine for BRK or IRQ event; BRK instruction will set Break bit.
 ;
 
-                       .segment     "_SBC6502_CODE"                    
+                           .segment     "_SBC6502_CODE"                    
 _MPU65XX_IRQ
 _MPU65XX_BRK
 
         ; Save current task state.
 
-                            STY     curTaskRegY
-                            LDY     #0x00
-                            STA     [curTask], Y    ; Save A
-                            LDA     curTaskRegY
-                            INY
-                            STA     [curTask], Y    ; Save Y
-                            TXA
-                            INY
-                            STA     [curTask], Y    ; Save X
-                            TSX
-                            TXA
-                            INY
-                            STA     [curTask], Y    ; Save S
+                                STY     curTaskRegY
+                                LDY     #0x00
+                                STA     [curTask], Y    ; Save A
+                                LDA     curTaskRegY
+                                INY
+                                STA     [curTask], Y    ; Save Y
+                                TXA
+                                INY
+                                STA     [curTask], Y    ; Save X
+                                TSX
+                                TXA
+                                INY
+                                STA     [curTask], Y    ; Save S
 
-                            TAX
-                            DEX
-                            LDA     (curTaskSegment <<  bitsSegmentSize) + 0x0100, X    ; Use X as stack pointer into current task's stack
-                            INY
-                            STA     [curTask], Y    ; Save P 
-                            DEX
-                            LDA     (curTaskSegment <<  bitsSegmentSize) + 0x0100, X
-                            INY
-                            STA     [curTask], Y    ; Save PCL
-                            DEX
-                            LDA     (curTaskSegment <<  bitsSegmentSize) + 0x0100, X
-                            INY
-                            STA     [curTask], Y    ; Save PCH
+                                TAX
+                                DEX
+                                LDA     (curTaskSegment <<  bitsSegmentSize) + 0x0100, X    ; Use X as stack pointer into current task's stack
+                                INY
+                                STA     [curTask], Y    ; Save P 
+                                DEX
+                                LDA     (curTaskSegment <<  bitsSegmentSize) + 0x0100, X
+                                INY
+                                STA     [curTask], Y    ; Save PCL
+                                DEX
+                                LDA     (curTaskSegment <<  bitsSegmentSize) + 0x0100, X
+                                INY
+                                STA     [curTask], Y    ; Save PCH
 
 
         ; Find next task to execute.
 
-                            LDA     tasks
-                            BEQ     Error       ; Error is tasks list structure
-                            STA     task
-                            LDA     tasks +1
-                            STA     task +1
+                                LDA     tasks
+                                BEQ     Error       ; Error is tasks list structure
+                                STA     task
+                                LDA     tasks +1
+                                STA     task +1
 
         CheckNextTaskStatus
-                            LDY     #0x00
-                            LDA     [task], Y   ; Fetch status byte of next task
-                            AND     #0x01
-                            BNE     ExecuteNextTask     ; Found next task to execute
+                                LDY     #0x00
+                                LDA     [task], Y   ; Fetch status byte of next task
+                                AND     #0x01
+                                BNE     ExecuteNextTask     ; Found next task to execute
 
-                            LDA     [task], Y   ; Fetch pointer to next tasks in list
-                            BEQ     Error       ; Error is tasks list structure
-                            STA     task
-                            INY
-                            LDA     [task], Y   ; Fetch pointer to next tasks in list
-                            STA     task +1
+                                LDA     [task], Y   ; Fetch pointer to next tasks in list
+                                BEQ     Error       ; Error is tasks list structure
+                                STA     task
+                                INY
+                                LDA     [task], Y   ; Fetch pointer to next tasks in list
+                                STA     task +1
 
-                            JMP     CheckNextTaskStatus
+                                JMP     CheckNextTaskStatus
 
 
 
         ExecuteNextTask
         Error
 
-                            RTI
+                                RTI
                     
 _MPU65XX_NMI
-                            RTI
+                                RTI
 
 
-                       .include "../CPUs/MOS6502_Vectors.lib.a65", list=.list
+                           .include "../CPUs/MOS6502_Vectors.lib.a65", list=.list
 
-                       .end
+                           .end

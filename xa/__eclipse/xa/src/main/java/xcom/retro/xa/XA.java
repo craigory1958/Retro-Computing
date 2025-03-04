@@ -261,6 +261,8 @@ public class XA {
 			for ( String line; (line = actx.source.peek().next()) != null; ) {
 
 				line = line.stripTrailing() ;
+				Console.debug(">>>{}", line) ;
+//				System.err.println("sourceID: " + actx.source.peek().sourceID() + ",  as: " + actx.source.peek().as()) ;
 
 				if ( actx.list() )
 					actx.ln += 1 ;
@@ -281,7 +283,6 @@ public class XA {
 				parser.setTokenStream(new CommonTokenStream(lexer)) ;
 
 				actx.statement.pctx = Reflection.method("statement").withReturnType(ParserRuleContext.class).in(parser).invoke() ;
-				Console.debug(">>>{}", line) ;
 
 				walker.walk(processor, actx.statement.pctx) ;
 
@@ -300,9 +301,12 @@ public class XA {
 	XA assemble() { // Pass 2
 
 		actx.phase = Assemble ;
+		System.err.println(actx.identifiers.keySet()) ;
 
 		for ( final Statement statement : actx.statements ) {
+
 			actx.statement = statement ;
+			Console.debug("***{}", actx.statement.line) ;
 
 			if ( actx.statement.assemblyCallbackMethod != null )
 				Reflection.method(actx.statement.assemblyCallbackMethod).in(actx.statement.assemblyCallbackObject).invoke() ;

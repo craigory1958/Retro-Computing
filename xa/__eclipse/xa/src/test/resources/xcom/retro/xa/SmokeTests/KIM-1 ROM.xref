@@ -1,0 +1,196 @@
+  ACC                                           0xF3  76               587              851            
+  ADDR                                        0x1CBE  694              687            
+  ADDRM                                       0x1CC8  701              673            
+  AK                                          0x1EFE  1037             1080           
+  AK1                                         0x1F04  1041             1046           
+  CHAR                                          0xFE  90               950              951              952              959              984              994            
+  CHK                                         0x1F91  1141             734              738              741              748              808              814              899              902            
+  CHKH                                        0x17E8  97               158              265              289              299              301            
+  CHKHI                                         0xF6  82               730              755              782              799              819              1144             1146           
+  CHKL                                        0x17E7  96               156              262              288              297              298            
+  CHKSUM                                        0xF7  83               729              758              783              801              821              1142             1143           
+  CHKT                                        0x194C  295              234              237              242              244              256              308            
+  CHT1                                        0x1982  336              344            
+  CHT2                                        0x198E  341              338            
+  CHT3                                        0x1991  342              340            
+  CLEAR                                       0x1C64  645              803              836            
+  CLK1T                                       0x1744  62               358              364              381              387              501              508            
+  CLK64T                                      0x1746  64               461              473            
+  CLK8T                                       0x1745  63             
+  CLKKT                                       0x1747  65             
+  CLKRDI                                      0x1747  66               355              361              378              384              498              505            
+  CLKRDT                                      0x1746  67               459              471            
+  CNTH30                                      0x17F3  101              613              622              1010             1022           
+  CNTL30                                      0x17F2  100              625              1012             1024           
+  CONVD                                       0x1F48  1085             1071             1074           
+  CONVD1                                      0x1F5B  1094             1095           
+  CRLF                                        0x1E2F  908              640              785              829            
+  DATA                                        0x1CA8  680            
+  DATA1                                       0x1CB0  686              698            
+  DATA2                                       0x1CC3  697              692            
+  DATAM                                       0x1CCC  704              675            
+  DATAM1                                      0x1CCE  705              702            
+  DATAM2                                      0x1CD0  706              699            
+  DE2                                         0x1EDD  1013             1018             1027           
+  DE3                                         0x1EE5  1017             1015           
+  DE4                                         0x1EDE  1014             1029           
+  DEHALF                                      0x1EEB  1022             947              956            
+  DELAY                                       0x1ED4  1010             946              953              986              990              997              1003           
+  DET1                                        0x1C31  615              617            
+  DET2                                        0x1C42  623              621            
+  DET3                                        0x1C3A  619              624            
+  DETCPS                                      0x1C2A  612            
+  DUMP                                        0x1D42  778              873            
+  DUMP0                                       0x1D48  781              826            
+  DUMP2                                       0x1D86  811              817            
+  DUMP3                                       0x1DA6  826              824            
+  DUMP4                                       0x1D7A  805              792            
+  DUMPT                                       0x1800  121            
+  DUMPT1                                      0x1814  131              134            
+  DUMPT2                                      0x1833  148              177            
+  DUMPT3                                      0x1854  163              166            
+  DUMPT4                                      0x1865  173              152            
+  DUMPV                                       0x1E01  873              867            
+  EAH                                         0x17F8  106              151              791            
+  EAL                                         0x17F7  105              149              789            
+  FEED                                        0x1E07  876              861            
+  FEED1                                       0x1E12  882              880            
+  GET1                                        0x1E60  943              945            
+  GET2                                        0x1E6D  948              955            
+  GET5                                        0x1E6A  947              627            
+  GET6                                        0x1E87  962              944            
+  GETBYT                                      0x1F9D  1154             732              736              739              746              754              757              770            
+  GETCH                                       0x1E5A  940              648              725              1154             1156           
+  GETK                                        0x1C8D  667            
+  GETKE5                                      0x1F6C  1115             1119           
+  GETKEY                                      0x1F6A  1114             667            
+  GOEXEC                                      0x1DC8  841              711              865            
+  GOV                                         0x1CD9  711              679            
+  HEX1                                        0x1978  328              326            
+  HEXOUT                                      0x196F  323              314              316            
+  HEXTA                                       0x1E4C  928              922              924            
+  HEXTA1                                      0x1E55  933              931            
+  ID                                          0x17F9  107              140              224              226            
+  INCPT                                       0x1F63  1104             708              749              815              838            
+  INCPT2                                      0x1F69  1107             1105           
+  INCVE1                                      0x19F2  400              398            
+  INCVEB                                      0x19EA  397              176              258            
+  INH                                           0xF9  85               647              780              825              1059             1179             1187           
+  INIT1                                       0x1E8C  969              636            
+  INITS                                       0x1E88  966              600              609            
+  INL                                           0xF8  84               646              779              823              885              1066             1072             1158             1178             1185           
+  INTVEB                                      0x1932  281              123              185            
+  IRQENT                                      0x1FFE  1215           
+  IRQP27                                      0x1FBE  519            
+  IRQT                                        0x1C1F  604              1215           
+  IRQV                                        0x17FE  113              604            
+  KEYIN                                       0x1F7A  1122             1117           
+  KEYIN1                                      0x1F7C  1123             1126           
+  KEYIN2                                      0x1F82  1127             1124           
+  KEYIN3                                      0x1F8A  1133             1136           
+  KEYIN4                                      0x1F8D  1135             1132           
+  LOAD                                        0x1CE7  725              727              762              874            
+  LOAD10                                      0x192B  271              268            
+  LOAD11                                      0x18C2  223              218            
+  LOAD12                                      0x190F  258              182            
+  LOAD13                                      0x18FA  248              254            
+  LOAD2                                       0x1D0E  746              751            
+  LOAD3                                       0x1D1D  754              744            
+  LOAD7                                       0x1D2E  764            
+  LOAD8                                       0x1D30  765              772            
+  LOADE1                                      0x1D3B  770              756            
+  LOADER                                      0x1D3E  771              759            
+  LOADT                                       0x1873  183              231            
+  LOADT4                                      0x18B5  216              221            
+  LOADT5                                      0x18D7  233              225              228            
+  LOADT6                                      0x18EC  241              230            
+  LOADT7                                      0x18F8  247              239              259            
+  LOADT8                                      0x1915  261              250            
+  LOADT9                                      0x1929  270              252              263              266            
+  LOADV                                       0x1E04  874              869            
+  MODE                                          0xFF  91               686              705              967            
+  MODIFY                                      0x1E15  884              863            
+  NMIENT                                      0x1FFA  1213           
+  NMIP27                                      0x1FBA  517            
+  NMIT                                        0x1C1C  603              1213           
+  NMIV                                        0x17FA  111              603            
+  ONE                                         0x199E  353              336              339            
+  ONE1                                        0x19A1  355              356              368            
+  ONE2                                        0x19B0  361              362            
+  ONEKEY                                      0x1F02  1040             1116           
+  OPEN                                        0x1FCC  1185             796              828            
+  OUT1                                        0x1EB4  992              999            
+  OUTBT                                       0x1961  309              141              157              159            
+  OUTBTC                                      0x195E  308              144              146              174            
+  OUTCH                                       0x1EA0  984              787              910              934            
+  OUTCHT                                      0x197A  333              132              138              155              164            
+  OUTSP                                       0x1E9E  983              831              835            
+  PACK                                        0x1FAC  1164             651              1155             1157           
+  PACKT                                       0x1A00  413              251              405              407            
+  PACKT1                                      0x1A0F  421              418            
+  PACKT2                                      0x1A15  426              429            
+  PACKT3                                      0x1A22  433              414              416            
+  PADD                                        0x1741  59               970              1061             1079           
+  PBDD                                        0x1743  61               128              496              972            
+  PCCMD                                       0x1CDC  717              671            
+  PCH                                           0xF0  73               594              719            
+  PCL                                           0xEF  72               591              717            
+  PLL1                                        0x1A75  498              499              511            
+  PLL2                                        0x1A84  505              506            
+  PLLCAL                                      0x1A6B  493              517              518              519            
+  POINTH                                        0xFB  87               170              272              595              696              720              737              790              843              881              897              1106             1188           
+  POINTL                                        0xFA  86               169              271              592              688              691              695              718              740              747              788              812              833              845              877              879              886              900              1058             1104             1186           
+  PREG                                          0xF1  74               589              847            
+  PRTBYT                                      0x1E3B  917              795              800              802              807              813              820              822              834              898              901            
+  PRTPNT                                      0x1E1E  897              797              809              830            
+  PRTST                                       0x1E31  909              642              767              912            
+  RDBIT                                       0x1A41  457              200              441              458            
+  RDBIT2                                      0x1A53  467              468            
+  RDBIT3                                      0x1A50  464              465            
+  RDBIT4                                      0x1A63  476              477            
+  RDBYT                                       0x19F3  404              223              233              236              241              243              261              264            
+  RDCHT                                       0x1A24  439              209              216              248              404              406            
+  RDCHT1                                      0x1A29  441              446            
+  READ                                        0x1C6A  648              870            
+  RST                                         0x1C22  606              1214           
+  RSTENT                                      0x1FFC  1214           
+  RSTP27                                      0x1FBC  518            
+  RSTV                                        0x17FC  112            
+  RTRN                                        0x1DC2  838              859              887            
+  SAD                                         0x1740  58               615              623              638              660              943              948              1044             1089             1091           
+  SAH                                         0x17F6  104              145              283            
+  SAL                                         0x17F5  103              143              281            
+  SAVE                                        0x1C00  587            
+  SAVX                                        0x17E9  98               198              201              202              203              204              333              334              345              346              427              430              439              442              443              444              448              451            
+  SBD                                         0x1742  60               126              195              360              366              383              389              457              467              494              503              510              766              974              987              989              992              996              1000             1002             1041             1049             1077             1090           
+  SCAN                                        0x1DDB  854              652            
+  SCAND                                       0x1F19  1057             657              662              664            
+  SCAND1                                      0x1F28  1066             1076           
+  SCANDS                                      0x1F1F  1060           
+  SHOW                                        0x1DAC  829              839              882            
+  SHOW1                                       0x1DAF  830              643            
+  SPACE                                       0x1DA9  828              855            
+  SPUSER                                        0xF2  75               599              608              841            
+  START                                       0x1C4F  636              171              273              601              616              658              661              669              706              709              721              768              872            
+  STEP                                        0x1CD3  708              677            
+  STV                                         0x1DFE  872              857            
+  SYNC                                        0x1891  197              211              220            
+  SYNC1                                       0x1896  200              206            
+  SYNC2                                       0x18AB  209              213            
+  TAB                                         0x1871  182              189              191            
+  TABLE                                       0x1FE7  1201             1087           
+  TEMP                                          0xFC  88               684              689              917              923              925              1085             1099           
+  TIMH                                        0x17F4  102              1011             1016             1017             1023             1026           
+  TMPX                                          0xFD  89               940              958              985              1004           
+  TOP                                         0x1FD5  1197             909            
+  TTYKB                                       0x1C77  657              639              650            
+  TTYKB1                                      0x1C7C  659              663              665            
+  UPDAT1                                      0x1FC1  1177             1181           
+  UPDAT2                                      0x1FCB  1183             1165             1167           
+  UPDATE                                      0x1FBB  1172             1169           
+  VEB                                         0x17EC  99               122              148              150              173              184              188              190              192              235              238              257              282              284              286              397              399            
+  XREG                                          0xF5  78               597              849            
+  YREG                                          0xF4  77               596              850            
+  ZRO                                         0x19C4  376              341              342            
+  ZRO1                                        0x19C7  378              379              391            
+  ZRO2                                        0x19D6  384              385            

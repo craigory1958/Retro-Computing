@@ -1,4 +1,4 @@
-// Generated from h:/_cwg-base__Home/Computer Archtecture/Retro Computing/xa/grammers/_directives/Directives_v3.g4 by ANTLR 4.13.1
+// Generated from h:/_cwg-base__Home/Computer Archtecture/Retro Computing/xa/grammers/_directives/Directives_v4.g4 by ANTLR 4.13.1
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
@@ -34,7 +34,7 @@ public class DirectivesLexer extends Lexer {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'.'", "'.macro'", "'.struct'", "','", "'='", "'@'"
+			null, "'.'", "'.macro'", "'.struct'", "','", "'='", "':'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
@@ -84,7 +84,7 @@ public class DirectivesLexer extends Lexer {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "Directives_v3.g4"; }
+	public String getGrammarFileName() { return "Directives_v4.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -145,7 +145,7 @@ public class DirectivesLexer extends Lexer {
 		"\u001c\u001d\u0007\u0007\u0000\u0000\u001d\u001e\u0007\u0002\u0000\u0000"+
 		"\u001e\u001f\u0007\u0006\u0000\u0000\u001f\u0006\u0001\u0000\u0000\u0000"+
 		" !\u0005,\u0000\u0000!\b\u0001\u0000\u0000\u0000\"#\u0005=\u0000\u0000"+
-		"#\n\u0001\u0000\u0000\u0000$%\u0005@\u0000\u0000%\f\u0001\u0000\u0000"+
+		"#\n\u0001\u0000\u0000\u0000$%\u0005:\u0000\u0000%\f\u0001\u0000\u0000"+
 		"\u0000&\'\u0007\u0001\u0000\u0000\'(\u0007\b\u0000\u0000()\u0007\t\u0000"+
 		"\u0000)*\u0007\n\u0000\u0000*|\u0007\u000b\u0000\u0000+,\u0007\f\u0000"+
 		"\u0000,-\u0007\r\u0000\u0000-.\u0007\u0006\u0000\u0000.|\u0007\u000e\u0000"+

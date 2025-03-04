@@ -3,6 +3,7 @@
 package xcom.retro.xa.directives.dir ;
 
 
+import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_parsedText ;
 import static xcom.utils4j.format.Templator.UnixDelimiters ;
 
 import java.io.IOException ;
@@ -35,6 +36,8 @@ public class STRUCT implements iDirective {
 
 	AssemblyContext actx ;
 
+	String as ;
+
 	String name ;
 	public String name() { return name ; }
 
@@ -64,21 +67,24 @@ public class STRUCT implements iDirective {
 
 		sourceID = actx.sources().size() - 1 ;
 		sourceLN = actx.source().peek().sourceLN() - 1 ;
+		as = actx.source().peek().as() ;
 	}
 
 
 	@Log
 	public void expand(final ParserRuleContext pctx) {
 
+		final Map<String, Operand> _operands = actx.statement().operands() ;
+
 		boolean ordinalMode = true ;
-		final Iterator<Operand> _operands = actx.statement().operands().values().iterator() ;
-		final Iterator<Operand> _options = options.values().iterator() ;
+		final Iterator<Operand> operands = _operands.values().iterator() ;
+		final Iterator<Operand> options = this.options.values().iterator() ;
 		final Map<String, Object> parms = new HashMap<>() ;
 
-		for ( /* no loop var */ ; _options.hasNext() || _operands.hasNext(); /* no increment */ ) {
+		for ( /* no loop var */ ; options.hasNext() || operands.hasNext(); /* no increment */ ) {
 
-			final Operand option = (_options.hasNext() ? _options.next() : null) ;
-			final Operand operand = (_operands.hasNext() ? _operands.next() : null) ;
+			final Operand option = (options.hasNext() ? options.next() : null) ;
+			final Operand operand = (operands.hasNext() ? operands.next() : null) ;
 
 			if ( ordinalMode && ((operand == null) || (operand.moniker() != null)) )
 				ordinalMode = false ;
@@ -100,10 +106,9 @@ public class STRUCT implements iDirective {
 
 
 		final boolean list = (parms.containsKey("list") ? parms.get("list").equals(".list") : false) ;
-//		list = true ;
 		actx.list(list) ;
 
-		actx.sources().add(new BlockSource(sourceID, sourceLN, lines, list)) ;
+		actx.sources().add(new BlockSource(sourceID, sourceLN, lines, list, as)) ;
 		actx.source().push(Lists.last(actx.sources())) ;
 	}
 
@@ -120,9 +125,14 @@ public class STRUCT implements iDirective {
 	@Log
 	public static STRUCT buildStruct(final AssemblyContext actx, final ParserRuleContext pctx) {
 
-		actx.statement().operands().put("list", new Option("list").assignment(new StringLiteral(".nolist"))) ;
-		final Statement _statement = actx.statement() ;
-		final String name = pctx.getChild(0).getChild(1).getText() ;
+		final Map<String, Operand> _operands = actx.statement().operands() ;
+//		final String name = pctx.getChild(0).getChild(1).getText() ;
+		final String parsedName = '.' + EXPR_parsedText(pctx.getChild(0).getChild(1)) ;
+//		final Statement _statement = actx.statement() ;
+
+		_operands.put("list", new Option("list").assignment(new StringLiteral(".nolist"))) ;
+		
+		
 
 		final List<String> lines = new ArrayList<>() ;
 		try {
@@ -141,6 +151,6 @@ public class STRUCT implements iDirective {
 		catch ( final IOException e ) {}
 
 
-		return new STRUCT(actx, name, _statement.operands(), lines) ;
+		return new STRUCT(actx, parsedName, _operands, lines) ;
 	}
 }

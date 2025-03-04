@@ -1,6 +1,6 @@
-
-
-	.include "abc.a65", as=.XYZ, list=.list
-	
-;	LDA	#.XYZ:a1
-	
+.xxx .struct
+        pid .byte 0x00
+     .endstruct
+abc .xxx
+      LDA abc:pid
+ 
