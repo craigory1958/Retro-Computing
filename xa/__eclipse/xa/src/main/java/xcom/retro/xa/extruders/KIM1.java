@@ -30,7 +30,7 @@ public class KIM1 implements iExtruder {
 		actx.segments().forEach(new BiConsumer<String, Segment>() {
 			@Override
 			public void accept(final String k, final Segment segment) {
-				segment.getBlocks().forEach(new Consumer<ByteBlock>() {
+				segment.blocks().forEach(new Consumer<ByteBlock>() {
 					@Override
 					public void accept(final ByteBlock block) {
 						for ( int i = 0; i < block.numBytes(); i += BlockSize )

@@ -4,15 +4,11 @@ package xcom.retro.xa.expressions ;
 
 
 import java.nio.ByteBuffer ;
-import java.util.Map ;
 
 import org.antlr.v4.runtime.ParserRuleContext ;
-import org.antlr.v4.runtime.tree.ParseTree ;
 import org.antlr.v4.runtime.tree.ParseTreeWalker ;
 
-import xcom.retro.xa.Operand ;
 import xcom.retro.xa.XA.AssemblyContext ;
-import xcom.retro.xa.api.interfaces.iSource ;
 import xcom.utils4j.logging.aspects.api.annotations.Log ;
 
 
@@ -26,41 +22,6 @@ public class ExpressionUtils {
 		walker.walk(listener, pctx) ;
 
 		return listener.expr ;
-	}
-
-
-	public static String EXPR_formatQualifiedID(final String id, final String as) {
-		return (as != null ? as + ":" + id : id) ;
-	}
-
-	public static String EXPR_formatGeneratedID(final Map<String, Operand> operands) {
-		return "{generated}." + Integer.valueOf(operands.size() + 1).toString() ;
-	}
-
-	public static String EXPR_formatScopedID(String id, iSource src) {
-		return id + "_" + src.scopeID() ;
-	}
-
-
-	public static String EXPR_parsedContextName(ParserRuleContext pctx) {
-		return EXPR_trimContextName(pctx.getClass().getSimpleName()) ;
-	}
-
-	public static String EXPR_parsedContextName(ParseTree pt) {
-		return EXPR_trimContextName(pt.getClass().getSimpleName()) ;
-	}
-
-	public static String EXPR_trimToContextName(Class<?> clazz) {
-		return EXPR_trimContextName(clazz.getSimpleName()) ;
-	}
-
-	public static String EXPR_trimContextName(String context) {
-		return context.substring(0, context.length() - 7) ;
-	}
-
-
-	public static String EXPR_parsedText(ParseTree pt) {
-		return pt.getText() ;
 	}
 
 

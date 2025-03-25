@@ -1,16 +1,25 @@
-;
-; SBC6502 (8K ROM) Definitions
-;
-                        
-SBC6502v1_4K           .equ    1
 
 
-._arch_declare_type   .macro  type
-                           .ifndef _arch_declared
-_arch_declared                 .equ     ${type}
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                                                                               ;
+;             Single Board Computer for 6502 (SBC6502) Definitions              ;
+;                                                                               ;
+;       Version: v1.0.0                                                         ;
+;       Author: Craig Gregory (CJG)                                             ;
+;                                                                               ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-                               .if ${type} == SBC6502v1_4K 
-                                   .include "../archs/SBC6502v1_4K.lib.a65"
+;   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+
+        ROM4k_v1                  .equ     1
+
+
+       .declare_type       .macro   type
+                               .ifndef declared
+        declared                   .equ     ${type}
+
+                                   .if ${type} == ROM4k_v1
+                                       .include "../archs/SBC6502v1_4K.lib.a65", as=.ARCH
+                                   .endif
                                .endif
-                           .endif
-                       .endmacro
+                           .endmacro

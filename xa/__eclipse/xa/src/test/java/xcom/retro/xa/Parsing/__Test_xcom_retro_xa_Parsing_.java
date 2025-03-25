@@ -12,8 +12,9 @@ import org.junit.runners.Suite ;
 @Suite.SuiteClasses({
 	_Test_AddressingModes_MOS6502.class,
 	_Test_BasicStatementParsing_MOS6502.class,
-	_Test_BasicStatementParsing2_MOS6502.class,
-	_Test_DirectiveParsing.class
+	_Test_BasicStatementAssembly_MOS6502.class,
+	_Test_DirectiveParsing.class,
+	_Test_NamedBlockParsing.class
 })
 //@formatter:on
 

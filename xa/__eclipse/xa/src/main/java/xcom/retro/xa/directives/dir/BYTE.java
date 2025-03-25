@@ -56,7 +56,7 @@ public class BYTE implements iDirective {
 
 		int b = 0 ;
 		for ( final Operand operand : _operands.values() ) {
-			final byte[] value = operand.assignment().eval(actx.identifiers()).value() ;
+			final byte[] value = operand.assignment().eval(actx.symbols()).value() ;
 
 			if ( operand.assignment() instanceof StringLiteral )
 				for ( final byte _byte : value )

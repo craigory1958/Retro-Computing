@@ -9,7 +9,7 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 
-public class Identifier {
+public class Symbol {
 
 	public enum IdentifierTypes {
 		Identifer, Label, Symbol,;
@@ -63,7 +63,7 @@ public class Identifier {
 
 	Reference origin ;
 	public Reference origin() { return origin ; }
-	public Identifier origin(final Reference origin) {
+	public Symbol origin(final Reference origin) {
 		this.origin = origin ;
 		return this;
 	}
@@ -100,11 +100,11 @@ public class Identifier {
 
 	byte[] value ;
 	public byte[] value() { return value ; }
-	public Identifier value(final byte[] value) {
+	public Symbol value(final byte[] value) {
 		this.value = value ;
 		return this;
 	}
-	public Identifier value(final int value) {
+	public Symbol value(final int value) {
 		this.value = EXPR_asBytes(value) ;
 		return this;
 	}
@@ -112,7 +112,11 @@ public class Identifier {
 	//@formatter:on
 
 
-	public Identifier(final String scopedMoniker) {
+	//
+	//
+	//
+
+	public Symbol(final String scopedMoniker) {
 
 		this.scopedMoniker = scopedMoniker ;
 
@@ -120,7 +124,7 @@ public class Identifier {
 	}
 
 
-	public Identifier(final String scopedMoniker, final String moniker) {
+	public Symbol(final String scopedMoniker, final String moniker) {
 
 		this.scopedMoniker = scopedMoniker ;
 		this.moniker = moniker ;
@@ -129,7 +133,7 @@ public class Identifier {
 	}
 
 
-	public Identifier(final String moniker, final byte[] value) {
+	public Symbol(final String moniker, final byte[] value) {
 
 		this.moniker = moniker ;
 		this.value = value.clone() ;

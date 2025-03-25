@@ -33,7 +33,6 @@ import org.antlr.v4.runtime.CharStreams ;
 import org.antlr.v4.runtime.CommonTokenStream ;
 import org.antlr.v4.runtime.Lexer ;
 import org.antlr.v4.runtime.Parser ;
-import org.antlr.v4.runtime.ParserRuleContext ;
 import org.antlr.v4.runtime.TokenStream ;
 import org.antlr.v4.runtime.tree.ParseTreeListener ;
 import org.antlr.v4.runtime.tree.ParseTreeWalker ;
@@ -58,6 +57,7 @@ import xcom.retro.xa.api.interfaces.iDirective ;
 import xcom.retro.xa.api.interfaces.iExtruder ;
 import xcom.retro.xa.api.interfaces.iProcessor ;
 import xcom.retro.xa.api.interfaces.iSource ;
+import xcom.retro.xa.assembly.AssemblyUtils ;
 import xcom.retro.xa.directives.dir.MACRO ;
 import xcom.retro.xa.directives.dir.STRUCT ;
 import xcom.retro.xa.extruders.AssemblyLister ;
@@ -86,15 +86,15 @@ public class XA {
 		Map<String, iDirective> directives ;
 		public Map<String, iDirective> directives() { return directives ; }
 
-		Identifier identifier ;
-		public Identifier identifier() { return identifier ; }
-		public AssemblyContext identifier(final Identifier identifier) {
+		Symbol identifier ;
+		public Symbol identifier() { return identifier ; }
+		public AssemblyContext identifier(final Symbol identifier) {
 			this.identifier = identifier ;
 			return this ;
 		}
 
-		Map<String, Identifier> identifiers = new HashMap<>() ;
-		public Map<String, Identifier> identifiers() { return identifiers ; }
+		Map<String, Symbol> symbols = new HashMap<>() ;
+		public Map<String, Symbol> symbols() { return symbols ; }
 
 		Stack<Boolean> ifBlocks ;
 		public Stack<Boolean> ifBlocks() { return ifBlocks ; }
@@ -143,6 +143,12 @@ public class XA {
 
 		Map<String, STRUCT> structs = new HashMap<>() ;
 		public Map<String, STRUCT> structs() { return structs ; }
+
+		Lexer lexer ;
+		public Lexer lexer() { return lexer ; }
+
+		Parser parser ;
+		public Parser parser() { return parser ; }
 
 		//@formatter:on
 
@@ -205,8 +211,6 @@ public class XA {
 	Properties props ;
 	AssemblyContext actx ;
 
-	Lexer lexer ;
-	Parser parser ;
 	Map<String, Class<Class<? extends iExtruder>>> extruders ;
 	ParseTreeListener processor ;
 	Map<String, Class<Class<? extends iProcessor>>> processors ;
@@ -227,11 +231,11 @@ public class XA {
 
 			final String lexerClassname = processor.getClass().getMethod("lexar").invoke(processor).toString().substring(6) ;
 			final Class<? extends Lexer> lexerClass = Reflection.type(lexerClassname).loadAs(Lexer.class) ;
-			lexer = Reflection.constructor().withParameterTypes(CharStream.class).in(lexerClass).newInstance(CharStreams.fromString("")) ;
+			actx.lexer = Reflection.constructor().withParameterTypes(CharStream.class).in(lexerClass).newInstance(CharStreams.fromString("")) ;
 
 			final String parserClassname = processor.getClass().getMethod("parser").invoke(processor).toString().substring(6) ;
 			final Class<? extends Parser> parserClass = Reflection.type(parserClassname).loadAs(Parser.class) ;
-			parser = Reflection.constructor().withParameterTypes(TokenStream.class).in(parserClass).newInstance(new CommonTokenStream(lexer)) ;
+			actx.parser = Reflection.constructor().withParameterTypes(TokenStream.class).in(parserClass).newInstance(new CommonTokenStream(actx.lexer)) ;
 
 			final String listenerClassname = processors.get(actx.cmdArgs.get(CommandLineOption_Processor)).getName() ;
 			final Class<? extends ParseTreeListener> listenerClass = Reflection.type(listenerClassname).loadAs(ParseTreeListener.class) ;
@@ -262,7 +266,6 @@ public class XA {
 
 				line = line.stripTrailing() ;
 				Console.debug(">>>{}", line) ;
-//				System.err.println("sourceID: " + actx.source.peek().sourceID() + ",  as: " + actx.source.peek().as()) ;
 
 				if ( actx.list() )
 					actx.ln += 1 ;
@@ -279,14 +282,15 @@ public class XA {
 				actx.statement = Lists.last(actx.statements) ;
 				actx.statement.ln(actx.ln) ;
 
-				lexer.setInputStream(CharStreams.fromString(line)) ;
-				parser.setTokenStream(new CommonTokenStream(lexer)) ;
-
-				actx.statement.pctx = Reflection.method("statement").withReturnType(ParserRuleContext.class).in(parser).invoke() ;
+//				actx.lexer.setInputStream(CharStreams.fromString(line)) ;
+//				actx.parser.setTokenStream(new CommonTokenStream(actx.lexer)) ;
+//
+//				actx.statement.pctx = Reflection.method("statement").withReturnType(ParserRuleContext.class).in(actx.parser).invoke() ;
+				actx.statement.pctx = AssemblyUtils.ASMB_parseStatement(line, actx.lexer, actx.parser) ;
 
 				walker.walk(processor, actx.statement.pctx) ;
 
-				if ( actx.statement.assembleEnable() )
+				if ( actx.statement.assemblyEnable() )
 					actx.statement.block = Lists.last(actx.segment.blocks) ;
 			}
 
@@ -301,7 +305,7 @@ public class XA {
 	XA assemble() { // Pass 2
 
 		actx.phase = Assemble ;
-		System.err.println(actx.identifiers.keySet()) ;
+		System.err.println(actx.symbols.keySet()) ;
 
 		for ( final Statement statement : actx.statements ) {
 
@@ -320,11 +324,12 @@ public class XA {
 	XA generate() throws IOException {
 
 		actx.phase = Generate ;
+		System.err.println(actx.symbols.keySet()) ;
 
 		for ( final Statement statement : actx.statements ) {
 			actx.statement = statement ;
 
-			if ( actx.statement.assembleEnable() && (actx.statement.block != null) && (actx.statement.bytes != null) && (actx.statement.bytes.length > 0) )
+			if ( actx.statement.assemblyEnable() && (actx.statement.block != null) && (actx.statement.bytes != null) && (actx.statement.bytes.length > 0) )
 				actx.statement.block.fillBytes(actx.statement.loc, actx.statement.bytes) ;
 		}
 
@@ -423,7 +428,7 @@ public class XA {
 
 			// Load properties ...
 			{
-				final String rSpec = "/" + (XA.class.getPackage().toString().substring(8) + "." + AppName).replace(".", "/") + ".properties" ;
+				final String rSpec = "/" + (XA.class.getPackage().toString().substring(8) + '.' + AppName).replace(".", "/") + ".properties" ;
 				$.props = Props.merge(XA.class, new Properties(), rSpec) ;
 
 				Logger.debug("props: {}", $.props) ;
@@ -583,7 +588,7 @@ public class XA {
 					break ;
 			}
 
-			args.put("source", srcDSpec + srcFN + "." + srcFNExt) ;
+			args.put("source", srcDSpec + srcFN + '.' + srcFNExt) ;
 		}
 
 		// Decode binary file specification ....

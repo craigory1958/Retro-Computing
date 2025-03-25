@@ -30,7 +30,7 @@ public class ORG implements iDirective {
 	public void parse(final ParserRuleContext pctx) {
 
 		final Operand operand1 = Maps.firstEntryValue(actx.statement().operands()) ;
-		final _ValueNode value = operand1.assignment().eval(actx.identifiers()) ;
+		final _ValueNode value = operand1.assignment().eval(actx.symbols()) ;
 		actx.segment().setOrg((int) value.getValue()) ;
 	}
 }

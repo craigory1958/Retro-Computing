@@ -48,6 +48,6 @@ public class IF implements iDirective {
 
 		final Operand operand1 = Maps.firstEntryValue(_operands) ;
 //		System.err.println(operand1.moniker()) ;
-		actx.ifBlocks().push(actx.ifBlocks().peek() && ((int) operand1.assignment().eval(actx.identifiers()).getValue() != 0)) ;
+		actx.ifBlocks().push(actx.ifBlocks().peek() && ((int) operand1.assignment().eval(actx.symbols()).getValue() != 0)) ;
 	}
 }

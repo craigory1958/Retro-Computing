@@ -32,7 +32,7 @@ public class SEGMENT implements iDirective {
 		final Map<String, Operand> _operands = actx.statement().operands() ;
 
 		final Operand operand1 = Maps.firstEntryValue(_operands) ;
-		final String value = (String) operand1.assignment().eval(actx.identifiers()).getValue() ;
+		final String value = (String) operand1.assignment().eval(actx.symbols()).getValue() ;
 
 		if ( !actx.segments().containsKey(value) )
 			actx.segments().put(value, new Segment(value)) ;

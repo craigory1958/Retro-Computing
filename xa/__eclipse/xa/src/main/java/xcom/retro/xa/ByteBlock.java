@@ -55,11 +55,7 @@ public class ByteBlock {
 			for ( int b = 0; b < bytes.length; b++ )
 				this.bytes[(address - org) + b] = bytes[b] ;
 		}
-		catch ( final Exception ex ) {
-//			System.out.println("address:" + address) ;
-//			System.out.println("length:" + bytes.length) ;
-//			System.out.println("org:" + org) ;
-		}
+		catch ( final Exception ex ) {}
 	}
 
 

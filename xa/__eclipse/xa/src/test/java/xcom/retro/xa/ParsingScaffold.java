@@ -43,11 +43,11 @@ public class ParsingScaffold {
 
 		Logger.info("uP grammer: {}", processor) ;
 
-		final String lexerClassname = "xcom.retro.xa.antlr.processors." + processor + "." + processor + "_Lexer" ;
+		final String lexerClassname = "xcom.retro.xa.antlr.processors." + processor + '.' + processor + "_Lexer" ;
 		final Class<? extends Lexer> lexerClass = Reflection.type(lexerClassname).loadAs(Lexer.class) ;
 		lexer = Reflection.constructor().withParameterTypes(CharStream.class).in(lexerClass).newInstance(CharStreams.fromString("")) ;
 
-		final String parserClassname = "xcom.retro.xa.antlr.processors." + processor + "." + processor + "_Parser" ;
+		final String parserClassname = "xcom.retro.xa.antlr.processors." + processor + '.' + processor + "_Parser" ;
 		final Class<? extends Parser> parserClass = Reflection.type(parserClassname).loadAs(Parser.class) ;
 		parser = Reflection.constructor().withParameterTypes(TokenStream.class).in(parserClass).newInstance(new CommonTokenStream(lexer)) ;
 

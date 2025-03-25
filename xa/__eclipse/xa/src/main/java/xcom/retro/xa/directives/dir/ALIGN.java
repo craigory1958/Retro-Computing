@@ -32,7 +32,7 @@ public class ALIGN implements iDirective {
 		final Map<String, Operand> _operands = actx.statement().operands() ;
 
 		final Operand operand1 = Maps.firstEntryValue(_operands) ;
-		final _ValueNode value = operand1.assignment().eval(actx.identifiers()) ;
+		final _ValueNode value = operand1.assignment().eval(actx.symbols()) ;
 		actx.segment().setOrg((actx.statement().loc() + ((int) value.getValue())) - (actx.statement().loc() % ((int) value.getValue()))) ;
 	}
 }

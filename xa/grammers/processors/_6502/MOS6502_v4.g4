@@ -64,25 +64,25 @@ Opcodes:
 directive:  assembler | macro | struct | invocation ;
 
 assembler:  '.' Directives parameterList? ;
-macro:  '.' symbol  '.macro' optionList? ;
-struct:  '.' symbol '.struct' optionList? ;
+macro:  symbol  '.macro' optionList? ;
+struct:  symbol '.struct' optionList? ;
 invocation:  qualifiedSymbol  parameterList? ;
 
 
 // Macro definition ...
 optionList:  option ( ',' optionList )? ; 
-option:  Identifier assignment? ;
+option:  identifier assignment? ;
 
 // Assembler Directive or Macro Invocation ...
 parameterList:  ( parameter ( ',' parameterList )? ) | ( ',' parameterList? ) ; 
-parameter:  ( identifier assignment ) | ( '.' symbol assignment ) | ( '.' symbol ) | argument ;
+parameter:  ( identifier assignment ) | ( dottedIdentifier assignment ) | ( dottedIdentifier ) | argument ;
 
 
 assignment:  '=' argument ;
 argument:  expr ;
 
-qualifiedSymbol:  ( '.' symbol ':' )* '.' symbol ;
-symbol:  Identifier | Directives ;
+qualifiedSymbol:  ( symbol ':' )* symbol ;
+symbol:  '.' ( Identifier | Directives ) ;
 
 
 label:  Identifier ;
@@ -109,13 +109,14 @@ Directives:
 
 expr:  term ( ( binary | comparison ) term )* ;
 
-term:  org | ( scopedIdentifier | qualifiedIdentifier | ( '.' symbol ) )  | literal | '(' expr ')' | unary term ;
+term:  org | scopedIdentifier | qualifiedIdentifier | dottedIdentifier | literal | '(' expr ')' | unary term ;
 org:  '*' ;
 
 
-qualifiedIdentifier:  ( '.' symbol ':' )* ( identifier ':' )* identifier ;
+dottedIdentifier:  '.' identifier ;
+qualifiedIdentifier:  ( dottedIdentifier ':' )* ( identifier ':' )* identifier ;
 scopedIdentifier:  '@' identifier ;
-identifier:  Identifier | Directives ;
+identifier:  Identifier | Directives | ( '${' Identifier '}' ) ;
 
 
 binary:  integerAdd | integerSubtract | integerMultiply | integerDivide | bitwiseShiftLeft | bitwiseShiftRight | bitwiseAnd | bitwiseOr | logicalAnd |  logicalOr ;

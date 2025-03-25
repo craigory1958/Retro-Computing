@@ -3,7 +3,7 @@
 package xcom.retro.xa.directives.dir ;
 
 
-import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_formatQualifiedID ;
+import static xcom.retro.xa.assembly.AssemblyUtils.ASMB_formatQualifiedID ;
 
 import org.antlr.v4.runtime.ParserRuleContext ;
 
@@ -33,8 +33,8 @@ public class IFNDEF implements iDirective {
 	public void parse(final ParserRuleContext pctx) {
 
 		final String text = pctx.getChild(0).getChild(2).getChild(0).getChild(0).getChild(0).getChild(0).getText() ;
-		final String moniker = EXPR_formatQualifiedID(text, actx.source().peek().as()) ;
+		final String moniker = ASMB_formatQualifiedID(text, actx.source().peek().qualifier()) ;
 
-		actx.ifBlocks().push(actx.ifBlocks().peek() && (actx.identifiers().get(moniker).value() == null)) ;
+		actx.ifBlocks().push(actx.ifBlocks().peek() && (actx.symbols().get(moniker).value() == null)) ;
 	}
 }

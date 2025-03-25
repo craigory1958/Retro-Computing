@@ -14,9 +14,9 @@ public class BlockSource implements iSource {
 
 	//@formatter:off
 
-	String as ;
+	String qualifier ;
 	@Override
-	public String as() { return as ; }
+	public String qualifier() { return qualifier ; }
 
 	String fSpec ;
 	@Override
@@ -49,13 +49,13 @@ public class BlockSource implements iSource {
 	List<String> lines ;
 
 
-	public BlockSource(final int sourceID, final int ln, final List<String> lines, final boolean list, final String as) {
+	public BlockSource(final int sourceID, final int ln, final List<String> lines, final boolean list, final String qualifier) {
 
 		this.sourceID = sourceID ;
 		sourceLN = ln - 1 ;
 		this.lines = lines ;
 		this.list = list ;
-		this.as = as ;
+		this.qualifier = qualifier ;
 
 		scopeID = UUID.randomUUID().toString().replaceAll("[-]", "") ;
 		curLN = 0 ;
@@ -66,5 +66,11 @@ public class BlockSource implements iSource {
 	public String next() throws IOException {
 		sourceLN++ ;
 		return (curLN < lines.size() ? lines.get(curLN++) : null) ;
+	}
+
+
+	@Override
+	public String peek() throws IOException {
+		return null ;
 	}
 }

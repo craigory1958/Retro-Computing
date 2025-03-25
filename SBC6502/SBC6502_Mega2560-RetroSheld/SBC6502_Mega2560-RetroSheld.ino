@@ -8,8 +8,9 @@
 //
 // 6502 Microprocessor (uP) GPIO/Pin assignments
 //
-//  ---Mega2560----       --6502--
-//
+
+/*  ---Mega2560----       --6502--  */
+/*                                  */
 /*  PIN   ARD  GPIO       LBL  PIN  */
 /*   52   D52   PB1       CLK0  37  */  #define   uP_CLK0   D52
 /*    2   ~D2   PE4       CLK0  37  */  #define   uP_CLK0_  D2
@@ -23,7 +24,7 @@
 /*    4   ~D4   PG5       SYNC   7  */  #define   uP_SYNC   D4
 
 //  Pin   ARD  GPIO       LBL  Pin
-/*   22   D22   PA0       A0     9  */    #define   uP_ADDR_L   PA
+/*   22   D22   PA0       A0     9  */  #define   uP_ADDR_L   PA
 /*   23   D23   PA1       A1    10  */
 /*   24   D24   PA2       A2    11  */
 /*   25   D25   PA3       A3    12  */
@@ -33,7 +34,7 @@
 /*   29   D29   PA7       A7    16  */
 
 //  Pin   ARD  GPIO       LBL  Pin
-/*   37   D37   PC0       A8    17  */    #define   uP_ADDR_H   PC
+/*   37   D37   PC0       A8    17  */  #define   uP_ADDR_H   PC
 /*   36   D36   PC1       A9    18  */
 /*   35   D35   PC2       A10   19  */
 /*   34   D34   PC3       A11   20  */
@@ -43,7 +44,7 @@
 /*   30   D30   PC7       A15   25  */
 
 //  Pin   ARD  GPIO       LBL  Pin
-/*   49   D49   PL0       D0    33  */    #define   uP_DATA     PL
+/*   49   D49   PL0       D0    33  */  #define   uP_DATA     PL
 /*   48   D48   PL1       D1    32  */
 /*   47   D47   PL2       D2    31  */
 /*   46  ~D46   PL3       D3    30  */

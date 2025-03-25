@@ -1,9 +1,21 @@
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                                                                               ;
+;                          Virtual Memory Kernal (VMK)                          ;
+;                                                                               ;
+;       Version: v1.0.0                                                         ;
+;       Author: Craig Gregory (CJG)                                             ;
+;                                                                               ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+
 .syscall               .macro       syscall, status
                             BRK         #${syscall}
                        .endmacro
 
-syscall_terminate         .equ         0x00    ; terminate process w/status
+syscall_terminate         .equ          0x00    ; terminate process w/status
 
 
 .task_control_block   .struct
@@ -21,7 +33,7 @@ syscall_terminate         .equ         0x00    ; terminate process w/status
 ;        2   u0201        R   00  read next instruction byte (and throw it away), increment PC
 ;        3   u01FF        W   02  push PCH on stack, decrement S
 ;        4   u01FE        W   02  push PCL on stack, decrement S
-;        5   u01FD        W   xx  push P on stack (with Break flag set), decrement S
+;        5   u01FD        W   |x  push P on stack (with Break flag set), decrement S
 ;               MMU R0 set to 0x80 on falling edge of CLK1    
 ;        6   kFFFE        R   67  fetch PCL
 ;        7   kFFFF        R   E0  fetch PCH

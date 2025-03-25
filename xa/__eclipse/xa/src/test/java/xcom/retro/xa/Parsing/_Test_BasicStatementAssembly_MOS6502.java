@@ -22,7 +22,7 @@ import xcom.retro.xa.XA ;
 
 
 @RunWith(Parameterized.class)
-public class _Test_BasicStatementParsing2_MOS6502 {
+public class _Test_BasicStatementAssembly_MOS6502 {
 
 	@Parameterized.Parameters
 	public static Collection<Object[]> data() {
@@ -42,13 +42,13 @@ public class _Test_BasicStatementParsing2_MOS6502 {
 	}
 
 
-	private static final Logger Logger = LoggerFactory.getLogger(_Test_BasicStatementParsing2_MOS6502.class) ;
+	private static final Logger Logger = LoggerFactory.getLogger(_Test_BasicStatementAssembly_MOS6502.class) ;
 
 	String desc ;
 	String srcFSpec ;
 
 
-	public _Test_BasicStatementParsing2_MOS6502(final String desc, final String srcFSpec) {
+	public _Test_BasicStatementAssembly_MOS6502(final String desc, final String srcFSpec) {
 
 		this.desc = desc ;
 		this.srcFSpec = srcFSpec ;

@@ -3,13 +3,13 @@
 package xcom.retro.xa.expressions ;
 
 
+import static xcom.retro.xa.assembly.AssemblyUtils.ASMB_formatQualifiedID ;
+import static xcom.retro.xa.assembly.AssemblyUtils.ASMB_formatScopedID ;
+import static xcom.retro.xa.assembly.AssemblyUtils.ASMB_parsedContextName ;
+import static xcom.retro.xa.assembly.AssemblyUtils.ASMB_parsedText ;
 import static xcom.retro.xa.expressions.ExpressionListener.OperatorOperands.Binary ;
 import static xcom.retro.xa.expressions.ExpressionListener.OperatorOperands.Unary ;
 import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_asBytes ;
-import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_formatQualifiedID ;
-import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_formatScopedID ;
-import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_parsedContextName ;
-import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_parsedText ;
 
 import java.util.Stack ;
 
@@ -19,7 +19,7 @@ import org.fest.reflect.exception.ReflectionError ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import xcom.retro.xa.Identifier ;
+import xcom.retro.xa.Symbol ;
 import xcom.retro.xa.XA.AssemblyContext ;
 import xcom.retro.xa.antlr.AssemblyBaseListener ;
 import xcom.retro.xa.api.interfaces.iSource ;
@@ -28,7 +28,7 @@ import xcom.retro.xa.expressions.op.binary._BinaryOpNode ;
 import xcom.retro.xa.expressions.op.unary._UnaryOpNode ;
 import xcom.retro.xa.expressions.value.DecimalLiteral ;
 import xcom.retro.xa.expressions.value.ExprMarker ;
-import xcom.retro.xa.expressions.value.IdentifierValue ;
+import xcom.retro.xa.expressions.value.Identifier ;
 import xcom.retro.xa.expressions.value.StringLiteral ;
 import xcom.retro.xa.expressions.value._ValueNode ;
 import xcom.utils4j.Enums ;
@@ -75,9 +75,13 @@ public class ExpressionListener extends AssemblyBaseListener {
 	}
 
 
+	//
+	//
+	//
+
 	private static final Logger Logger = LoggerFactory.getLogger(ExpressionListener.class) ;
 
-	final static Identifier $Identifier = new Identifier(null) ;
+	final static Symbol $Identifier = new Symbol(null) ;
 
 
 	AssemblyContext actx ;
@@ -86,29 +90,39 @@ public class ExpressionListener extends AssemblyBaseListener {
 	_ExprNode expr ;
 
 
+	//
+	//
+	//
+
 	public ExpressionListener(final AssemblyContext actx) {
 		this.actx = actx ;
 	}
 
 
+	//
+	//
+	//
+
 	@Override
 	public void enterEveryRule(final ParserRuleContext pctx) {
+
+		Logger.debug("invoke: enter{} w/{}", ASMB_parsedContextName(pctx), pctx.getClass().getSimpleName()) ;
 		invokeMethodFromContext("enter", pctx) ;
 	}
 
 	@Override
 	public void exitEveryRule(final ParserRuleContext pctx) {
+
+		Logger.debug("invoke: exit{} w/{}", ASMB_parsedContextName(pctx), pctx.getClass().getSimpleName()) ;
 		invokeMethodFromContext("exit", pctx) ;
 	}
 
-
 	public void invokeMethodFromContext(final String prefix, final ParserRuleContext pctx) {
 
-		String _methodContext = EXPR_parsedContextName(pctx) ;
+		final String _methodContext = ASMB_parsedContextName(pctx) ;
 
 		try {
-			String method = prefix + _methodContext ;
-			Logger.debug("invoke: {}", method) ;
+			final String method = prefix + _methodContext ;
 			Reflection //
 					.method(method) //
 					.withParameterTypes(ParserRuleContext.class) //
@@ -118,6 +132,10 @@ public class ExpressionListener extends AssemblyBaseListener {
 		catch ( final ReflectionError ex ) {}
 	}
 
+
+	//
+	//
+	//
 
 	@Log
 	public void exitArgument(final ParserRuleContext pctx) {
@@ -129,6 +147,7 @@ public class ExpressionListener extends AssemblyBaseListener {
 	public void enterExpr(final ParserRuleContext pctx) {
 		shunt.push(new ExprMarker("(")) ;
 	}
+
 
 	@Log
 	public void exitExpr(final ParserRuleContext pctx) {
@@ -144,62 +163,54 @@ public class ExpressionListener extends AssemblyBaseListener {
 	}
 
 
-	@Log
-	public void exitGlobalLabel(final ParserRuleContext pctx) {
-
-		final iSource _source = actx.source().peek() ;
-		final String _identfier = EXPR_parsedText(pctx) ;
-		final String _qualifedIdentifier = EXPR_formatQualifiedID(_identfier, _source.as()) ;
-
-//		System.err.println("sourceID: " + actx.source().peek().sourceID() + ",  as: " + actx.source().peek().as()) ;
-//		System.err.println("moniker: " + _qualifedIdentifier) ;
-
-		stack.push(new IdentifierValue(_qualifedIdentifier)) ;
-
-		if ( !actx.identifiers().containsKey(_qualifedIdentifier) )
-			actx.identifiers().put(_qualifedIdentifier, new Identifier(_qualifedIdentifier)) ;
-
-		actx.identifiers().get(_qualifedIdentifier).references().add($Identifier.new Reference(actx.ln(), _source.sourceID(), _source.sourceLN())) ;
-	}
-
-
 //	@Log
-//	public void exitIdentifier(final ParserRuleContext pctx) {
+//	public void exitGlobalLabel(final ParserRuleContext pctx) {
 //
 //		final iSource _source = actx.source().peek() ;
-//		final String _identifier = getParsedText(pctx) ;
-//		System.err.println("_identifier: " + _identifier) ;
-//		final String _qualifedIdentifier = formatQualifiedID(_identifier, _source.as()) ;
-//
-//		System.err.println("sourceID: " + actx.source().peek().sourceID() + ",  as: " + actx.source().peek().as()) ;
-//		System.err.println("_qualifedIdentifier: " + _qualifedIdentifier) ;
+//		final String _identfier = ASMB_parsedText(pctx) ;
+//		final String _qualifedIdentifier = ASMB_formatQualifiedID(_identfier, _source.qualifier()) ;
 //
 //		stack.push(new IdentifierValue(_qualifedIdentifier)) ;
 //
-//		if ( !actx.identifiers().containsKey(_qualifedIdentifier) )
-//			actx.identifiers().put(_qualifedIdentifier, new Identifier(_qualifedIdentifier)) ;
+//		if ( !actx.symbols().containsKey(_qualifedIdentifier) )
+//			actx.symbols().put(_qualifedIdentifier, new Identifier(_qualifedIdentifier)) ;
 //
-//		actx.identifiers().get(_qualifedIdentifier).references().add($Identifier.new Reference(actx.ln(), _source.sourceID(), _source.sourceLN())) ;
+//		actx.symbols().get(_qualifedIdentifier).references().add($Identifier.new Reference(actx.ln(), _source.sourceID(), _source.sourceLN())) ;
 //	}
+
+
+	@Log
+	public void exitDottedIdentifier(final ParserRuleContext pctx) {
+
+		final iSource _source = actx.source().peek() ;
+		final String _identifier = ASMB_parsedText(pctx) ;
+//		final String _qualifedIdentifier = ASMB_formatQualifiedID(_identifier, _source.qualifier()) ;
+//		System.err.println("_qualifedIdentifier: " + _qualifedIdentifier + ", _identifier: " + _identifier) ;
+		System.err.println("_identifier: " + _identifier) ;
+
+		stack.push(new StringLiteral(_identifier)) ;
+
+		if ( !actx.symbols().containsKey(_identifier) )
+			actx.symbols().put(_identifier, new Symbol(_identifier, _identifier)) ;
+
+		actx.symbols().get(_identifier).references().add($Identifier.new Reference(actx.ln(), _source.sourceID(), _source.sourceLN())) ;
+	}
 
 
 	@Log
 	public void exitQualifiedIdentifier(final ParserRuleContext pctx) {
 
 		final iSource _source = actx.source().peek() ;
-		final String _identifier = EXPR_parsedText(pctx) ;
-//		System.err.println("_identifier: " + _identifier) ;
-		final String _qualifedIdentifier = EXPR_formatQualifiedID(_identifier, _source.as()) ;
+		final String _identifier = ASMB_parsedText(pctx) ;
+		final String _qualifedIdentifier = ASMB_formatQualifiedID(_identifier, _source.qualifier()) ;
+		System.err.println("_qualifedIdentifier: " + _qualifedIdentifier + ", _identifier: " + _identifier) ;
 
-//		System.err.println("sourceID: " + actx.source().peek().sourceID() + ",  as: " + actx.source().peek().as()) ;
-//		System.err.println("_qualifedIdentifier: " + _qualifedIdentifier) ;
+		stack.push(new Identifier(_qualifedIdentifier)) ;
 
-		stack.push(new IdentifierValue(_qualifedIdentifier)) ;
+		if ( !actx.symbols().containsKey(_qualifedIdentifier) )
+			actx.symbols().put(_qualifedIdentifier, new Symbol(_qualifedIdentifier, _identifier)) ;
 
-		if ( !actx.identifiers().containsKey(_qualifedIdentifier) )
-			actx.identifiers().put(_qualifedIdentifier, new Identifier(_qualifedIdentifier)) ;
-
-		actx.identifiers().get(_qualifedIdentifier).references().add($Identifier.new Reference(actx.ln(), _source.sourceID(), _source.sourceLN())) ;
+		actx.symbols().get(_qualifedIdentifier).references().add($Identifier.new Reference(actx.ln(), _source.sourceID(), _source.sourceLN())) ;
 	}
 
 
@@ -207,19 +218,16 @@ public class ExpressionListener extends AssemblyBaseListener {
 	public void exitScopedIdentifier(final ParserRuleContext pctx) {
 
 		final iSource _source = actx.source().peek() ;
-		final String _identfier = EXPR_parsedText(pctx) ;
-		final String _scopedIdentfier = EXPR_formatScopedID(_identfier, _source) ;
+		final String _identifier = ASMB_parsedText(pctx) ;
+		final String _scopedIdentfier = ASMB_formatScopedID(_identifier, _source) ;
+		System.err.println("_scopedIdentfier: " + _scopedIdentfier + ", _identifier: " + _identifier) ;
 
-//		System.err.println("sourceID: " + actx.source().peek().sourceID() + ",  as: " + actx.source().peek().as()) ;
-//		System.err.println("moniker: " + _identfier) ;
-//		System.err.println("scopedMoniker: " + _scopedIdentfier) ;
+		stack.push(new Identifier(_scopedIdentfier)) ;
 
-		stack.push(new IdentifierValue(_scopedIdentfier)) ;
+		if ( !actx.symbols().containsKey(_scopedIdentfier) )
+			actx.symbols().put(_scopedIdentfier, new Symbol(_scopedIdentfier, _identifier)) ;
 
-		if ( !actx.identifiers().containsKey(_scopedIdentfier) )
-			actx.identifiers().put(_scopedIdentfier, new Identifier(_scopedIdentfier, _identfier)) ;
-
-		actx.identifiers().get(_scopedIdentfier).references().add($Identifier.new Reference(actx.ln(), _source.sourceID(), _source.sourceLN())) ;
+		actx.symbols().get(_scopedIdentfier).references().add($Identifier.new Reference(actx.ln(), _source.sourceID(), _source.sourceLN())) ;
 	}
 
 
@@ -235,25 +243,36 @@ public class ExpressionListener extends AssemblyBaseListener {
 	}
 
 
-	@Log
-	public void exitSymbol(final ParserRuleContext pctx) {
-
-		final iSource _source = actx.source().peek() ;
-		final String _symbol = '.' + EXPR_parsedText(pctx) ;
+//	@Log
+//	public void exitSymbol(final ParserRuleContext pctx) {
+//
+//		final iSource _source = actx.source().peek() ;
+//		final String _symbol = ASMB_parsedText(pctx) ;
 //		System.err.println("_symbol: " + _symbol) ;
-//		final String _qualifedIdentifier = formatQualifiedID(_identifier, _source.as()) ;
+//
+//		stack.push(new StringLiteral(_symbol)) ;
+//
+//		if ( !actx.symbols().containsKey(_symbol) )
+//			actx.symbols().put(_symbol, new Symbol(_symbol, _symbol.getBytes())) ;
+//
+//		actx.symbols().get(_symbol).references().add($Identifier.new Reference(actx.ln(), _source.sourceID(), _source.sourceLN())) ;
+//	}
 
-//		System.err.println("sourceID: " + actx.source().peek().sourceID() + ",  as: " + actx.source().peek().as()) ;
-//		System.err.println("moniker: " + _symbol) ;
 
-//		stack.push(new IdentifierValue(_symbol)) ;
-		stack.push(new StringLiteral(_symbol)) ;
-
-		if ( !actx.identifiers().containsKey(_symbol) )
-			actx.identifiers().put(_symbol, new Identifier(_symbol, _symbol.getBytes())) ;
-
-		actx.identifiers().get(_symbol).references().add($Identifier.new Reference(actx.ln(), _source.sourceID(), _source.sourceLN())) ;
-	}
+//	@Log
+//	public void exitDottedSymbol(final ParserRuleContext pctx) {
+//
+//		final iSource _source = actx.source().peek() ;
+//		final String _dottedSymbol = ASMB_parsedText(pctx) ;
+//		System.err.println("_dottedSymbol: " + _dottedSymbol) ;
+//
+//		stack.push(new StringLiteral(_dottedSymbol)) ;
+//
+//		if ( !actx.symbols().containsKey(_dottedSymbol) )
+//			actx.symbols().put(_dottedSymbol, new Symbol(_dottedSymbol, _dottedSymbol.getBytes())) ;
+//
+//		actx.symbols().get(_dottedSymbol).references().add($Identifier.new Reference(actx.ln(), _source.sourceID(), _source.sourceLN())) ;
+//	}
 
 
 	//
@@ -274,14 +293,14 @@ public class ExpressionListener extends AssemblyBaseListener {
 	@Log
 	public void exitOperator(final ParserRuleContext pctx, final Class<? extends _OpNode> clazz) {
 
-		String _operator = EXPR_parsedContextName(pctx.getChild(0)) ;
+		final String _operator = ASMB_parsedContextName(pctx.getChild(0)) ;
 		final Operators _op = Enums.valueOfIgnoreCase(Operators.class, _operator) ;
 
 		final _OpNode operator = Reflection //
 				.constructor() //
 				.withParameterTypes(Integer.class) //
 				.in(Reflection //
-						.type(clazz.getPackageName() + "." + _op.name()) //
+						.type(clazz.getPackageName() + '.' + _op.name()) //
 						.loadAs(clazz)) //
 				.newInstance(_op.precedence) ;
 
@@ -313,14 +332,14 @@ public class ExpressionListener extends AssemblyBaseListener {
 
 	public void exitAlphanumericOrNumericLiteral(final ParserRuleContext pctx) {
 
-		final String _literal = EXPR_parsedText(pctx.getChild(0).getChild(0)) ;
-		String _literalContext = EXPR_parsedContextName(pctx.getChild(0)) ;
+		final String _literal = ASMB_parsedText(pctx.getChild(0).getChild(0)) ;
+		final String _literalContext = ASMB_parsedContextName(pctx.getChild(0)) ;
 
 		final _ValueNode literal = Reflection //
 				.constructor() //
 				.withParameterTypes(String.class) //
 				.in(Reflection //
-						.type(_ValueNode.class.getPackageName() + "." + _literalContext) //
+						.type(_ValueNode.class.getPackageName() + '.' + _literalContext) //
 						.loadAs(_ValueNode.class)) //
 				.newInstance(_literal) ;
 

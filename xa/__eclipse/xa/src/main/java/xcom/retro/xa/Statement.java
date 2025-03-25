@@ -15,8 +15,8 @@ public class Statement {
 
 	//@formatter:off
 
-	boolean assembleEnable ;
-	public boolean assembleEnable() { return assembleEnable ; }
+	boolean assemblyEnable ;
+	public boolean assemblyEnable() { return assemblyEnable ; }
 
 	Map<String, Operand> operands ;
 	public Map<String, Operand> operands() { return operands ; }
@@ -42,9 +42,9 @@ public class Statement {
 		return this ;
 	}
 
-	Identifier label ;
-	public Identifier label() { return label ; }
-	public Statement label(final Identifier label) {
+	Symbol label ;
+	public Symbol label() { return label ; }
+	public Statement label(final Symbol label) {
 		this.label = label ;
 		return this ;
 	}
@@ -81,6 +81,10 @@ public class Statement {
 
 	ParserRuleContext pctx ;
 	public ParserRuleContext pctx() { return pctx ; }
+	public Statement pctx(final ParserRuleContext pctx) {
+		this.pctx = pctx ;
+		return this ;
+	}
 
 	Integer sourceID ;
 	public Integer sourceID() { return sourceID ; }
@@ -91,7 +95,7 @@ public class Statement {
 	@Log
 	public Statement(final int sourceID, final int sourceLN, final String line, final int lc, final boolean list, final boolean assembleEnable) {
 
-		this.assembleEnable = assembleEnable ;
+		this.assemblyEnable = assembleEnable ;
 		loc = lc ;
 		this.line = line ;
 		this.list = list ;

@@ -19,8 +19,7 @@ public class Segment {
 	public int loc() { return loc ; }
 
 	List<ByteBlock> blocks ;
-
-	public List<ByteBlock> getBlocks() { return blocks ; }
+	public List<ByteBlock> blocks() { return blocks ; }
 
 	//@formatter:on
 
@@ -32,14 +31,10 @@ public class Segment {
 		blocks.add(new ByteBlock()) ;
 	}
 
+	
 	public void allocateBytes(final byte[] bytes) {
 		loc = Lists.last(blocks).allocateBytes(bytes) ;
 	}
-
-
-//	public void fillBytes(byte[] bytes) {
-//		org = Lists.last(blocks).fillBytes(bytes) ;
-//	}
 
 
 	public void setOrg(final int value) {

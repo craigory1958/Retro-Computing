@@ -1,11 +1,82 @@
-;04A000000000000000
-;06FFFAB2E018E067E0FFD1
-;18E000A9008D00A0A9808D01A0A900A2009D10A0CACAD0F9606060FC42
-;18E01878A2FF9A2000E0A9008500A9008501A9008502A9008503A9FC1A
-;18E0300085042017E0A9008500A9008501A9008502A9008503A900FC07
-;18E04885042017E0A9008500A9008501A9008502A9008503A90085FB8C
-;18E060042017E02016E08405A0009105A505C891058AC89105BA8AFC24
-;18E078C89105AACABD0025C89105CABD0025C89105CABD0025C891FC21
-;18E09005A505F01C8505A5068506A000B1052901D00EB105F00A85FD0E
-;0BE0A805C8B10585064C9BE04040FF55
-;05000000000000000000
+0x00,                   //  0000 00                   pid                    .byte    0x00
+0x00, 0x00,             //  0001 00 00                addr                   .word    0x0000
+0x00, 0x00,             //  0003 00 00                effect_addr            .word    0x0000
+0x00,                   //  A000 00                   R0                     .byte    0x00    ; Mode Register
+0x00,                   //  A001 00           R1                    .byte    0x00         ; Status Register
+0x00,                   //  A002 00           CR0                   .byte    0x00         ; Config Register 0
+0x00,                   //  A003 00           CR1                   .byte    0x00         ; Config Register 1
+0xA9, 0x00,             //  E000 A9 00                                        LDA     #0x00    ; Set boot mode (should already be in boot mode after hardware reset.)
+0x8D, 0x00, 0xA0,       //  E002 8D 00 A0                                     STA     R0
+0xA9, 0x80,             //  E005 A9 80                                        LDA     #configValue
+0x8D, 0x01, 0xA0,       //  E007 8D 01 A0                                     STA     R1
+0xA9, 0x00,             //  E00A A9 00                                        LDA     #0x00
+0xA2, 0x00,             //  E00C A2 00                                        LDX     #numVectors
+0x9D, 0x10, 0xA0,       //  E00E 9D 10 A0                                     STA     vectors, X    ; Only need to clear 2 highest bits of a segment vector.
+0xCA,                   //  E011 CA                                           DEX
+0xCA,                   //  E012 CA                                           DEX
+0xD0, 0xF9,             //  E013 D0 F9                                        BNE     @loop
+0x60,                   //  E015 60                                           RTS
+0x60,                   //  E016 60                                           RTS
+0x60,                   //  E017 60                                           RTS
+0x78,                   //  E018 78                                           SEI                 ; Disable interrupts when entered via code
+0xA2, 0xFF,             //  E019 A2 FF                                        LDX     #0xFF       ; Initialize stack pointer
+0x9A,                   //  E01B 9A                                           TXS
+0x20, 0x00, 0xE0,       //  E01C 20 00 E0                                     JSR     .MMU:initialize
+0xA9, 0x00,             //  E01F A9 00                                    LDA     #0x00
+0x85, 0x00,             //  E021 85 00                                    STA     map_segment_args:pid
+0xA9, 0x00,             //  E023 A9 00                                    LDA     #<0x00
+0x85, 0x01,             //  E025 85 01                                    STA     map_segment_args:addr
+0xA9, 0x00,             //  E027 A9 00                                    LDA     #>0x00
+0x85, 0x02,             //  E029 85 02                                    STA     map_segment_args:addr +1
+0xA9, 0x00,             //  E02B A9 00                                    LDA     #<0x00
+0x85, 0x03,             //  E02D 85 03                                    STA     map_segment_args:effect_addr
+0xA9, 0x00,             //  E02F A9 00                                    LDA     #>0x00
+0x85, 0x04,             //  E031 85 04                                    STA     map_segment_args:effect_addr +1
+0x20, 0x17, 0xE0,       //  E033 20 17 E0                                 JSR     map_segment
+0x84, 0x05,             //  E036 84 05                                        STY     curTaskRegY
+0xA0, 0x00,             //  E038 A0 00                                        LDY     #0x00
+0x91, 0x05,             //  E03A 91 05                                        STA     [curTask], Y    ; Save A
+0xA5, 0x05,             //  E03C A5 05                                        LDA     curTaskRegY
+0xC8,                   //  E03E C8                                           INY
+0x91, 0x05,             //  E03F 91 05                                        STA     [curTask], Y    ; Save Y
+0x8A,                   //  E041 8A                                           TXA
+0xC8,                   //  E042 C8                                           INY
+0x91, 0x05,             //  E043 91 05                                        STA     [curTask], Y    ; Save X
+0xBA,                   //  E045 BA                                           TSX
+0x8A,                   //  E046 8A                                           TXA
+0xC8,                   //  E047 C8                                           INY
+0x91, 0x05,             //  E048 91 05                                        STA     [curTask], Y    ; Save S
+0xAA,                   //  E04A AA                                           TAX
+0xCA,                   //  E04B CA                                           DEX
+0xBD, 0x00, 0x1D,       //  E04C BD 00 1D                                     LDA     (curTaskSegment <<  bitsSegmentSize) + 0x0100, X    ; Use X as stack pointer into current task's stack
+0xC8,                   //  E04F C8                                           INY
+0x91, 0x05,             //  E050 91 05                                        STA     [curTask], Y    ; Save P
+0xCA,                   //  E052 CA                                           DEX
+0xBD, 0x00, 0x1D,       //  E053 BD 00 1D                                     LDA     (curTaskSegment <<  bitsSegmentSize) + 0x0100, X
+0xC8,                   //  E056 C8                                           INY
+0x91, 0x05,             //  E057 91 05                                        STA     [curTask], Y    ; Save PCL
+0xCA,                   //  E059 CA                                           DEX
+0xBD, 0x00, 0x1D,       //  E05A BD 00 1D                                     LDA     (curTaskSegment <<  bitsSegmentSize) + 0x0100, X
+0xC8,                   //  E05D C8                                           INY
+0x91, 0x05,             //  E05E 91 05                                        STA     [curTask], Y    ; Save PCH
+0xA5, 0x05,             //  E060 A5 05                                        LDA     tasks
+0xF0, 0x1C,             //  E062 F0 1C                                        BEQ     Error       ; Error is tasks list structure
+0x85, 0x05,             //  E064 85 05                                        STA     task
+0xA5, 0x06,             //  E066 A5 06                                        LDA     tasks +1
+0x85, 0x06,             //  E068 85 06                                        STA     task +1
+0xA0, 0x00,             //  E06A A0 00                                        LDY     #0x00
+0xB1, 0x05,             //  E06C B1 05                                        LDA     [task], Y   ; Fetch status byte of next task
+0x29, 0x01,             //  E06E 29 01                                        AND     #0x01
+0xD0, 0x0E,             //  E070 D0 0E                                        BNE     ExecuteNextTask     ; Found next task to execute
+0xB1, 0x05,             //  E072 B1 05                                        LDA     [task], Y   ; Fetch pointer to next tasks in list
+0xF0, 0x0A,             //  E074 F0 0A                                        BEQ     Error       ; Error is tasks list structure
+0x85, 0x05,             //  E076 85 05                                        STA     task
+0xC8,                   //  E078 C8                                           INY
+0xB1, 0x05,             //  E079 B1 05                                        LDA     [task], Y   ; Fetch pointer to next tasks in list
+0x85, 0x06,             //  E07B 85 06                                        STA     task +1
+0x4C, 0x6A, 0xE0,       //  E07D 4C 6A E0                                     JMP     CheckNextTaskStatus
+0x40,                   //  E080 40                                           RTI
+0x40,                   //  E081 40                                           RTI
+0x81, 0xE0,             //  FFFA 81 E0        _MPU65XX_NMI_VECTOR            .word    _MPU65XX_NMI
+0x18, 0xE0,             //  FFFC 18 E0        _MPU65XX_RESET_VECTOR          .word    _MPU65XX_RESET
+0x36, 0xE0,             //  FFFE 36 E0                                       .word    _MPU65XX_IRQ

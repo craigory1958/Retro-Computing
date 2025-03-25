@@ -2,14 +2,15 @@
 //
 //  6502_Mega2650-RetroSheid.ino
 //
-//  This is a minumalist emulation of all hardware needed for a 6502 CPU.  An 
-//  Arduino Mega 2650 emulates the hardware, while the 6502 is mounted on a 
+//  This is a minumalist emulation of everything needed to support a 6502 CPU.  An 
+//  Arduino Mega 2650 emulates the hardware, and a 6502 is mounted on a 
 //  RetroSheild (www.8bitforce.com) connected to a header on the Arduino Mega.
 //
 //  version:
-//    0.5   Code derived from Apple ][ example - Craig Gregory
-//    1.0   Code dubugged - Erturk Kocalar (8-Bit Force)
+//    0.5   Code derived from Apple ][ example (Erturk Kocalar (8-Bit Force)) - Craig Gregory
+//    1.0   Code debugged - Erturk Kocalar (8-Bit Force)
 //    1.1   Final code refactor - Craig Gregory
+//    1.2   Add silent mode in uP_tick() - Craig Gregory
 //
 
 
@@ -20,11 +21,12 @@
 // 0 - Fully manual single step
 // 1 - Auto-step thru uP reset
 // 2 - Fully auto-step
+// 3 - Fully auto-step (silent)
 
-#define SingleStepMode 2
+#define SingleStepMode 3
 
 
-// 0 - Fake uP SYNC signal
+// 0 - Fake uP SYNC signal (halt at address)
 // 1 - Use SYNC signal from uP
 
 #define SyncMode 1
@@ -34,8 +36,10 @@ unsigned int syncMode0_HaltAddress = 0x0205;
 //
 // 6502 Microprocessor (uP) GPIO/Pin assignments
 //
-//  ---Mega2560----       --6502--
-//
+
+/*                                  */
+/*  ---Mega2560----       --6502--  */
+/*                                  */
 /* PinID  ARD  GPIO       LBL  PIN  */
 /*   52   D52   PB1       CLK0  37  */  #define   uP_CLK0     D52
 /*   50   D50   PB3       ~IRQ   4  */  #define   uP_IRQ      D50
@@ -108,6 +112,7 @@ void setup() {
 
   Serial.begin(115200);
 
+  Serial.println("Begin ...");
   dumpMem();
 
   uP_init();
@@ -119,7 +124,8 @@ void loop() {
 
   if (IR == 0xFF && !done) {
     done = true;
-
+    
+    Serial.println("End ...");
     dumpMem();
   }
 
@@ -208,15 +214,16 @@ void uP_tick() {
   }
 
 
+#if SingleStepMode != 3
   char msg[80];
   sprintf(msg, "reset: %02d,  RST: %01X  SYNC:  %01X  IR:  %02X  R/W:  %01X  ADDR:  %04X  DATA:  %02X >", reset, RST, SYNC, IR, RW, ADDR, DATA);
   Serial.println(msg);
-
 
   if (SingleStepMode == 0 || SingleStepMode == 1 && reset == 0) {
     while (!Serial.available()) {};
     Serial.read();
   }
+#endif
 
   pio_resetPin(uP_CLK0);                    // Drive CLK low
   pio_setPortIO(uP_DATA, pio_PortAsInput);  // Set DATA bus for input to Arduino from uP

@@ -3,15 +3,15 @@
 package xcom.retro.xa.directives.dir ;
 
 
-import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_formatQualifiedID ;
-import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_parsedText ;
+import static xcom.retro.xa.assembly.AssemblyUtils.ASMB_formatQualifiedID ;
+import static xcom.retro.xa.assembly.AssemblyUtils.ASMB_parsedText ;
 
 import java.util.Map ;
 
 import org.antlr.v4.runtime.ParserRuleContext ;
 
-import xcom.retro.xa.Identifier ;
 import xcom.retro.xa.Operand ;
+import xcom.retro.xa.Symbol ;
 import xcom.retro.xa.XA.AssemblyContext ;
 import xcom.retro.xa.api.annotations.aDirective ;
 import xcom.retro.xa.api.interfaces.iDirective ;
@@ -38,26 +38,27 @@ public class EQU implements iDirective {
 
 		final Map<String, Operand> _operands = actx.statement().operands() ;
 		final iSource _source = actx.source().peek() ;
-		final String _identfier = EXPR_parsedText(pctx.getParent().getChild(0).getChild(0)) ;
+		final String _identfier = ASMB_parsedText(pctx.getParent().getChild(0).getChild(0)) ;
+		final String _qualifiedIdentifier = ASMB_formatQualifiedID(_identfier, _source.qualifier()) ;
+		System.err.println("_qualifiedIdentifier: " + _qualifiedIdentifier + ", _identfier: " + _identfier) ;
 
 
 		final Operand operand1 = Maps.firstEntryValue(_operands) ;
-		final _ValueNode value = operand1.assignment().eval(actx.identifiers()) ;
+		final _ValueNode value = operand1.assignment().eval(actx.symbols()) ;
 
 //		final String id = pctx.getParent().getChild(0).getChild(0).getText() ;
-		final String identifier = EXPR_formatQualifiedID(_identfier, _source.as()) ;
 //		System.err.println("identifier: " + identifier + ", value: " + value) ;
 
-		if ( !actx.identifiers().containsKey(identifier) )
-			actx.identifiers().put(identifier, new Identifier(identifier)) ;
+		if ( !actx.symbols().containsKey(_qualifiedIdentifier) )
+			actx.symbols().put(_qualifiedIdentifier, new Symbol(_qualifiedIdentifier, _identfier)) ;
 
-		actx.identifier(actx.identifiers().get(identifier)) ;
+		actx.identifier(actx.symbols().get(_qualifiedIdentifier)) ;
 		actx.identifier().value(value.value()) ;
 		actx.identifier().origin(actx.identifier().new Reference(actx.ln(), _source.sourceID(), _source.sourceLN())) ;
 
 //		System.err.println(actx.identifier().scopedMoniker() + ": " + asInteger(actx.identifier().value())) ;
-//		System.err.println(actx.identifiers().keySet()) ;
+//		System.err.println(actx.symbols().keySet()) ;
 //		System.err.println(actx.identifier().scopedMoniker() + ": "
-//				+ formatAsHexLiterial(asInteger(actx.identifiers().get(actx.identifier().scopedMoniker()).value()))) ;
+//				+ formatAsHexLiterial(asInteger(actx.symbols().get(actx.identifier().scopedMoniker()).value()))) ;
 	}
 }

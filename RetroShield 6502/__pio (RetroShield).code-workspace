@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"name": "__pio (RetroSheild)",
+			"path": "__pio (RetroSheild)"
+		},
+		{
+			"path": "I:/_cwg-base/_lib.arduino/libraries/PortIO"
+		}
+	],
+	"settings": {}
+}

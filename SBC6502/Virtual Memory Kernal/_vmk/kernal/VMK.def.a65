@@ -1,5 +1,16 @@
 
-;   x   x   x   x   x   x   x   x   x   x   x   x   x   x
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                                                                               ;
+;                    Virtual Memory Kernal (VMK) Definitions                    ;
+;                                                                               ;
+;       Version: v1.0.0                                                         ;
+;       Author: Craig Gregory (CJG)                                             ;
+;                                                                               ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+
         true                   .equ     1
         false                  .equ     0
 
@@ -8,12 +19,12 @@
         kernal_pid             .equ     0
 
 
-       .declare_type       .macro  type
+       .declare_type       .macro   type
                                .ifndef declared
         declared                   .equ     ${type}
 
                                    .if ${type} == v1
-                                       .include "VMK.lib.a65"
+                                       .include "VMK.lib.a65", as=.VMK
                                    .endif
                                .endif
                            .endmacro

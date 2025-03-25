@@ -3,27 +3,28 @@
 package xcom.retro.xa.directives.dir ;
 
 
-import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_formatAsHexLiterial ;
-import static xcom.retro.xa.expressions.ExpressionUtils.EXPR_formatQualifiedID ;
+import static xcom.retro.xa.assembly.AssemblyUtils.ASMB_dumpParseTreeNode ;
+import static xcom.retro.xa.assembly.AssemblyUtils.ASMB_formatQualifiedID ;
+import static xcom.retro.xa.assembly.AssemblyUtils.ASMB_parsedText ;
+import static xcom.retro.xa.directives.DirectiveUtils.DIR_isList ;
+import static xcom.retro.xa.directives.DirectiveUtils.DIR_matchInvocationOperands ;
 import static xcom.utils4j.format.Templator.UnixDelimiters ;
 
-import java.io.IOException ;
 import java.util.ArrayList ;
-import java.util.HashMap ;
-import java.util.Iterator ;
 import java.util.List ;
 import java.util.Map ;
 
 import org.antlr.v4.runtime.ParserRuleContext ;
-import org.apache.commons.lang3.StringUtils ;
 
 import xcom.retro.xa.BlockSource ;
 import xcom.retro.xa.Operand ;
 import xcom.retro.xa.Option ;
-import xcom.retro.xa.Statement ;
+import xcom.retro.xa.Symbol ;
 import xcom.retro.xa.XA.AssemblyContext ;
 import xcom.retro.xa.api.annotations.aDirective ;
 import xcom.retro.xa.api.interfaces.iDirective ;
+import xcom.retro.xa.api.interfaces.iSource ;
+import xcom.retro.xa.assembly.AssemblyUtils ;
 import xcom.retro.xa.expressions.value.StringLiteral ;
 import xcom.utils4j.data.structured.list.Lists ;
 import xcom.utils4j.format.Templator ;
@@ -37,13 +38,13 @@ public class MACRO implements iDirective {
 
 	AssemblyContext actx ;
 
-	String as ;
+	String qualifier ;
 
 	String name ;
 	public String name() { return name ; }
 
-	Map<String,Operand> options ;
-	public Map<String,Operand> options() { return options ; }
+	Map<String, Operand> options ;
+	public Map<String, Operand> options() { return options ; }
 
 	List<String> lines ;
 
@@ -54,10 +55,13 @@ public class MACRO implements iDirective {
 	//@formatter:on
 
 
+	//
+	//
+	//
+
 	public MACRO(final AssemblyContext actx) {
 		this.actx = actx ;
 	}
-
 
 	public MACRO(final AssemblyContext actx, final String name, final Map<String, Operand> optioms, final List<String> lines) {
 
@@ -68,69 +72,30 @@ public class MACRO implements iDirective {
 
 		sourceID = actx.sources().size() - 1 ;
 		sourceLN = actx.source().peek().sourceLN() - 1 ;
-		as = actx.source().peek().as() ;
+		qualifier = actx.source().peek().qualifier() ;
 	}
 
+
+	//
+	//
+	//
 
 	@Log
 	public void expand(final ParserRuleContext pctx) {
 
-//		actx.statement().operands().values().forEach(new Consumer<Operand>() {
-//			@Override
-//			public void accept(final Operand o) { //
-//				System.err.print("operand (before) >>> " + o.moniker() + ": " + o.getClass().getSimpleName()) ; //
-//				if ( o.assignment() != null )
-//					System.err.print(" - " + o.assignment().getClass().getSimpleName() + ": " + o.assignment()) ; //
-//				System.err.println() ; //
-//			}
-//		}) ;
+		final Map<String, Symbol> _identifiers = actx.symbols() ;
+		final Map<String, Operand> _operands = actx.statement().operands() ;
+		final Map<String, Operand> _options = options ;
 
-//		options.values().forEach(new Consumer<Operand>() {
-//			@Override
-//			public void accept(final Operand o) { //
-//				System.err.print("option (before) >>> " + o.moniker() + ": " + o.getClass().getSimpleName()) ; //
-//				if ( o.assignment() != null )
-//					System.err.print(" - " + o.assignment().getClass().getSimpleName() + ": " + o.assignment()) ; //
-//				System.err.println() ; //
-//			}
-//		}) ;
-
-		final Iterator<Operand> _operands = actx.statement().operands().values().iterator() ;
-		final Iterator<Operand> _options = options.values().iterator() ;
-		final Map<String, Object> parms = new HashMap<>() ;
-		boolean ordinalMode = true ;
-
-		for ( /* no loop var */ ; _operands.hasNext() || _options.hasNext(); /* no increment */ ) {
-
-			final Operand operand = (_operands.hasNext() ? _operands.next() : null) ;
-			final Operand option = (_options.hasNext() ? _options.next() : null) ;
-
-			if ( ordinalMode && ((operand == null) || !operand.moniker().startsWith("{generated}.")) )
-				ordinalMode = false ;
-
-			if ( ordinalMode && (operand != null) && operand.moniker().startsWith("{generated}.") )
-				parms.put(option.moniker(), EXPR_formatAsHexLiterial(operand.assignment().eval(actx.identifiers()).getValue())) ;
-
-			if ( !ordinalMode && (option != null) && (option.assignment() != null) )
-				parms.put(option.moniker(), EXPR_formatAsHexLiterial(option.assignment().eval(actx.identifiers()).getValue())) ;
-
-			if ( !ordinalMode && (operand != null) && !operand.moniker().startsWith("{generated}.") )
-				parms.put(operand.moniker(), EXPR_formatAsHexLiterial(operand.assignment().eval(actx.identifiers()).getValue())) ;
-		}
-
-//		System.err.println(parms) ;
+		final Map<String, Object> parms = DIR_matchInvocationOperands(_operands, _options, _identifiers) ;
 
 		final List<String> lines = new ArrayList<>() ;
 		for ( final String line : this.lines )
 			lines.add(Templator.delimiters(UnixDelimiters).template(line).inject(parms)) ;
 
+		actx.list(DIR_isList(parms)) ;
 
-//		System.err.println("list: " + parms.get("list")) ;
-
-		final boolean list = (parms.containsKey("list") ? parms.get("list").equals(".list") : false) ;
-		actx.list(list) ;
-
-		actx.sources().add(new BlockSource(sourceID, sourceLN, lines, list, as)) ;
+		actx.sources().add(new BlockSource(sourceID, sourceLN, lines, actx.list(), qualifier)) ;
 		actx.source().push(Lists.last(actx.sources())) ;
 	}
 
@@ -147,31 +112,17 @@ public class MACRO implements iDirective {
 	@Log
 	public static MACRO buildMacro(final AssemblyContext actx, final ParserRuleContext pctx) {
 
-		final String text = "." + pctx.getChild(0).getChild(1).getText() ;
+		final iSource _source = actx.source().peek() ;
 		final Map<String, Operand> _operands = actx.statement().operands() ;
+		final String _macroName = ASMB_parsedText(pctx.getChild(0).getChild(0)) ;
+		System.err.println(ASMB_dumpParseTreeNode(pctx.getChild(0).getChild(0))) ;
 
 		_operands.put("list", new Option("list").assignment(new StringLiteral(".nolist"))) ;
-//		final Statement _statement = actx.statement() ;
-		final String name = EXPR_formatQualifiedID(text, actx.source().peek().as()) ;
-//		System.err.println("name: " + name) ;
+		final String _qualifiedMacroName = ASMB_formatQualifiedID(_macroName, _source.qualifier()) ;
 
-		final List<String> lines = new ArrayList<>() ;
-		try {
-			String line ;
-			while ( !StringUtils.trimToEmpty(line = actx.source().peek().next()).equalsIgnoreCase('.' + ENDMACRO.class.getSimpleName()) ) {
-				lines.add(line) ;
-				actx.statements().add(new Statement(actx.source().peek().sourceID(), actx.source().peek().sourceLN(), line, actx.segment().loc(), actx.list(),
-						actx.assembleEnable())) ;
-				actx.statement(Lists.last(actx.statements())) ;
-			}
-
-			actx.statements().add(new Statement(actx.source().peek().sourceID(), actx.source().peek().sourceLN(), line, actx.segment().loc(), actx.list(),
-					actx.assembleEnable())) ;
-			actx.statement(Lists.last(actx.statements())) ;
-		}
-		catch ( final IOException e ) {}
+		final List<String> lines = AssemblyUtils.ASMB_readSourceBlock(_source, ENDMACRO.class, actx) ;
 
 
-		return new MACRO(actx, name, _operands, lines) ;
+		return new MACRO(actx, _qualifiedMacroName, _operands, lines) ;
 	}
 }

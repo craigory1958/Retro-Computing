@@ -10,7 +10,7 @@ import java.util.Map ;
 
 import com.google.common.primitives.Bytes ;
 
-import xcom.retro.xa.Identifier ;
+import xcom.retro.xa.Symbol ;
 import xcom.retro.xa.expressions._ExprNode ;
 
 
@@ -45,7 +45,7 @@ public abstract class _ValueNode extends _ExprNode {
 
 
 	@Override
-	public _ValueNode eval(final Map<String, Identifier> identifiers) {
+	public _ValueNode eval(final Map<String, Symbol> symbols) {
 		return this ;
 	}
 

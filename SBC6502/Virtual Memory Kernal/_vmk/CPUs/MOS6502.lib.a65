@@ -1,15 +1,24 @@
-;
-; MOS6502 Definitions
-;
 
-                       .segment "_MPU65XX_ZP"
-_MPU65XX_ZP            .org     0x0000  ;        1st 256 bytes of memory
-_MPU65XX_ZP_           .equ     * +0xFF
 
-                       .segment "_MPU65XX_STACK"
-_MPU65XX_STACK         .org     0x0100  ;        2nd 256 bytes of memory
-_MPU65XX_STACK_        .equ     * +0xFF
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                                                                               ;
+;                    MOS6502 Family uP (MPU65XX) for MOS6502                    ;
+;                                                                               ;
+;       Version: v1.0.0                                                         ;
+;       Author: Craig Gregory (CJG)                                             ;
+;                                                                               ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-                       .segment "_MPU65XX_VECTORS"
-_MPU65XX_VECTORS       .org     0xFFFA  ;        MOS6502 Interrupt Vectors
-_MPU65XX_VECTORS_      .equ     * +0x05
+;   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+
+                           .segment "_MPU65XX_ZP"
+_MPU65XX_ZP                    .org     0x0000    ; 1st 256 bytes of memory
+_MPU65XX_ZP_                   .equ     * +0xFF
+
+                           .segment "_MPU65XX_STACK"
+_MPU65XX_STACK                 .org     0x0100    ; 2nd 256 bytes of memory
+_MPU65XX_STACK_                .equ     * +0xFF
+
+                           .segment "_MPU65XX_VECTORS"
+_MPU65XX_VECTORS               .org     0xFFFA    ; MOS6502 Interrupt Vectors
+_MPU65XX_VECTORS_              .equ     * +0x05

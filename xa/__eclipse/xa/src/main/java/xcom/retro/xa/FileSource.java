@@ -8,6 +8,8 @@ import java.io.FileInputStream ;
 import java.io.FileNotFoundException ;
 import java.io.IOException ;
 import java.io.InputStreamReader ;
+import java.util.LinkedList ;
+import java.util.Queue ;
 import java.util.UUID ;
 
 import org.apache.commons.lang3.StringUtils ;
@@ -19,9 +21,9 @@ public class FileSource implements iSource {
 
 	//@formatter:off
 
-	String as ;
+	String qualifier ;
 	@Override
-	public String as() { return as ; }
+	public String qualifier() { return qualifier ; }
 
 	String fSpec ;
 	@Override
@@ -51,9 +53,14 @@ public class FileSource implements iSource {
 
 
 	BufferedReader br ;
+	Queue<String> queuedLines ;
 	boolean wasNull = false ;
 	boolean wasEmpty = false ;
 
+
+	//
+	//
+	//
 
 	public FileSource(final int sourceID, final String fSpec, final boolean list) throws FileNotFoundException {
 
@@ -61,27 +68,57 @@ public class FileSource implements iSource {
 		this.fSpec = fSpec ;
 		this.list = list ;
 
-		scopeID = UUID.randomUUID().toString().replaceAll("[-]", "") ;
-		br = new BufferedReader(new InputStreamReader(new FileInputStream(fSpec))) ;
-		sourceLN = 0 ;
+		_initialize(this) ;
 	}
 
-
-	public FileSource(final int sourceID, final String fSpec, final boolean list, final String as) throws FileNotFoundException {
+	public FileSource(final int sourceID, final String fSpec, final boolean list, final String qualifier) throws FileNotFoundException {
 
 		this.sourceID = sourceID ;
 		this.fSpec = fSpec ;
 		this.list = list ;
-		this.as = as ;
+		this.qualifier = qualifier ;
 
-		scopeID = UUID.randomUUID().toString().replaceAll("[-]", "") ;
-		br = new BufferedReader(new InputStreamReader(new FileInputStream(fSpec))) ;
-		sourceLN = 0 ;
+		_initialize(this) ;
+	}
+
+
+	void _initialize(final FileSource $) throws FileNotFoundException {
+
+		$.scopeID = UUID.randomUUID().toString().replaceAll("[-]", "") ;
+		$.br = new BufferedReader(new InputStreamReader(new FileInputStream($.fSpec))) ;
+		$.sourceLN = 0 ;
+		$.queuedLines = new LinkedList<>() ;
+	}
+
+
+	//
+	//
+	//
+
+	@Override
+	public String next() throws IOException {
+
+//		if ( queuedLines.size() > 1 )
+//			return queuedLines.poll() ;
+//
+//		if ( queuedLines.size() > 0 )
+//			queuedLines.poll() ;
+
+		return readLine() ;
 	}
 
 
 	@Override
-	public String next() throws IOException {
+	public String peek() throws IOException {
+
+		final String line = readLine() ;
+		queuedLines.offer(line) ;
+
+		return line ;
+	}
+
+
+	public String readLine() throws IOException {
 
 		String line = null ;
 

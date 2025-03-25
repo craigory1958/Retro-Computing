@@ -32,6 +32,6 @@ public class IFDEF implements iDirective {
 
 		final String id = pctx.getChild(0).getChild(2).getChild(0).getChild(0).getChild(0).getChild(0).getText() ;
 
-		actx.ifBlocks().push(actx.ifBlocks().peek() && (actx.identifiers().get(id).value() != null)) ;
+		actx.ifBlocks().push(actx.ifBlocks().peek() && (actx.symbols().get(id).value() != null)) ;
 	}
 }
