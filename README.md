@@ -1,6 +1,4 @@
-# Retro-Computing
-
-#### Arduino Libraries - Utilities for Arduino
+# Retro Computing
 
 #### RetroShield 6502 - Utilities to debug RetroShield by 8-Bit Force 
 
