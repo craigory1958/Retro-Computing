@@ -14,8 +14,10 @@
 //
 
 
-#include "Mega2560.h"
-#include "PortIO.h"
+#include <Arduino.h>
+
+#include <Mega2560.h>
+#include <PortIO.h>
 
 
 // 0 - Fully manual single step
@@ -26,10 +28,10 @@
 #define SingleStepMode 3
 
 
-// 0 - Fake uP SYNC signal (halt at address)
-// 1 - Use SYNC signal from uP
+// 0 - Halt at specified address
+// 1 - Use SYNC signal from uP and detect 0xFF instruction
 
-#define SyncMode 1
+#define HaltMode 1
 unsigned int syncMode0_HaltAddress = 0x0205;
 
 
@@ -40,6 +42,7 @@ unsigned int syncMode0_HaltAddress = 0x0205;
 /*                                  */
 /*  ---Mega2560----       --6502--  */
 /*                                  */
+
 /* PinID  ARD  GPIO       LBL  PIN  */
 /*   52   D52   PB1       CLK0  37  */  #define   uP_CLK0     D52
 /*   50   D50   PB3       ~IRQ   4  */  #define   uP_IRQ      D50
@@ -103,9 +106,13 @@ byte ROM[] = {
 #include "ROM.h"
 };
 
-
 bool done = false;
 int reset = 0;
+
+
+inline void uP_tick() __attribute__((always_inline));
+inline byte readMem(unsigned long addr) __attribute__((always_inline));
+inline void writeMem(unsigned long addr, byte data) __attribute__((always_inline));
 
 
 void setup() {
@@ -122,20 +129,23 @@ void setup() {
 
 void loop() {
 
-  if (IR == 0xFF && !done) {
-    done = true;
-    
-    Serial.println("End ...");
-    dumpMem();
-  }
+  while (true)  {
+    if (IR == 0xFF && !done) {
+      done = true;
 
-  if (!done) {
-    if (reset > 0) {
-      reset--;  // Count down number of cycles to reset
-      if (reset == 0) pio_setPin(uP_RST);
+      Serial.println("End ...");
+      dumpMem();
     }
 
-    uP_tick();
+    if (!done) {
+      if (reset > 0) {
+        reset--; // Count down number of cycles to reset
+        if (reset == 0)
+          pio_setPin(uP_RST);
+      }
+
+      uP_tick();
+    }
   }
 }
 
@@ -145,9 +155,9 @@ void loop() {
 //
 void uP_init() {
 
-  pio_setPortIO(uP_DATA, pio_PortAsInput);    // Set DATA bus for input to Arduino initially
-  pio_setPortIO(uP_ADDR_H, pio_PortAsInput);  // Set ADDR high bits for input to Arduino
-  pio_setPortIO(uP_ADDR_L, pio_PortAsInput);  // Set ADDR low bits for input to Arduino
+  pio_setPortIO(uP_DATA, pio_PortAsInput);   // Set DATA bus for input to Arduino initially
+  pio_setPortIO(uP_ADDR_H, pio_PortAsInput); // Set ADDR high bits for input to Arduino
+  pio_setPortIO(uP_ADDR_L, pio_PortAsInput); // Set ADDR low bits for input to Arduino
 
   pio_setPinAsInput(uP_RW);
   pio_setPinAsOutput(uP_CLK0);
@@ -158,61 +168,63 @@ void uP_init() {
   pio_setPinAsOutput(uP_SOB);
 
   pio_setPin(uP_CLK0);
-  pio_setPin(uP_IRQ);  // Active low
-  pio_setPin(uP_NMI);  // Active low
-  pio_setPin(uP_RST);  // Active low
-  pio_setPin(uP_RDY);  // Active high
-  pio_setPin(uP_SOB);  // Active low
+  pio_setPin(uP_IRQ); // Active low
+  pio_setPin(uP_NMI); // Active low
+  pio_setPin(uP_RST); // Active low
+  pio_setPin(uP_RDY); // Active high
+  pio_setPin(uP_SOB); // Active low
 
-#if SyncMode == 1
+#if HaltMode == 1
   pio_setPinAsInput(uP_SYNC);
 #endif
 }
+
 
 //
 // uP Reset Setup
 //
 void uP_initiate_reset() {
 
-  pio_resetPin(uP_RST);  // Active low
-  reset = 25;            // Reset uP for 25 cycles
+  pio_resetPin(uP_RST); // Active low
+  reset = 25;           // Reset uP for 25 cycles
 }
+
 
 //
 // uP Clock Cycle Control Loop
 //
 void uP_tick() {
 
-  pio_setPin(uP_CLK0);  // Drive CLK high
+  pio_setPin(uP_CLK0); // Drive CLK high
 
-  RST = pio_readPin(uP_RST);  // Read the R/W pin
-  RW = pio_readPin(uP_RW);    // Read the R/W pin
-  ADDR = uP_ADDR();           // Read the ADDR bus
+  RST = pio_readPin(uP_RST); // Read the R/W pin
+  RW = pio_readPin(uP_RW);   // Read the R/W pin
+  ADDR = uP_ADDR();          // Read the ADDR bus
   IR = 0x00;
 
-#if SyncMode == 1
-  SYNC = pio_readPin(uP_SYNC);  // Read the SYNC pin
+#if HaltMode == 1
+  SYNC = pio_readPin(uP_SYNC); // Read the SYNC pin
 #endif
 
-
-  if (RW) {  // R/W = HIGH - read from memory transaction
+  if (RW) { // R/W = HIGH - read from memory transaction
 
     DATA = readMem(ADDR);
 
-#if SyncMode == 1
-    if (SYNC) IR = DATA;
+#if HaltMode == 1
+    if (SYNC)
+      IR = DATA;
 #else
-    if (ADDR == syncMode0_HaltAddress) IR = 0xFF;
+    if (ADDR == syncMode0_HaltAddress)
+      IR = 0xFF;
 #endif
 
-    pio_setPortIO(uP_DATA, pio_PortAsOutput);  // Set DATA bus for output from Arduino to uP
-    pio_writePort(uP_DATA, DATA);              // Write to DATA bus (data will be read by uP on falling edge)
-
-  } else {  // R/W = LOW - write to memory transaction
-    DATA = pio_readPort(uP_DATA);
-    writeMem(ADDR, DATA);  // Read from DATA bus
+    pio_setPortIO(uP_DATA, pio_PortAsOutput); // Set DATA bus for output from Arduino to uP
+    pio_writePort(uP_DATA, DATA);             // Write to DATA bus (data will be read by uP on falling edge)
   }
-
+  else { // R/W = LOW - write to memory transaction
+    DATA = pio_readPort(uP_DATA);
+    writeMem(ADDR, DATA); // Read from DATA bus
+  }
 
 #if SingleStepMode != 3
   char msg[80];
@@ -225,50 +237,49 @@ void uP_tick() {
   }
 #endif
 
-  pio_resetPin(uP_CLK0);                    // Drive CLK low
-  pio_setPortIO(uP_DATA, pio_PortAsInput);  // Set DATA bus for input to Arduino from uP
+  pio_resetPin(uP_CLK0);                   // Drive CLK low
+  pio_setPortIO(uP_DATA, pio_PortAsInput); // Set DATA bus for input to Arduino from uP
 }
 
 
 byte readMem(unsigned long addr) {
 
-  if (addr < 0x0100) return ZP[addr];
-  else if (addr < 0x0200) return STACK[addr - 0x0100];
-  else if (addr < 0xF000) return RAM[addr - 0x0200];
-  else if (addr >= (0x10000 - sizeof(ROM))) return ROM[addr - (0x10000 - sizeof(ROM))];
+  if (addr < 0x0100)  return ZP[addr];
+  else if (addr < 0x0200)  return STACK[addr - 0x0100];
+  else if (addr < 0xF000)  return RAM[addr - 0x0200];
+  else if (addr >= (0x10000 - sizeof(ROM)))  return ROM[addr - (0x10000 - sizeof(ROM))];
 
-  return 0xFF;  // Memory reference out-of-bounds
+  return 0xFF; // Memory reference out-of-bounds
 }
-
 
 void writeMem(unsigned long addr, byte data) {
 
-  if (addr < 0x0100) ZP[addr] = data;
-  else if (addr < 0x0200) STACK[addr - 0x100] = data;
-  else if (addr < 0xF000) RAM[addr - 0x200] = data;
+  if (addr < 0x0100)  ZP[addr] = data;
+  else if (addr < 0x0200)  STACK[addr - 0x100] = data;
+  else if (addr < 0xF000)  RAM[addr - 0x200] = data;
 }
 
 
 void dumpMem() {
-  dumpMemBlock((char *)"ZP", 0x0000, 0x00FF);
-  dumpMemBlock((char *)"STACK", 0x0100, 0x01FF);
+  dumpMemBlock((char *)"ZP", 0x0000, 0x001F);
+  dumpMemBlock((char *)"STACK", 0x01E0, 0x01FF);
   dumpMemBlock((char *)"RAM", 0x0200, 0x020F);
   dumpMemBlock((char *)"ROM", 0xFFF0, 0xFFFF);
   Serial.println();
 }
 
-
 void dumpMemBlock(char *type, long start, long stop) {
 
   char s[100];
 
-  sprintf(s, "\n%05s 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F", type);
+  sprintf(s, "\n%05s x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 xA xB xC xD xE xF", type);
   Serial.print(s);
 
   for (long b = start; b < stop + 1; b++) {
 
     if (b % 16 == 0) {
       sprintf(s, "\n %04X ", b);
+      s[5] = 'x';
       Serial.print(s);
     }
 

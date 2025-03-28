@@ -8,5 +8,7 @@
 			"path": "I:/_cwg-base/_lib.arduino/libraries/PortIO"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"java.project.sourcePaths": []
+	}
 }

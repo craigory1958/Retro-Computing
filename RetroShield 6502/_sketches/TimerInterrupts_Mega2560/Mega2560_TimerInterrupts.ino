@@ -1,4 +1,6 @@
 
+#include <Arduino.h>
+
 // COMPA, CTC or OVR
 #define TIMER_MODE "CTC"
 
