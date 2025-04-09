@@ -7,10 +7,11 @@
 //  RetroSheild (www.8bitforce.com) connected to a header on the Arduino Mega.
 //
 //  version:
-//    0.5   Code derived from Apple ][ example (Erturk Kocalar (8-Bit Force)) - Craig Gregory
-//    1.0   Code debugged - Erturk Kocalar (8-Bit Force)
-//    1.1   Final code refactor - Craig Gregory
-//    1.2   Add silent mode in uP_tick() - Craig Gregory
+//    0.0.5   Code derived from Apple ][ example (Erturk Kocalar (8-Bit Force)) - Craig Gregory
+//    1.0.0   Code debugged - Erturk Kocalar (8-Bit Force)
+//    1.0.1   Final code refactor - Craig Gregory
+//    1.2.0   Add silent mode in uP_tick() - Craig Gregory
+//    1.2.1   Simplify memory emulation -  Craig Gregory
 //
 
 
@@ -32,7 +33,8 @@
 // 1 - Use SYNC signal from uP and detect 0xFF instruction
 
 #define HaltMode 1
-unsigned int syncMode0_HaltAddress = 0x0205;
+unsigned int HaltMode_Address = 0x0205;
+unsigned int HaltMode_Instruction = 0xFF;
 
 
 //
@@ -74,7 +76,7 @@ unsigned int syncMode0_HaltAddress = 0x0205;
 /*   30   D30   PC7       A15   25  */
 
 /* PinID  ARD  GPIO       LBL  PIN  */
-/*   49   D49   PL0       D0    33  */  #define  uP_DATA      PL
+/*   49   D49   PL0       D0    33  */  #define   uP_DATA     PL
 /*   48   D48   PL1       D1    32  */
 /*   47   D47   PL2       D2    31  */
 /*   46  ~D46   PL3       D3    30  */
@@ -95,17 +97,6 @@ bool RST;
 bool RW;
 bool SYNC;
 
-byte ZP[0x100];
-byte STACK[0x100];
-
-byte RAM[] = {
-#include "RAM.h"
-};
-
-byte ROM[] = {
-#include "ROM.h"
-};
-
 bool done = false;
 int reset = 0;
 
@@ -114,6 +105,10 @@ inline void uP_tick() __attribute__((always_inline));
 inline byte readMem(unsigned long addr) __attribute__((always_inline));
 inline void writeMem(unsigned long addr, byte data) __attribute__((always_inline));
 
+
+//
+//
+//
 
 void setup() {
 
@@ -126,11 +121,11 @@ void setup() {
   uP_initiate_reset();
 }
 
-
 void loop() {
 
-  while (true)  {
-    if (IR == 0xFF && !done) {
+  while (true) {
+
+    if (IR == HaltMode_Instruction && !done) {
       done = true;
 
       Serial.println("End ...");
@@ -138,6 +133,7 @@ void loop() {
     }
 
     if (!done) {
+
       if (reset > 0) {
         reset--; // Count down number of cycles to reset
         if (reset == 0)
@@ -148,7 +144,6 @@ void loop() {
     }
   }
 }
-
 
 //
 // Setup GPIO pins
@@ -181,14 +176,13 @@ void uP_init() {
 
 
 //
-// uP Reset Setup
+// uP Reset 
 //
 void uP_initiate_reset() {
 
   pio_resetPin(uP_RST); // Active low
   reset = 25;           // Reset uP for 25 cycles
 }
-
 
 //
 // uP Clock Cycle Control Loop
@@ -214,8 +208,8 @@ void uP_tick() {
     if (SYNC)
       IR = DATA;
 #else
-    if (ADDR == syncMode0_HaltAddress)
-      IR = 0xFF;
+    if (ADDR == HaltMode_Address)
+      IR = HaltMode_Instruction;
 #endif
 
     pio_setPortIO(uP_DATA, pio_PortAsOutput); // Set DATA bus for output from Arduino to uP
@@ -242,23 +236,37 @@ void uP_tick() {
 }
 
 
+//
+// Memory Emulation
+//
+
+byte RAM[] = {
+  #include "_ZP.ard"
+  #include "_STACK.ard"
+  #include "RAM.ard"
+};
+
+byte ROM[] = {
+  #include "ROM.ard"
+};
+
+int ROMOffset = (0x10000 - sizeof(ROM)) ;
+
+
 byte readMem(unsigned long addr) {
 
-  if (addr < 0x0100)  return ZP[addr];
-  else if (addr < 0x0200)  return STACK[addr - 0x0100];
-  else if (addr < 0xF000)  return RAM[addr - 0x0200];
-  else if (addr >= (0x10000 - sizeof(ROM)))  return ROM[addr - (0x10000 - sizeof(ROM))];
-
-  return 0xFF; // Memory reference out-of-bounds
+  if (addr < 0xF000) return RAM[addr];
+  else return ROM[addr - ROMOffset];
 }
 
 void writeMem(unsigned long addr, byte data) {
-
-  if (addr < 0x0100)  ZP[addr] = data;
-  else if (addr < 0x0200)  STACK[addr - 0x100] = data;
-  else if (addr < 0xF000)  RAM[addr - 0x200] = data;
+  RAM[addr] = data;
 }
 
+
+//
+//
+//
 
 void dumpMem() {
   dumpMemBlock((char *)"ZP", 0x0000, 0x001F);
