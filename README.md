@@ -4,4 +4,4 @@
 
 #### SBC6502 - Single Board Computer project for 6502 microprocessors
 
-#### xa - 6502 microprocessor family cross assembler and utilities
+#### XA - Cross assembler and utilities
